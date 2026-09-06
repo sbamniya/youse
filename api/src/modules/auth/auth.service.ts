@@ -3,9 +3,10 @@ import { AppError } from '../../utils/app-error';
 import { comparePassword, hashPassword } from '../../utils/password';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../utils/jwt';
 import { env } from '../../config/env';
-import type { LoginInput, RegisterInput } from './auth.schema';
+import type { RequestOtpInput, VerifyOtpInput } from './auth.schema';
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
+const OTP_TTL_MS = 10 * 60 * 1000;
 
 function parseExpiryToMs(expiry: string): number {
   const match = /^(\d+)([smhd])$/.exec(expiry);
@@ -16,15 +17,23 @@ function parseExpiryToMs(expiry: string): number {
   return value * unitMs;
 }
 
-const sanitizeUser = (user: { id: string; email: string; name: string | null }) => ({
+const sanitizeUser = (user: {
+  id: string;
+  phone: string;
+  name: string | null;
+  profilePicture: string | null;
+  timezone: string | null;
+}) => ({
   id: user.id,
-  email: user.email,
+  phone: user.phone,
   name: user.name,
+  profilePicture: user.profilePicture,
+  timezone: user.timezone,
 });
 
-const issueTokens = async (user: { id: string; email: string }) => {
-  const accessToken = signAccessToken({ sub: user.id, email: user.email });
-  const refreshToken = signRefreshToken({ sub: user.id, email: user.email });
+const issueTokens = async (user: { id: string; phone: string }) => {
+  const accessToken = signAccessToken({ sub: user.id, phone: user.phone });
+  const refreshToken = signRefreshToken({ sub: user.id, phone: user.phone });
 
   await prisma.refreshToken.create({
     data: {
@@ -37,32 +46,40 @@ const issueTokens = async (user: { id: string; email: string }) => {
   return { accessToken, refreshToken };
 };
 
-export const registerUser = async (input: RegisterInput) => {
-  const existing = await prisma.user.findUnique({ where: { email: input.email } });
-  if (existing) {
-    throw new AppError(409, 'Email is already registered');
-  }
-
-  const passwordHash = await hashPassword(input.password);
-  const user = await prisma.user.create({
-    data: { email: input.email, passwordHash, name: input.name },
+export const requestOtp = async (input: RequestOtpInput) => {
+  const code = String(Math.floor(100_000 + Math.random() * 900_000));
+  await prisma.otpChallenge.updateMany({
+    where: { phone: input.phone, consumedAt: null },
+    data: { consumedAt: new Date() },
+  });
+  await prisma.otpChallenge.create({
+    data: {
+      phone: input.phone,
+      codeHash: await hashPassword(code),
+      expiresAt: new Date(Date.now() + OTP_TTL_MS),
+    },
   });
 
-  const tokens = await issueTokens(user);
-  return { user: sanitizeUser(user), ...tokens };
+  return env.NODE_ENV === 'production'
+    ? { message: 'Verification code sent' }
+    : { message: 'Verification code sent', developmentCode: code };
 };
 
-export const loginUser = async (input: LoginInput) => {
-  const user = await prisma.user.findUnique({ where: { email: input.email } });
-  if (!user) {
-    throw new AppError(401, 'Invalid email or password');
+export const verifyOtp = async (input: VerifyOtpInput) => {
+  const challenge = await prisma.otpChallenge.findFirst({
+    where: { phone: input.phone, consumedAt: null, expiresAt: { gt: new Date() } },
+    orderBy: { createdAt: 'desc' },
+  });
+  if (!challenge || !(await comparePassword(input.code, challenge.codeHash))) {
+    throw new AppError(401, 'Invalid or expired verification code');
   }
 
-  const valid = await comparePassword(input.password, user.passwordHash);
-  if (!valid) {
-    throw new AppError(401, 'Invalid email or password');
-  }
-
+  await prisma.otpChallenge.update({ where: { id: challenge.id }, data: { consumedAt: new Date() } });
+  const user = await prisma.user.upsert({
+    where: { phone: input.phone },
+    update: { deletedAt: null, ...(input.name ? { name: input.name } : {}) },
+    create: { phone: input.phone, name: input.name },
+  });
   const tokens = await issueTokens(user);
   return { user: sanitizeUser(user), ...tokens };
 };

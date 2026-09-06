@@ -3,7 +3,7 @@ import { env } from '../config/env';
 
 export interface AccessTokenPayload {
   sub: string;
-  email: string;
+  phone: string;
 }
 
 export const signAccessToken = (payload: AccessTokenPayload): string =>

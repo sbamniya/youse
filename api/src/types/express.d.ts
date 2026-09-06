@@ -1,6 +1,6 @@
 export interface AuthenticatedUser {
   id: string;
-  email: string;
+  phone: string;
 }
 
 declare global {

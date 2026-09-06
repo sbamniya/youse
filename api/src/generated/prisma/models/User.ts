@@ -26,70 +26,76 @@ export type AggregateUser = {
 
 export type UserMinAggregateOutputType = {
   id: string | null
-  email: string | null
-  passwordHash: string | null
+  phone: string | null
   name: string | null
+  profilePicture: string | null
   partnerId: string | null
+  timezone: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
-  deletedAt: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
-  email: string | null
-  passwordHash: string | null
+  phone: string | null
   name: string | null
+  profilePicture: string | null
   partnerId: string | null
+  timezone: string | null
+  deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
-  deletedAt: Date | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
-  email: number
-  passwordHash: number
+  phone: number
   name: number
+  profilePicture: number
   partnerId: number
+  timezone: number
+  deletedAt: number
   createdAt: number
   updatedAt: number
-  deletedAt: number
   _all: number
 }
 
 
 export type UserMinAggregateInputType = {
   id?: true
-  email?: true
-  passwordHash?: true
+  phone?: true
   name?: true
+  profilePicture?: true
   partnerId?: true
+  timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
-  deletedAt?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
-  email?: true
-  passwordHash?: true
+  phone?: true
   name?: true
+  profilePicture?: true
   partnerId?: true
+  timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
-  deletedAt?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
-  email?: true
-  passwordHash?: true
+  phone?: true
   name?: true
+  profilePicture?: true
   partnerId?: true
+  timezone?: true
+  deletedAt?: true
   createdAt?: true
   updatedAt?: true
-  deletedAt?: true
   _all?: true
 }
 
@@ -167,13 +173,14 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 
 export type UserGroupByOutputType = {
   id: string
-  email: string
-  passwordHash: string
+  phone: string
   name: string | null
+  profilePicture: string | null
   partnerId: string | null
+  timezone: string | null
+  deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
-  deletedAt: Date | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -199,64 +206,95 @@ export type UserWhereInput = {
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   id?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  passwordHash?: Prisma.StringFilter<"User"> | string
+  phone?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  profilePicture?: Prisma.StringNullableFilter<"User"> | string | null
   partnerId?: Prisma.StringNullableFilter<"User"> | string | null
+  timezone?: Prisma.StringNullableFilter<"User"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   partner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   partners?: Prisma.UserListRelationFilter
   userPartnersOne?: Prisma.UserPartnerListRelationFilter
   userPartnersTwo?: Prisma.UserPartnerListRelationFilter
+  partnerMemories?: Prisma.PartnerMemoriesListRelationFilter
+  partnerMemoryItems?: Prisma.PartnerMemoryItemListRelationFilter
+  userMoods?: Prisma.UserMoodListRelationFilter
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerListRelationFilter
+  userPartnerPlans?: Prisma.UserPartnerPlansListRelationFilter
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAListRelationFilter
+  sentPokes?: Prisma.PokeListRelationFilter
+  receivedPokes?: Prisma.PokeListRelationFilter
+  createdSharedLists?: Prisma.SharedListListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePicture?: Prisma.SortOrderInput | Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   partner?: Prisma.UserOrderByWithRelationInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   partners?: Prisma.UserOrderByRelationAggregateInput
   userPartnersOne?: Prisma.UserPartnerOrderByRelationAggregateInput
   userPartnersTwo?: Prisma.UserPartnerOrderByRelationAggregateInput
+  partnerMemories?: Prisma.PartnerMemoriesOrderByRelationAggregateInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemOrderByRelationAggregateInput
+  userMoods?: Prisma.UserMoodOrderByRelationAggregateInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerOrderByRelationAggregateInput
+  userPartnerPlans?: Prisma.UserPartnerPlansOrderByRelationAggregateInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAOrderByRelationAggregateInput
+  sentPokes?: Prisma.PokeOrderByRelationAggregateInput
+  receivedPokes?: Prisma.PokeOrderByRelationAggregateInput
+  createdSharedLists?: Prisma.SharedListOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  email?: string
+  phone?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
-  passwordHash?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  profilePicture?: Prisma.StringNullableFilter<"User"> | string | null
   partnerId?: Prisma.StringNullableFilter<"User"> | string | null
+  timezone?: Prisma.StringNullableFilter<"User"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   partner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   partners?: Prisma.UserListRelationFilter
   userPartnersOne?: Prisma.UserPartnerListRelationFilter
   userPartnersTwo?: Prisma.UserPartnerListRelationFilter
-}, "id" | "email">
+  partnerMemories?: Prisma.PartnerMemoriesListRelationFilter
+  partnerMemoryItems?: Prisma.PartnerMemoryItemListRelationFilter
+  userMoods?: Prisma.UserMoodListRelationFilter
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerListRelationFilter
+  userPartnerPlans?: Prisma.UserPartnerPlansListRelationFilter
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAListRelationFilter
+  sentPokes?: Prisma.PokeListRelationFilter
+  receivedPokes?: Prisma.PokeListRelationFilter
+  createdSharedLists?: Prisma.SharedListListRelationFilter
+}, "id" | "phone">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  profilePicture?: Prisma.SortOrderInput | Prisma.SortOrder
   partnerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  timezone?: Prisma.SortOrderInput | Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -267,105 +305,149 @@ export type UserScalarWhereWithAggregatesInput = {
   OR?: Prisma.UserScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
-  email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  passwordHash?: Prisma.StringWithAggregatesFilter<"User"> | string
+  phone?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  profilePicture?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   partnerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  timezone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
-  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -385,35 +467,38 @@ export type UserOrderByRelationAggregateInput = {
 
 export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  profilePicture?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  profilePicture?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  passwordHash?: Prisma.SortOrder
+  phone?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  profilePicture?: Prisma.SortOrder
   partnerId?: Prisma.SortOrder
+  timezone?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  deletedAt?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -449,12 +534,12 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type UserUpdateOneWithoutPartnersNestedInput = {
@@ -539,32 +624,178 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
+export type UserCreateNestedOneWithoutPartnerMemoriesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoriesInput, Prisma.UserUncheckedCreateWithoutPartnerMemoriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartnerMemoriesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPartnerMemoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoriesInput, Prisma.UserUncheckedCreateWithoutPartnerMemoriesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartnerMemoriesInput
+  upsert?: Prisma.UserUpsertWithoutPartnerMemoriesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPartnerMemoriesInput, Prisma.UserUpdateWithoutPartnerMemoriesInput>, Prisma.UserUncheckedUpdateWithoutPartnerMemoriesInput>
+}
+
+export type UserCreateNestedOneWithoutPartnerMemoryItemsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedCreateWithoutPartnerMemoryItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartnerMemoryItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPartnerMemoryItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedCreateWithoutPartnerMemoryItemsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartnerMemoryItemsInput
+  upsert?: Prisma.UserUpsertWithoutPartnerMemoryItemsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPartnerMemoryItemsInput, Prisma.UserUpdateWithoutPartnerMemoryItemsInput>, Prisma.UserUncheckedUpdateWithoutPartnerMemoryItemsInput>
+}
+
+export type UserCreateNestedOneWithoutUserMoodsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserMoodsInput, Prisma.UserUncheckedCreateWithoutUserMoodsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMoodsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserMoodsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserMoodsInput, Prisma.UserUncheckedCreateWithoutUserMoodsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserMoodsInput
+  upsert?: Prisma.UserUpsertWithoutUserMoodsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserMoodsInput, Prisma.UserUpdateWithoutUserMoodsInput>, Prisma.UserUncheckedUpdateWithoutUserMoodsInput>
+}
+
+export type UserCreateNestedOneWithoutSentPokesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentPokesInput, Prisma.UserUncheckedCreateWithoutSentPokesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentPokesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutReceivedPokesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedPokesInput, Prisma.UserUncheckedCreateWithoutReceivedPokesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedPokesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSentPokesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentPokesInput, Prisma.UserUncheckedCreateWithoutSentPokesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentPokesInput
+  upsert?: Prisma.UserUpsertWithoutSentPokesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentPokesInput, Prisma.UserUpdateWithoutSentPokesInput>, Prisma.UserUncheckedUpdateWithoutSentPokesInput>
+}
+
+export type UserUpdateOneRequiredWithoutReceivedPokesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedPokesInput, Prisma.UserUncheckedCreateWithoutReceivedPokesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedPokesInput
+  upsert?: Prisma.UserUpsertWithoutReceivedPokesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedPokesInput, Prisma.UserUpdateWithoutReceivedPokesInput>, Prisma.UserUncheckedUpdateWithoutReceivedPokesInput>
+}
+
+export type UserCreateNestedOneWithoutDailyQuestionAnswersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedCreateWithoutDailyQuestionAnswersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyQuestionAnswersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDailyQuestionAnswersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedCreateWithoutDailyQuestionAnswersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDailyQuestionAnswersInput
+  upsert?: Prisma.UserUpsertWithoutDailyQuestionAnswersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDailyQuestionAnswersInput, Prisma.UserUpdateWithoutDailyQuestionAnswersInput>, Prisma.UserUncheckedUpdateWithoutDailyQuestionAnswersInput>
+}
+
+export type UserCreateNestedOneWithoutUserPartnerPlansInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserPartnerPlansInput, Prisma.UserUncheckedCreateWithoutUserPartnerPlansInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserPartnerPlansInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserPartnerPlansNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserPartnerPlansInput, Prisma.UserUncheckedCreateWithoutUserPartnerPlansInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserPartnerPlansInput
+  upsert?: Prisma.UserUpsertWithoutUserPartnerPlansInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserPartnerPlansInput, Prisma.UserUpdateWithoutUserPartnerPlansInput>, Prisma.UserUncheckedUpdateWithoutUserPartnerPlansInput>
+}
+
+export type UserCreateNestedOneWithoutWeeklyCheckInQnAsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedCreateWithoutWeeklyCheckInQnAsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyCheckInQnAsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWeeklyCheckInQnAsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedCreateWithoutWeeklyCheckInQnAsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWeeklyCheckInQnAsInput
+  upsert?: Prisma.UserUpsertWithoutWeeklyCheckInQnAsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWeeklyCheckInQnAsInput, Prisma.UserUpdateWithoutWeeklyCheckInQnAsInput>, Prisma.UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput>
+}
+
+export type UserCreateNestedOneWithoutCreatedSharedListsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedSharedListsInput, Prisma.UserUncheckedCreateWithoutCreatedSharedListsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedSharedListsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCreatedSharedListsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedSharedListsInput, Prisma.UserUncheckedCreateWithoutCreatedSharedListsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedSharedListsInput
+  upsert?: Prisma.UserUpsertWithoutCreatedSharedListsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedSharedListsInput, Prisma.UserUpdateWithoutCreatedSharedListsInput>, Prisma.UserUncheckedUpdateWithoutCreatedSharedListsInput>
+}
+
 export type UserCreateWithoutPartnersInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutPartnersInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutPartnersInput = {
@@ -574,30 +805,50 @@ export type UserCreateOrConnectWithoutPartnersInput = {
 
 export type UserCreateWithoutPartnerInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutPartnerInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutPartnerInput = {
@@ -623,30 +874,50 @@ export type UserUpdateToOneWithWhereWithoutPartnersInput = {
 
 export type UserUpdateWithoutPartnersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartnersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutPartnerInput = {
@@ -670,41 +941,62 @@ export type UserScalarWhereInput = {
   OR?: Prisma.UserScalarWhereInput[]
   NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
   id?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  passwordHash?: Prisma.StringFilter<"User"> | string
+  phone?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
+  profilePicture?: Prisma.StringNullableFilter<"User"> | string | null
   partnerId?: Prisma.StringNullableFilter<"User"> | string | null
+  timezone?: Prisma.StringNullableFilter<"User"> | string | null
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
-  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
 }
 
 export type UserCreateWithoutUserPartnersOneInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
   userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutUserPartnersOneInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutUserPartnersOneInput = {
@@ -714,30 +1006,50 @@ export type UserCreateOrConnectWithoutUserPartnersOneInput = {
 
 export type UserCreateWithoutUserPartnersTwoInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutUserPartnersTwoInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutUserPartnersTwoInput = {
@@ -758,30 +1070,50 @@ export type UserUpdateToOneWithWhereWithoutUserPartnersOneInput = {
 
 export type UserUpdateWithoutUserPartnersOneInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
   userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserPartnersOneInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUpsertWithoutUserPartnersTwoInput = {
@@ -797,58 +1129,98 @@ export type UserUpdateToOneWithWhereWithoutUserPartnersTwoInput = {
 
 export type UserUpdateWithoutUserPartnersTwoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserPartnersTwoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
   partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
   partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
   partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
   userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -869,78 +1241,1128 @@ export type UserUpdateToOneWithWhereWithoutRefreshTokensInput = {
 
 export type UserUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
-export type UserCreateManyPartnerInput = {
+export type UserCreateWithoutPartnerMemoriesInput = {
   id?: string
-  email: string
-  passwordHash: string
+  phone: string
   name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  deletedAt?: Date | string | null
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
 }
 
-export type UserUpdateWithoutPartnerInput = {
+export type UserUncheckedCreateWithoutPartnerMemoriesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutPartnerMemoriesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoriesInput, Prisma.UserUncheckedCreateWithoutPartnerMemoriesInput>
+}
+
+export type UserUpsertWithoutPartnerMemoriesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPartnerMemoriesInput, Prisma.UserUncheckedUpdateWithoutPartnerMemoriesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoriesInput, Prisma.UserUncheckedCreateWithoutPartnerMemoriesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPartnerMemoriesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPartnerMemoriesInput, Prisma.UserUncheckedUpdateWithoutPartnerMemoriesInput>
+}
+
+export type UserUpdateWithoutPartnerMemoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
 }
 
-export type UserUncheckedUpdateWithoutPartnerInput = {
+export type UserUncheckedUpdateWithoutPartnerMemoriesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutPartnerMemoryItemsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutPartnerMemoryItemsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutPartnerMemoryItemsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedCreateWithoutPartnerMemoryItemsInput>
+}
+
+export type UserUpsertWithoutPartnerMemoryItemsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedUpdateWithoutPartnerMemoryItemsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedCreateWithoutPartnerMemoryItemsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPartnerMemoryItemsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPartnerMemoryItemsInput, Prisma.UserUncheckedUpdateWithoutPartnerMemoryItemsInput>
+}
+
+export type UserUpdateWithoutPartnerMemoryItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPartnerMemoryItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutUserMoodsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutUserMoodsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutUserMoodsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserMoodsInput, Prisma.UserUncheckedCreateWithoutUserMoodsInput>
+}
+
+export type UserUpsertWithoutUserMoodsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserMoodsInput, Prisma.UserUncheckedUpdateWithoutUserMoodsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserMoodsInput, Prisma.UserUncheckedCreateWithoutUserMoodsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserMoodsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserMoodsInput, Prisma.UserUncheckedUpdateWithoutUserMoodsInput>
+}
+
+export type UserUpdateWithoutUserMoodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserMoodsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutSentPokesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutSentPokesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutSentPokesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentPokesInput, Prisma.UserUncheckedCreateWithoutSentPokesInput>
+}
+
+export type UserCreateWithoutReceivedPokesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutReceivedPokesInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutReceivedPokesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedPokesInput, Prisma.UserUncheckedCreateWithoutReceivedPokesInput>
+}
+
+export type UserUpsertWithoutSentPokesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentPokesInput, Prisma.UserUncheckedUpdateWithoutSentPokesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentPokesInput, Prisma.UserUncheckedCreateWithoutSentPokesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSentPokesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentPokesInput, Prisma.UserUncheckedUpdateWithoutSentPokesInput>
+}
+
+export type UserUpdateWithoutSentPokesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSentPokesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUpsertWithoutReceivedPokesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedPokesInput, Prisma.UserUncheckedUpdateWithoutReceivedPokesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedPokesInput, Prisma.UserUncheckedCreateWithoutReceivedPokesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceivedPokesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedPokesInput, Prisma.UserUncheckedUpdateWithoutReceivedPokesInput>
+}
+
+export type UserUpdateWithoutReceivedPokesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceivedPokesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutDailyQuestionAnswersInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutDailyQuestionAnswersInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutDailyQuestionAnswersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedCreateWithoutDailyQuestionAnswersInput>
+}
+
+export type UserUpsertWithoutDailyQuestionAnswersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedUpdateWithoutDailyQuestionAnswersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedCreateWithoutDailyQuestionAnswersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDailyQuestionAnswersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDailyQuestionAnswersInput, Prisma.UserUncheckedUpdateWithoutDailyQuestionAnswersInput>
+}
+
+export type UserUpdateWithoutDailyQuestionAnswersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDailyQuestionAnswersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutUserPartnerPlansInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutUserPartnerPlansInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutUserPartnerPlansInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserPartnerPlansInput, Prisma.UserUncheckedCreateWithoutUserPartnerPlansInput>
+}
+
+export type UserUpsertWithoutUserPartnerPlansInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserPartnerPlansInput, Prisma.UserUncheckedUpdateWithoutUserPartnerPlansInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserPartnerPlansInput, Prisma.UserUncheckedCreateWithoutUserPartnerPlansInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserPartnerPlansInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserPartnerPlansInput, Prisma.UserUncheckedUpdateWithoutUserPartnerPlansInput>
+}
+
+export type UserUpdateWithoutUserPartnerPlansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserPartnerPlansInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutWeeklyCheckInQnAsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutWeeklyCheckInQnAsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutWeeklyCheckInQnAsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedCreateWithoutWeeklyCheckInQnAsInput>
+}
+
+export type UserUpsertWithoutWeeklyCheckInQnAsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedCreateWithoutWeeklyCheckInQnAsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWeeklyCheckInQnAsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWeeklyCheckInQnAsInput, Prisma.UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput>
+}
+
+export type UserUpdateWithoutWeeklyCheckInQnAsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutCreatedSharedListsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+}
+
+export type UserUncheckedCreateWithoutCreatedSharedListsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+}
+
+export type UserCreateOrConnectWithoutCreatedSharedListsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedSharedListsInput, Prisma.UserUncheckedCreateWithoutCreatedSharedListsInput>
+}
+
+export type UserUpsertWithoutCreatedSharedListsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedSharedListsInput, Prisma.UserUncheckedUpdateWithoutCreatedSharedListsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedSharedListsInput, Prisma.UserUncheckedCreateWithoutCreatedSharedListsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedSharedListsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedSharedListsInput, Prisma.UserUncheckedUpdateWithoutCreatedSharedListsInput>
+}
+
+export type UserUpdateWithoutCreatedSharedListsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedSharedListsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserCreateManyPartnerInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type UserUpdateWithoutPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPartnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -953,6 +2375,15 @@ export type UserCountOutputType = {
   partners: number
   userPartnersOne: number
   userPartnersTwo: number
+  partnerMemories: number
+  partnerMemoryItems: number
+  userMoods: number
+  dailyQuestionAnswers: number
+  userPartnerPlans: number
+  weeklyCheckInQnAs: number
+  sentPokes: number
+  receivedPokes: number
+  createdSharedLists: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -960,6 +2391,15 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   partners?: boolean | UserCountOutputTypeCountPartnersArgs
   userPartnersOne?: boolean | UserCountOutputTypeCountUserPartnersOneArgs
   userPartnersTwo?: boolean | UserCountOutputTypeCountUserPartnersTwoArgs
+  partnerMemories?: boolean | UserCountOutputTypeCountPartnerMemoriesArgs
+  partnerMemoryItems?: boolean | UserCountOutputTypeCountPartnerMemoryItemsArgs
+  userMoods?: boolean | UserCountOutputTypeCountUserMoodsArgs
+  dailyQuestionAnswers?: boolean | UserCountOutputTypeCountDailyQuestionAnswersArgs
+  userPartnerPlans?: boolean | UserCountOutputTypeCountUserPartnerPlansArgs
+  weeklyCheckInQnAs?: boolean | UserCountOutputTypeCountWeeklyCheckInQnAsArgs
+  sentPokes?: boolean | UserCountOutputTypeCountSentPokesArgs
+  receivedPokes?: boolean | UserCountOutputTypeCountReceivedPokesArgs
+  createdSharedLists?: boolean | UserCountOutputTypeCountCreatedSharedListsArgs
 }
 
 /**
@@ -1000,66 +2440,151 @@ export type UserCountOutputTypeCountUserPartnersTwoArgs<ExtArgs extends runtime.
   where?: Prisma.UserPartnerWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPartnerMemoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartnerMemoriesWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPartnerMemoryItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PartnerMemoryItemWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUserMoodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserMoodWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDailyQuestionAnswersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyQuestionAnswerWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUserPartnerPlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserPartnerPlansWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountWeeklyCheckInQnAsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WeeklyCheckInQnAWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSentPokesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PokeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReceivedPokesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PokeWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedSharedListsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SharedListWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  email?: boolean
-  passwordHash?: boolean
+  phone?: boolean
   name?: boolean
+  profilePicture?: boolean
   partnerId?: boolean
+  timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletedAt?: boolean
   partner?: boolean | Prisma.User$partnerArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   partners?: boolean | Prisma.User$partnersArgs<ExtArgs>
   userPartnersOne?: boolean | Prisma.User$userPartnersOneArgs<ExtArgs>
   userPartnersTwo?: boolean | Prisma.User$userPartnersTwoArgs<ExtArgs>
+  partnerMemories?: boolean | Prisma.User$partnerMemoriesArgs<ExtArgs>
+  partnerMemoryItems?: boolean | Prisma.User$partnerMemoryItemsArgs<ExtArgs>
+  userMoods?: boolean | Prisma.User$userMoodsArgs<ExtArgs>
+  dailyQuestionAnswers?: boolean | Prisma.User$dailyQuestionAnswersArgs<ExtArgs>
+  userPartnerPlans?: boolean | Prisma.User$userPartnerPlansArgs<ExtArgs>
+  weeklyCheckInQnAs?: boolean | Prisma.User$weeklyCheckInQnAsArgs<ExtArgs>
+  sentPokes?: boolean | Prisma.User$sentPokesArgs<ExtArgs>
+  receivedPokes?: boolean | Prisma.User$receivedPokesArgs<ExtArgs>
+  createdSharedLists?: boolean | Prisma.User$createdSharedListsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  email?: boolean
-  passwordHash?: boolean
+  phone?: boolean
   name?: boolean
+  profilePicture?: boolean
   partnerId?: boolean
+  timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletedAt?: boolean
   partner?: boolean | Prisma.User$partnerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  email?: boolean
-  passwordHash?: boolean
+  phone?: boolean
   name?: boolean
+  profilePicture?: boolean
   partnerId?: boolean
+  timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletedAt?: boolean
   partner?: boolean | Prisma.User$partnerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
-  email?: boolean
-  passwordHash?: boolean
+  phone?: boolean
   name?: boolean
+  profilePicture?: boolean
   partnerId?: boolean
+  timezone?: boolean
+  deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  deletedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "partnerId" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone" | "name" | "profilePicture" | "partnerId" | "timezone" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   partner?: boolean | Prisma.User$partnerArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   partners?: boolean | Prisma.User$partnersArgs<ExtArgs>
   userPartnersOne?: boolean | Prisma.User$userPartnersOneArgs<ExtArgs>
   userPartnersTwo?: boolean | Prisma.User$userPartnersTwoArgs<ExtArgs>
+  partnerMemories?: boolean | Prisma.User$partnerMemoriesArgs<ExtArgs>
+  partnerMemoryItems?: boolean | Prisma.User$partnerMemoryItemsArgs<ExtArgs>
+  userMoods?: boolean | Prisma.User$userMoodsArgs<ExtArgs>
+  dailyQuestionAnswers?: boolean | Prisma.User$dailyQuestionAnswersArgs<ExtArgs>
+  userPartnerPlans?: boolean | Prisma.User$userPartnerPlansArgs<ExtArgs>
+  weeklyCheckInQnAs?: boolean | Prisma.User$weeklyCheckInQnAsArgs<ExtArgs>
+  sentPokes?: boolean | Prisma.User$sentPokesArgs<ExtArgs>
+  receivedPokes?: boolean | Prisma.User$receivedPokesArgs<ExtArgs>
+  createdSharedLists?: boolean | Prisma.User$createdSharedListsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1077,16 +2602,26 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     partners: Prisma.$UserPayload<ExtArgs>[]
     userPartnersOne: Prisma.$UserPartnerPayload<ExtArgs>[]
     userPartnersTwo: Prisma.$UserPartnerPayload<ExtArgs>[]
+    partnerMemories: Prisma.$PartnerMemoriesPayload<ExtArgs>[]
+    partnerMemoryItems: Prisma.$PartnerMemoryItemPayload<ExtArgs>[]
+    userMoods: Prisma.$UserMoodPayload<ExtArgs>[]
+    dailyQuestionAnswers: Prisma.$DailyQuestionAnswerPayload<ExtArgs>[]
+    userPartnerPlans: Prisma.$UserPartnerPlansPayload<ExtArgs>[]
+    weeklyCheckInQnAs: Prisma.$WeeklyCheckInQnAPayload<ExtArgs>[]
+    sentPokes: Prisma.$PokePayload<ExtArgs>[]
+    receivedPokes: Prisma.$PokePayload<ExtArgs>[]
+    createdSharedLists: Prisma.$SharedListPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    email: string
-    passwordHash: string
+    phone: string
     name: string | null
+    profilePicture: string | null
     partnerId: string | null
+    timezone: string | null
+    deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
-    deletedAt: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1486,6 +3021,15 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   partners<T extends Prisma.User$partnersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partnersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userPartnersOne<T extends Prisma.User$userPartnersOneArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userPartnersOneArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPartnerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userPartnersTwo<T extends Prisma.User$userPartnersTwoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userPartnersTwoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPartnerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  partnerMemories<T extends Prisma.User$partnerMemoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partnerMemoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartnerMemoriesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  partnerMemoryItems<T extends Prisma.User$partnerMemoryItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$partnerMemoryItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PartnerMemoryItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userMoods<T extends Prisma.User$userMoodsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userMoodsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserMoodPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dailyQuestionAnswers<T extends Prisma.User$dailyQuestionAnswersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dailyQuestionAnswersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyQuestionAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userPartnerPlans<T extends Prisma.User$userPartnerPlansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userPartnerPlansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPartnerPlansPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  weeklyCheckInQnAs<T extends Prisma.User$weeklyCheckInQnAsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$weeklyCheckInQnAsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WeeklyCheckInQnAPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentPokes<T extends Prisma.User$sentPokesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentPokesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PokePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedPokes<T extends Prisma.User$receivedPokesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedPokesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PokePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdSharedLists<T extends Prisma.User$createdSharedListsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdSharedListsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharedListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1516,13 +3060,14 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
-  readonly email: Prisma.FieldRef<"User", 'String'>
-  readonly passwordHash: Prisma.FieldRef<"User", 'String'>
+  readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
+  readonly profilePicture: Prisma.FieldRef<"User", 'String'>
   readonly partnerId: Prisma.FieldRef<"User", 'String'>
+  readonly timezone: Prisma.FieldRef<"User", 'String'>
+  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
-  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 
@@ -2036,6 +3581,222 @@ export type User$userPartnersTwoArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.UserPartnerScalarFieldEnum | Prisma.UserPartnerScalarFieldEnum[]
+}
+
+/**
+ * User.partnerMemories
+ */
+export type User$partnerMemoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PartnerMemories
+   */
+  select?: Prisma.PartnerMemoriesSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PartnerMemories
+   */
+  omit?: Prisma.PartnerMemoriesOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartnerMemoriesInclude<ExtArgs> | null
+  where?: Prisma.PartnerMemoriesWhereInput
+  orderBy?: Prisma.PartnerMemoriesOrderByWithRelationInput | Prisma.PartnerMemoriesOrderByWithRelationInput[]
+  cursor?: Prisma.PartnerMemoriesWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartnerMemoriesScalarFieldEnum | Prisma.PartnerMemoriesScalarFieldEnum[]
+}
+
+/**
+ * User.partnerMemoryItems
+ */
+export type User$partnerMemoryItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PartnerMemoryItem
+   */
+  select?: Prisma.PartnerMemoryItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PartnerMemoryItem
+   */
+  omit?: Prisma.PartnerMemoryItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PartnerMemoryItemInclude<ExtArgs> | null
+  where?: Prisma.PartnerMemoryItemWhereInput
+  orderBy?: Prisma.PartnerMemoryItemOrderByWithRelationInput | Prisma.PartnerMemoryItemOrderByWithRelationInput[]
+  cursor?: Prisma.PartnerMemoryItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PartnerMemoryItemScalarFieldEnum | Prisma.PartnerMemoryItemScalarFieldEnum[]
+}
+
+/**
+ * User.userMoods
+ */
+export type User$userMoodsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserMood
+   */
+  select?: Prisma.UserMoodSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserMood
+   */
+  omit?: Prisma.UserMoodOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserMoodInclude<ExtArgs> | null
+  where?: Prisma.UserMoodWhereInput
+  orderBy?: Prisma.UserMoodOrderByWithRelationInput | Prisma.UserMoodOrderByWithRelationInput[]
+  cursor?: Prisma.UserMoodWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserMoodScalarFieldEnum | Prisma.UserMoodScalarFieldEnum[]
+}
+
+/**
+ * User.dailyQuestionAnswers
+ */
+export type User$dailyQuestionAnswersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyQuestionAnswer
+   */
+  select?: Prisma.DailyQuestionAnswerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyQuestionAnswer
+   */
+  omit?: Prisma.DailyQuestionAnswerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyQuestionAnswerInclude<ExtArgs> | null
+  where?: Prisma.DailyQuestionAnswerWhereInput
+  orderBy?: Prisma.DailyQuestionAnswerOrderByWithRelationInput | Prisma.DailyQuestionAnswerOrderByWithRelationInput[]
+  cursor?: Prisma.DailyQuestionAnswerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyQuestionAnswerScalarFieldEnum | Prisma.DailyQuestionAnswerScalarFieldEnum[]
+}
+
+/**
+ * User.userPartnerPlans
+ */
+export type User$userPartnerPlansArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserPartnerPlans
+   */
+  select?: Prisma.UserPartnerPlansSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserPartnerPlans
+   */
+  omit?: Prisma.UserPartnerPlansOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserPartnerPlansInclude<ExtArgs> | null
+  where?: Prisma.UserPartnerPlansWhereInput
+  orderBy?: Prisma.UserPartnerPlansOrderByWithRelationInput | Prisma.UserPartnerPlansOrderByWithRelationInput[]
+  cursor?: Prisma.UserPartnerPlansWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserPartnerPlansScalarFieldEnum | Prisma.UserPartnerPlansScalarFieldEnum[]
+}
+
+/**
+ * User.weeklyCheckInQnAs
+ */
+export type User$weeklyCheckInQnAsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WeeklyCheckInQnA
+   */
+  select?: Prisma.WeeklyCheckInQnASelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WeeklyCheckInQnA
+   */
+  omit?: Prisma.WeeklyCheckInQnAOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WeeklyCheckInQnAInclude<ExtArgs> | null
+  where?: Prisma.WeeklyCheckInQnAWhereInput
+  orderBy?: Prisma.WeeklyCheckInQnAOrderByWithRelationInput | Prisma.WeeklyCheckInQnAOrderByWithRelationInput[]
+  cursor?: Prisma.WeeklyCheckInQnAWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WeeklyCheckInQnAScalarFieldEnum | Prisma.WeeklyCheckInQnAScalarFieldEnum[]
+}
+
+/**
+ * User.sentPokes
+ */
+export type User$sentPokesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Poke
+   */
+  select?: Prisma.PokeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Poke
+   */
+  omit?: Prisma.PokeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PokeInclude<ExtArgs> | null
+  where?: Prisma.PokeWhereInput
+  orderBy?: Prisma.PokeOrderByWithRelationInput | Prisma.PokeOrderByWithRelationInput[]
+  cursor?: Prisma.PokeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PokeScalarFieldEnum | Prisma.PokeScalarFieldEnum[]
+}
+
+/**
+ * User.receivedPokes
+ */
+export type User$receivedPokesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Poke
+   */
+  select?: Prisma.PokeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Poke
+   */
+  omit?: Prisma.PokeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PokeInclude<ExtArgs> | null
+  where?: Prisma.PokeWhereInput
+  orderBy?: Prisma.PokeOrderByWithRelationInput | Prisma.PokeOrderByWithRelationInput[]
+  cursor?: Prisma.PokeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PokeScalarFieldEnum | Prisma.PokeScalarFieldEnum[]
+}
+
+/**
+ * User.createdSharedLists
+ */
+export type User$createdSharedListsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SharedList
+   */
+  select?: Prisma.SharedListSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SharedList
+   */
+  omit?: Prisma.SharedListOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SharedListInclude<ExtArgs> | null
+  where?: Prisma.SharedListWhereInput
+  orderBy?: Prisma.SharedListOrderByWithRelationInput | Prisma.SharedListOrderByWithRelationInput[]
+  cursor?: Prisma.SharedListWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SharedListScalarFieldEnum | Prisma.SharedListScalarFieldEnum[]
 }
 
 /**

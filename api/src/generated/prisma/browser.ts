@@ -32,3 +32,68 @@ export type UserPartner = Prisma.UserPartnerModel
  * 
  */
 export type RefreshToken = Prisma.RefreshTokenModel
+/**
+ * Model OtpChallenge
+ * 
+ */
+export type OtpChallenge = Prisma.OtpChallengeModel
+/**
+ * Model Subscription
+ * 
+ */
+export type Subscription = Prisma.SubscriptionModel
+/**
+ * Model PartnerMemories
+ * 
+ */
+export type PartnerMemories = Prisma.PartnerMemoriesModel
+/**
+ * Model PartnerMemoryItem
+ * 
+ */
+export type PartnerMemoryItem = Prisma.PartnerMemoryItemModel
+/**
+ * Model UserMood
+ * 
+ */
+export type UserMood = Prisma.UserMoodModel
+/**
+ * Model Poke
+ * 
+ */
+export type Poke = Prisma.PokeModel
+/**
+ * Model DailyQuestion
+ * 
+ */
+export type DailyQuestion = Prisma.DailyQuestionModel
+/**
+ * Model DailyQuestionAnswer
+ * 
+ */
+export type DailyQuestionAnswer = Prisma.DailyQuestionAnswerModel
+/**
+ * Model UserPartnerPlans
+ * 
+ */
+export type UserPartnerPlans = Prisma.UserPartnerPlansModel
+/**
+ * Model WeeklyCheckIn
+ * 
+ */
+export type WeeklyCheckIn = Prisma.WeeklyCheckInModel
+/**
+ * Model WeeklyCheckInQnA
+ * 
+ */
+export type WeeklyCheckInQnA = Prisma.WeeklyCheckInQnAModel
+/**
+ * Model SharedList
+ * 
+ */
+export type SharedList = Prisma.SharedListModel
+/**
+ * Model SharedListItem
+ * 
+ */
+export type SharedListItem = Prisma.SharedListItemModel

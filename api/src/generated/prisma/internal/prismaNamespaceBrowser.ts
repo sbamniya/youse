@@ -53,7 +53,20 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   UserPartner: 'UserPartner',
-  RefreshToken: 'RefreshToken'
+  RefreshToken: 'RefreshToken',
+  OtpChallenge: 'OtpChallenge',
+  Subscription: 'Subscription',
+  PartnerMemories: 'PartnerMemories',
+  PartnerMemoryItem: 'PartnerMemoryItem',
+  UserMood: 'UserMood',
+  Poke: 'Poke',
+  DailyQuestion: 'DailyQuestion',
+  DailyQuestionAnswer: 'DailyQuestionAnswer',
+  UserPartnerPlans: 'UserPartnerPlans',
+  WeeklyCheckIn: 'WeeklyCheckIn',
+  WeeklyCheckInQnA: 'WeeklyCheckInQnA',
+  SharedList: 'SharedList',
+  SharedListItem: 'SharedListItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,13 +87,14 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  email: 'email',
-  passwordHash: 'passwordHash',
+  phone: 'phone',
   name: 'name',
+  profilePicture: 'profilePicture',
   partnerId: 'partnerId',
+  timezone: 'timezone',
+  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  deletedAt: 'deletedAt'
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -90,10 +104,18 @@ export const UserPartnerScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   partnerId: 'partnerId',
+  relationshipType: 'relationshipType',
+  locationType: 'locationType',
+  goal: 'goal',
+  dailyQuestionTime: 'dailyQuestionTime',
+  status: 'status',
   anniversary: 'anniversary',
   invitationCode: 'invitationCode',
   invitedAt: 'invitedAt',
-  joinedAt: 'joinedAt'
+  joinedAt: 'joinedAt',
+  deletedAt: 'deletedAt',
+  brokenAt: 'brokenAt',
+  restoredAt: 'restoredAt'
 } as const
 
 export type UserPartnerScalarFieldEnum = (typeof UserPartnerScalarFieldEnum)[keyof typeof UserPartnerScalarFieldEnum]
@@ -109,6 +131,177 @@ export const RefreshTokenScalarFieldEnum = {
 } as const
 
 export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
+export const OtpChallengeScalarFieldEnum = {
+  id: 'id',
+  phone: 'phone',
+  codeHash: 'codeHash',
+  expiresAt: 'expiresAt',
+  consumedAt: 'consumedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type OtpChallengeScalarFieldEnum = (typeof OtpChallengeScalarFieldEnum)[keyof typeof OtpChallengeScalarFieldEnum]
+
+
+export const SubscriptionScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  trialEndsAt: 'trialEndsAt',
+  plan: 'plan',
+  activeUntil: 'activeUntil',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const PartnerMemoriesScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  title: 'title',
+  description: 'description',
+  memoryDate: 'memoryDate',
+  thumbnail: 'thumbnail',
+  location: 'location',
+  isFavorite: 'isFavorite',
+  createdBy: 'createdBy',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartnerMemoriesScalarFieldEnum = (typeof PartnerMemoriesScalarFieldEnum)[keyof typeof PartnerMemoriesScalarFieldEnum]
+
+
+export const PartnerMemoryItemScalarFieldEnum = {
+  id: 'id',
+  partnerMemoryId: 'partnerMemoryId',
+  imageUrl: 'imageUrl',
+  uploadedBy: 'uploadedBy',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PartnerMemoryItemScalarFieldEnum = (typeof PartnerMemoryItemScalarFieldEnum)[keyof typeof PartnerMemoryItemScalarFieldEnum]
+
+
+export const UserMoodScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  mood: 'mood',
+  createdAt: 'createdAt'
+} as const
+
+export type UserMoodScalarFieldEnum = (typeof UserMoodScalarFieldEnum)[keyof typeof UserMoodScalarFieldEnum]
+
+
+export const PokeScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  senderId: 'senderId',
+  recipientId: 'recipientId',
+  type: 'type',
+  createdAt: 'createdAt'
+} as const
+
+export type PokeScalarFieldEnum = (typeof PokeScalarFieldEnum)[keyof typeof PokeScalarFieldEnum]
+
+
+export const DailyQuestionScalarFieldEnum = {
+  id: 'id',
+  question: 'question',
+  userPartnerId: 'userPartnerId',
+  createdAt: 'createdAt'
+} as const
+
+export type DailyQuestionScalarFieldEnum = (typeof DailyQuestionScalarFieldEnum)[keyof typeof DailyQuestionScalarFieldEnum]
+
+
+export const DailyQuestionAnswerScalarFieldEnum = {
+  id: 'id',
+  dailyQuestionId: 'dailyQuestionId',
+  userId: 'userId',
+  answer: 'answer',
+  reaction: 'reaction',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DailyQuestionAnswerScalarFieldEnum = (typeof DailyQuestionAnswerScalarFieldEnum)[keyof typeof DailyQuestionAnswerScalarFieldEnum]
+
+
+export const UserPartnerPlansScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  title: 'title',
+  type: 'type',
+  dateTime: 'dateTime',
+  location: 'location',
+  note: 'note',
+  remindAt: 'remindAt',
+  lastReminderAt: 'lastReminderAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type UserPartnerPlansScalarFieldEnum = (typeof UserPartnerPlansScalarFieldEnum)[keyof typeof UserPartnerPlansScalarFieldEnum]
+
+
+export const WeeklyCheckInScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  weekStart: 'weekStart',
+  weekEnd: 'weekEnd',
+  notes: 'notes',
+  partnerOneNotes: 'partnerOneNotes',
+  partnerTwoNotes: 'partnerTwoNotes',
+  nextWeekGoals: 'nextWeekGoals',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WeeklyCheckInScalarFieldEnum = (typeof WeeklyCheckInScalarFieldEnum)[keyof typeof WeeklyCheckInScalarFieldEnum]
+
+
+export const WeeklyCheckInQnAScalarFieldEnum = {
+  id: 'id',
+  weeklyCheckInId: 'weeklyCheckInId',
+  question: 'question',
+  answer: 'answer',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type WeeklyCheckInQnAScalarFieldEnum = (typeof WeeklyCheckInQnAScalarFieldEnum)[keyof typeof WeeklyCheckInQnAScalarFieldEnum]
+
+
+export const SharedListScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  name: 'name',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SharedListScalarFieldEnum = (typeof SharedListScalarFieldEnum)[keyof typeof SharedListScalarFieldEnum]
+
+
+export const SharedListItemScalarFieldEnum = {
+  id: 'id',
+  listId: 'listId',
+  title: 'title',
+  note: 'note',
+  completed: 'completed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SharedListItemScalarFieldEnum = (typeof SharedListItemScalarFieldEnum)[keyof typeof SharedListItemScalarFieldEnum]
 
 
 export const SortOrder = {

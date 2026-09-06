@@ -30,6 +30,9 @@ model User {
     dailyQuestionAnswers DailyQuestionAnswer[]
     userPartnerPlans     UserPartnerPlans[]
     weeklyCheckInQnAs    WeeklyCheckInQnA[]
+    sentPokes            Poke[]                @relation("PokeSender")
+    receivedPokes        Poke[]                @relation("PokeRecipient")
+    createdSharedLists   SharedList[]
 
     @@index([phone])
     @@index([partnerId])
@@ -62,6 +65,9 @@ model UserPartner {
     dailyQuestions   DailyQuestion[]
     userPartnerPlans UserPartnerPlans[]
     weeklyCheckIns   WeeklyCheckIn[]
+    subscription     Subscription?
+    sharedLists      SharedList[]
+    pokes            Poke[]
 
     @@unique([userId, partnerId])
     @@index([userId])
@@ -86,6 +92,32 @@ model RefreshToken {
 
     @@index([userId])
     @@map("refresh_tokens")
+}
+
+model OtpChallenge {
+    id         String    @id @default(uuid())
+    phone      String
+    codeHash   String
+    expiresAt  DateTime
+    consumedAt DateTime?
+    createdAt  DateTime  @default(now())
+
+    @@index([phone, expiresAt])
+    @@map("otp_challenges")
+}
+
+model Subscription {
+    id            String    @id @default(uuid())
+    userPartnerId String    @unique
+    trialEndsAt   DateTime?
+    plan          String?
+    activeUntil   DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+
+    @@map("subscriptions")
 }
 
 model PartnerMemories {
@@ -142,6 +174,23 @@ model UserMood {
 
     @@index([userId])
     @@map("user_moods")
+}
+
+model Poke {
+    id            String   @id @default(uuid())
+    userPartnerId String
+    senderId      String
+    recipientId   String
+    type          String
+    createdAt     DateTime @default(now())
+
+    userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    sender      User        @relation("PokeSender", fields: [senderId], references: [id], onDelete: Cascade)
+    recipient   User        @relation("PokeRecipient", fields: [recipientId], references: [id], onDelete: Cascade)
+
+    @@index([userPartnerId, createdAt])
+    @@index([recipientId, createdAt])
+    @@map("pokes")
 }
 
 model DailyQuestion {
@@ -230,4 +279,35 @@ model WeeklyCheckInQnA {
     @@index([weeklyCheckInId])
     @@index([userId])
     @@map("weekly_check_in_qna")
+}
+
+model SharedList {
+    id            String   @id @default(uuid())
+    userPartnerId String
+    name          String
+    createdBy     String
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+
+    userPartner UserPartner      @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    creator     User             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+    items       SharedListItem[]
+
+    @@index([userPartnerId])
+    @@map("shared_lists")
+}
+
+model SharedListItem {
+    id        String   @id @default(uuid())
+    listId    String
+    title     String
+    note      String?
+    completed Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    list SharedList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+    @@index([listId])
+    @@map("shared_list_items")
 }
