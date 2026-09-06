@@ -46,14 +46,14 @@ export default function OnboardingScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-[#F4EFE7]" edges={['top', 'bottom']}>
-      <View className="flex-1 px-5 pt-3">
+    <SafeAreaView style={{ flex: 1 }} className="bg-[#F4EFE7]" edges={['top', 'bottom']}>
+      <View style={{ flex: 1 }} className="px-5 pt-3">
         <View className="flex-row items-center">
           <Pressable onPress={previous} className="h-10 w-10 items-center justify-center" hitSlop={8}><ArrowLeft size={25} color="#18161B" /></Pressable>
           <View className="mx-4 h-1 flex-1 overflow-hidden rounded-full bg-[#E5DDD2]"><View style={{ width: `${(step / 8) * 100}%` }} className="h-full bg-[#18161B]" /></View>
           <Text className="w-10 text-right text-[10px] text-[#716B74]">{step}/8</Text>
         </View>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingTop: 35, paddingBottom: 110 }}>
+        <ScrollView style={{ flex: 1, minHeight: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingTop: 35, paddingBottom: 110 }}>
           <Text className="text-[10px] uppercase tracking-[1px] text-[#716B74]">{step} of 8</Text>
           <Text className="mt-2 font-serif text-[39px] leading-10 text-[#18161B]">{steps[step - 1][0]}</Text>
           <Text className="mt-4 text-[16px] leading-6 text-[#716B74]">{steps[step - 1][1]}</Text>
@@ -66,7 +66,9 @@ export default function OnboardingScreen() {
           {step === 7 ? <View className="mt-8 flex-row flex-wrap gap-2">{times.map((item) => <Pressable key={item} onPress={() => setTime(item)} className={`w-[48%] rounded-xl border px-3 py-5 ${time === item ? 'border-[#DF5B5F] bg-[#DF5B5F]' : 'border-[#D8D0C6] bg-transparent'}`}><Text className={`text-center text-[12px] ${time === item ? 'font-semibold text-white' : 'text-[#18161B]'}`}>{item}</Text></Pressable>)}</View> : null}
           {step === 8 ? <View className="mt-8 flex-row items-center rounded-2xl bg-[#EEE7DD] p-4"><View className="h-12 w-12 items-center justify-center overflow-hidden rounded-full bg-[#E5DDD2]"><Image source={{ uri: profileImage }} className="h-full w-full" /></View><View className="ml-3 flex-1"><Text className="text-[12px] font-semibold text-[#18161B]">{name}</Text><Text className="mt-1 text-[10px] text-[#716B74]">{relationship} · {situation} · {goal}</Text></View><Check size={18} color="#DF5B5F" /></View> : null}
         </ScrollView>
-        <Pressable onPress={next} style={{ position: 'absolute', left: 20, right: 20, bottom: 12 }} className="h-16 items-center justify-center rounded-full bg-[#E45D62]"><Text className="text-[16px] font-bold text-white">{step === 8 ? 'Invite partner' : 'Continue'}</Text></Pressable>
+        <View className="bg-[#F4EFE7] pb-3 pt-3">
+          <Pressable onPress={next} className="h-16 items-center justify-center rounded-full bg-[#E45D62]"><Text className="text-[16px] font-bold text-white">{step === 8 ? 'Invite partner' : 'Continue'}</Text></Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );

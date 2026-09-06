@@ -96,7 +96,8 @@ export default function RootLayout() {
             <ConfirmDialogProvider>
               <StatusBar style="dark" />
               <View className="bg-background flex-1">
-                <Stack screenOptions={{ headerShown: false }}>
+                <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="index" />
                   <Stack.Screen name="(tabs)" />
                   <Stack.Screen name="profile" />
                 </Stack>
