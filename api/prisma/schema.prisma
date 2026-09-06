@@ -1,0 +1,233 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id             String    @id @default(uuid())
+    phone          String    @unique
+    name           String?
+    profilePicture String?
+    partnerId      String?
+    timezone       String?
+    deletedAt      DateTime?
+    createdAt      DateTime  @default(now())
+    updatedAt      DateTime  @updatedAt
+
+    partner User? @relation("Partner", fields: [partnerId], references: [id], onDelete: Cascade)
+
+    refreshTokens        RefreshToken[]
+    partners             User[]                @relation("Partner")
+    userPartnersOne      UserPartner[]         @relation("PartnerOne")
+    userPartnersTwo      UserPartner[]         @relation("PartnerTwo")
+    partnerMemories      PartnerMemories[]
+    partnerMemoryItems   PartnerMemoryItem[]
+    userMoods            UserMood[]
+    dailyQuestionAnswers DailyQuestionAnswer[]
+    userPartnerPlans     UserPartnerPlans[]
+    weeklyCheckInQnAs    WeeklyCheckInQnA[]
+
+    @@index([phone])
+    @@index([partnerId])
+    @@index([deletedAt])
+    @@index([phone, deletedAt])
+    @@map("users")
+}
+
+model UserPartner {
+    id                String             @id @default(uuid())
+    userId            String
+    partnerId         String?
+    relationshipType  String
+    locationType      String?
+    goal              String?
+    dailyQuestionTime DateTime?
+    status            RelationshipStatus @default(invited)
+    anniversary       DateTime?
+    invitationCode    String?
+    invitedAt         DateTime?
+    joinedAt          DateTime?
+    deletedAt         DateTime?
+    brokenAt          DateTime?
+    restoredAt        DateTime?
+
+    user    User  @relation("PartnerOne", fields: [userId], references: [id], onDelete: Cascade)
+    partner User? @relation("PartnerTwo", fields: [partnerId], references: [id], onDelete: Cascade)
+
+    partnerMemories  PartnerMemories[]
+    dailyQuestions   DailyQuestion[]
+    userPartnerPlans UserPartnerPlans[]
+    weeklyCheckIns   WeeklyCheckIn[]
+
+    @@unique([userId, partnerId])
+    @@index([userId])
+    @@index([partnerId])
+    @@map("user_partners")
+}
+
+enum RelationshipStatus {
+    invited
+    accepted
+    rejected
+}
+
+model RefreshToken {
+    id        String   @id @default(uuid())
+    token     String   @unique
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    expiresAt DateTime
+    revoked   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    @@index([userId])
+    @@map("refresh_tokens")
+}
+
+model PartnerMemories {
+    id            String    @id @default(uuid())
+    userPartnerId String
+    title         String
+    description   String?
+    memoryDate    DateTime?
+    thumbnail     String?
+    location      String?
+    isFavorite    Boolean   @default(false)
+    createdBy     String
+    deletedAt     DateTime?
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    userPartner        UserPartner         @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    creator            User                @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+    partnerMemoryItems PartnerMemoryItem[]
+
+    @@index([userPartnerId])
+    @@index([deletedAt])
+    @@index([isFavorite])
+    @@index([memoryDate])
+    @@index([location])
+    @@map("partner_memories")
+}
+
+model PartnerMemoryItem {
+    id              String    @id @default(uuid())
+    partnerMemoryId String
+    imageUrl        String?
+    uploadedBy      String
+    deletedAt       DateTime?
+    createdAt       DateTime  @default(now())
+    updatedAt       DateTime  @updatedAt
+
+    partnerMemory PartnerMemories @relation(fields: [partnerMemoryId], references: [id], onDelete: Cascade)
+    uploader      User            @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+    @@index([partnerMemoryId])
+    @@index([uploadedBy])
+    @@index([deletedAt])
+    @@map("partner_memory_items")
+}
+
+model UserMood {
+    id        String   @id @default(uuid())
+    userId    String
+    mood      String
+    createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@map("user_moods")
+}
+
+model DailyQuestion {
+    id            String   @id @default(uuid())
+    question      String
+    userPartnerId String
+    createdAt     DateTime @default(now())
+
+    userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+
+    dailyQuestionAnswers DailyQuestionAnswer[]
+
+    @@index([createdAt])
+    @@map("daily_questions")
+}
+
+model DailyQuestionAnswer {
+    id              String    @id @default(uuid())
+    dailyQuestionId String
+    userId          String
+    answer          String
+    reaction        String?
+    deletedAt       DateTime?
+    createdAt       DateTime  @default(now())
+
+    dailyQuestion DailyQuestion @relation(fields: [dailyQuestionId], references: [id], onDelete: Cascade)
+    user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([dailyQuestionId])
+    @@index([userId])
+    @@map("daily_question_answers")
+}
+
+model UserPartnerPlans {
+    id             String    @id @default(uuid())
+    userPartnerId  String
+    title          String
+    type           String
+    dateTime       DateTime
+    location       String?
+    note           String?
+    remindAt       DateTime?
+    lastReminderAt DateTime?
+    createdBy      String
+    createdAt      DateTime  @default(now())
+
+    userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+
+    creator User @relation(fields: [createdBy], references: [id], onDelete: Cascade)
+
+    @@index([userPartnerId])
+    @@map("user_partner_plans")
+}
+
+model WeeklyCheckIn {
+    id              String   @id @default(uuid())
+    userPartnerId   String
+    weekStart       DateTime
+    weekEnd         DateTime
+    notes           String?
+    partnerOneNotes String? // generated based on answers provided
+    partnerTwoNotes String? // generated based on answers provided
+    nextWeekGoals   String? // generated based on answers provided
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    userPartner       UserPartner        @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    weeklyCheckInQnAs WeeklyCheckInQnA[]
+
+    @@index([userPartnerId])
+    @@index([weekStart])
+    @@map("weekly_check_ins")
+}
+
+model WeeklyCheckInQnA {
+    id              String   @id @default(uuid())
+    weeklyCheckInId String
+    question        String
+    answer          String?
+    userId          String
+    createdAt       DateTime @default(now())
+
+    weeklyCheckIn WeeklyCheckIn @relation(fields: [weeklyCheckInId], references: [id], onDelete: Cascade)
+    user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([weeklyCheckInId])
+    @@index([userId])
+    @@map("weekly_check_in_qna")
+}
