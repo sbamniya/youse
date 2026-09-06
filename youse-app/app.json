@@ -1,0 +1,21 @@
+{
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+    "icon": "./src/assets/images/icon.png",
+    "web": {
+      "output": "static"
+    },
+    "plugins": ["expo-router", "expo-status-bar"],
+    "name": "youse-app",
+    "slug": "youse-app",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.youse.app"
+    },
+    "android": {
+      "package": "com.youse.app"
+    }
+  }
+}
