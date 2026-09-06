@@ -53,7 +53,7 @@ export default function OnboardingScreen() {
           <View className="mx-4 h-1 flex-1 overflow-hidden rounded-full bg-[#E5DDD2]"><View style={{ width: `${(step / 8) * 100}%` }} className="h-full bg-[#18161B]" /></View>
           <Text className="w-10 text-right text-[10px] text-[#716B74]">{step}/8</Text>
         </View>
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingTop: 35, paddingBottom: 20 }}>
+        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1, paddingTop: 35, paddingBottom: 20 }}>
           <Text className="text-[10px] uppercase tracking-[1px] text-[#716B74]">{step} of 8</Text>
           <Text className="mt-2 font-serif text-[39px] leading-10 text-[#18161B]">{steps[step - 1][0]}</Text>
           <Text className="mt-4 text-[16px] leading-6 text-[#716B74]">{steps[step - 1][1]}</Text>
