@@ -2,7 +2,6 @@ import "../global.css";
 
 import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { ConfirmDialogProvider } from "@/components/confirm-dialog-provider";
-import { AuthProvider } from "@/lib/auth";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
@@ -93,22 +92,17 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <ConfirmDialogProvider>
-                <AnimatedSplashOverlay />
-                <StatusBar style="auto" />
-                <View className="bg-background flex-1">
-                  <Stack screenOptions={{ headerShown: false }}>
-                    <Stack.Screen name="(tabs)" />
-                    <Stack.Screen
-                      name="profile"
-                      options={{ headerShown: true, title: "Profile" }}
-                    />
-                  </Stack>
-                  <PortalHost />
-                </View>
-              </ConfirmDialogProvider>
-            </AuthProvider>
+            <ConfirmDialogProvider>
+              <AnimatedSplashOverlay />
+              <StatusBar style="dark" />
+              <View className="bg-background flex-1">
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" />
+                  <Stack.Screen name="profile" />
+                </Stack>
+                <PortalHost />
+              </View>
+            </ConfirmDialogProvider>
           </QueryClientProvider>
         </ThemeProvider>
       </SafeAreaProvider>
