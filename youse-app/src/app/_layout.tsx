@@ -4,6 +4,7 @@ import { ConfirmDialogProvider } from "@/components/confirm-dialog-provider";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme, View } from "react-native";
@@ -82,6 +83,10 @@ export default function RootLayout() {
           : "system",
     );
   }, [colorScheme]);
+
+  useEffect(() => {
+    void SplashScreen.hideAsync();
+  }, []);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
