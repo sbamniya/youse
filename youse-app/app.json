@@ -3,9 +3,13 @@
     "orientation": "default",
     "scheme": "acme",
     "userInterfaceStyle": "light",
+    "ios": {
+      "bundleIdentifier": "com.youse.ios"
+    },
     "android": {
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.youse.ios"
     },
     "web": {
       "bundler": "metro",
