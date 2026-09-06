@@ -1,6 +1,5 @@
 import "../global.css";
 
-import { AnimatedSplashOverlay } from "@/components/animated-icon";
 import { ConfirmDialogProvider } from "@/components/confirm-dialog-provider";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -93,7 +92,6 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
           <QueryClientProvider client={queryClient}>
             <ConfirmDialogProvider>
-              <AnimatedSplashOverlay />
               <StatusBar style="dark" />
               <View className="bg-background flex-1">
                 <Stack screenOptions={{ headerShown: false }}>
