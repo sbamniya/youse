@@ -20,7 +20,7 @@ export default function WelcomeScreen() {
       />
       <SafeAreaView className="flex-1 justify-end px-5 pb-7">
         <View className="items-center">
-          <Text className="font-serif text-[62px] leading-[68px] text-white">
+          <Text className="font-serif text-[62px] leading-17 text-white">
             Youse
           </Text>
           <Text className="mt-1 text-[15px] font-medium text-white/85">
