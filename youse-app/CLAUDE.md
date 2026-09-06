@@ -1,1 +1,1 @@
-- Learn about Expo DOM Components https://docs.expo.dev/guides/dom-components
+@AGENTS.md
