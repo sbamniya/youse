@@ -1,129 +1,106 @@
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Text } from '@/components/ui/text';
-import { ApiError } from '@/lib/api';
-import { useAuth } from '@/lib/auth';
+import { ArrowLeft } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import * as React from 'react';
-import { Pressable, type TextInput, View } from 'react-native';
+import { Alert, Pressable, Text, TextInput, View } from 'react-native';
 
 export function SignInForm() {
   const router = useRouter();
-  const { signIn } = useAuth();
-  const passwordInputRef = React.useRef<TextInput>(null);
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [phone, setPhone] = React.useState('+91 98765 43210');
+  const [otp, setOtp] = React.useState(['2', '4', '8', '', '', '']);
+  const [step, setStep] = React.useState<'phone' | 'otp'>('phone');
+  const [seconds, setSeconds] = React.useState(28);
+  const otpRefs = React.useRef<(TextInput | null)[]>([]);
 
-  function onEmailSubmitEditing() {
-    passwordInputRef.current?.focus();
-  }
+  React.useEffect(() => {
+    if (step !== 'otp' || seconds === 0) return;
+    const timer = setInterval(() => setSeconds((value) => Math.max(0, value - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [seconds, step]);
 
-  async function onSubmit() {
-    if (!email.trim() || !password) {
-      setError('Enter your email and password.');
+  function continueWithPhone() {
+    if (phone.replace(/\D/g, '').length < 10) {
+      Alert.alert('Check your number', 'Enter a valid phone number to continue.');
       return;
     }
+    setStep('otp');
+  }
 
-    setError(null);
-    setIsSubmitting(true);
+  function updateOtp(value: string, index: number) {
+    const digit = value.replace(/\D/g, '').slice(-1);
+    setOtp((current) => current.map((item, itemIndex) => itemIndex === index ? digit : item));
+    if (digit && index < 5) otpRefs.current[index + 1]?.focus();
+  }
 
-    try {
-      await signIn({ email: email.trim().toLowerCase(), password });
-      router.replace('/');
-    } catch (caughtError) {
-      console.log('Sign-in error:', caughtError);
-      const message =
-        caughtError instanceof ApiError ? caughtError.message : 'Unable to sign in right now.';
+  function resendCode() {
+    setSeconds(28);
+    setOtp(['', '', '', '', '', '']);
+    otpRefs.current[0]?.focus();
+  }
 
-      setError(message);
-
-      if (message.toLowerCase().includes('verify your email')) {
-        router.push({ pathname: '/verify-email', params: { email: email.trim().toLowerCase() } });
-      }
-    } finally {
-      setIsSubmitting(false);
+  function verify() {
+    if (otp.join('').length !== 6) {
+      Alert.alert('Enter your code', 'Type the six-digit code we sent you.');
+      return;
     }
+    router.replace('/(tabs)');
   }
 
   return (
-    <View className="gap-6">
-      <Card className="border-border/0 sm:border-border shadow-none sm:shadow-sm sm:shadow-black/5">
-        <CardHeader>
-          <CardTitle className="text-center text-xl sm:text-left">Sign in to your app</CardTitle>
-          <CardDescription className="text-center sm:text-left">
-            Welcome back! Please sign in to continue
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="gap-6">
-          <View className="gap-6">
-            <View className="gap-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                placeholder="m@example.com"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoComplete="email"
-                autoCapitalize="none"
-                onSubmitEditing={onEmailSubmitEditing}
-                returnKeyType="next"
-                submitBehavior="submit"
-              />
-            </View>
-            <View className="gap-1.5">
-              <View className="flex-row items-center">
-                <Label htmlFor="password">Password</Label>
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="web:h-fit ml-auto h-4 px-1 py-0 sm:h-4"
-                  onPress={() => router.push('/forgot-password')}>
-                  <Text className="font-normal leading-4">Forgot your password?</Text>
-                </Button>
-              </View>
-              <Input
-                ref={passwordInputRef}
-                id="password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                returnKeyType="send"
-                onSubmitEditing={onSubmit}
-              />
-            </View>
-            {error ? <Text className="text-destructive text-sm">{error}</Text> : null}
-            <Button className="w-full" disabled={isSubmitting} onPress={onSubmit}>
-              <Text>{isSubmitting ? 'Signing in...' : 'Continue'}</Text>
-            </Button>
+    <View className="flex-1 px-5 pt-5">
+      <Pressable onPress={() => step === 'otp' ? setStep('phone') : router.back()} className="h-10 w-10 items-center justify-center" hitSlop={10}>
+        <ArrowLeft size={26} color="#18161B" />
+      </Pressable>
+
+      <View className="mt-12">
+        <Text className="font-serif text-[44px] leading-12 text-[#18161B]">
+          {step === 'phone' ? 'What’s your number?' : 'Enter your code'}
+        </Text>
+        <Text className="mt-5 text-[17px] leading-6 text-[#716B74]">
+          {step === 'phone' ? 'We’ll send a one-time code. No passwords.' : `We sent a six-digit code to ${phone}.`}
+        </Text>
+      </View>
+
+      {step === 'phone' ? (
+        <View className="mt-14">
+          <Text className="mb-3 text-[17px] text-[#716B74]">Phone number</Text>
+          <TextInput
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            autoFocus
+            className="h-21.5 rounded-[20px] border-2 border-[#D8D0C6] bg-[#EEE7DD] px-7 text-[28px] text-[#18161B]"
+            placeholder="+91 98765 43210"
+            placeholderTextColor="#9B949D"
+          />
+        </View>
+      ) : (
+        <View className="mt-14">
+          <Text className="mb-3 text-[17px] text-[#716B74]">One-time code</Text>
+          <View className="flex-row gap-2">
+            {otp.map((digit, index) => <TextInput
+              key={index}
+              ref={(input) => { otpRefs.current[index] = input; }}
+              value={digit}
+              onChangeText={(value) => updateOtp(value, index)}
+              keyboardType="number-pad"
+              maxLength={1}
+              autoFocus={index === 0}
+              className={`h-24 flex-1 rounded-[20px] border-2 bg-[#F4EFE7] text-center font-serif text-[30px] ${digit ? 'border-[#EF5D62] text-[#EF5D62]' : 'border-[#D8D0C6] text-[#18161B]'}`}
+            />)}
           </View>
-          <Text className="text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Pressable onPress={() => router.push('/sign-up')}>
-              <Text className="text-sm underline underline-offset-4">Sign up</Text>
-            </Pressable>
-          </Text>
-          {/* Social login temporarily disabled */}
-          {/*
-          <View className="flex-row items-center">
-            <Separator className="flex-1" />
-            <Text className="text-muted-foreground px-4 text-sm">or</Text>
-            <Separator className="flex-1" />
-          </View>
-          <SocialConnections />
-          */}
-        </CardContent>
-      </Card>
+          <Pressable onPress={resendCode} disabled={seconds > 0} className="mt-4 items-center">
+            <Text className={`text-[15px] ${seconds > 0 ? 'text-[#716B74]' : 'font-semibold text-[#DF5B5F]'}`}>
+              {seconds > 0 ? `Resend in ${seconds}s` : 'Resend code'}
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
+      <View className="mt-auto pb-7">
+        <Pressable onPress={step === 'phone' ? continueWithPhone : verify} className="h-20 items-center justify-center rounded-full bg-[#E45D62]">
+          <Text className="text-[17px] font-bold text-white">{step === 'phone' ? 'Send code' : 'Verify and continue'}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }

@@ -29,7 +29,7 @@ export default function WelcomeScreen() {
         </View>
 
         <View className="mt-40">
-          <Link href="/(auth)/sign-up" asChild>
+          <Link href="/(auth)/sign-in" asChild>
             <Pressable className="h-20 items-center justify-center rounded-full bg-[#E45D62] shadow-lg shadow-[#E45D62]/30">
               <Text className="text-[16px] font-bold text-white">Get started</Text>
             </Pressable>
