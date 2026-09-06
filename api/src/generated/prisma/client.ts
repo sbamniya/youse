@@ -65,6 +65,11 @@ export type OtpChallenge = Prisma.OtpChallengeModel
  */
 export type Subscription = Prisma.SubscriptionModel
 /**
+ * Model ReconnectRequest
+ * 
+ */
+export type ReconnectRequest = Prisma.ReconnectRequestModel
+/**
  * Model PartnerMemories
  * 
  */

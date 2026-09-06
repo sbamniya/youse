@@ -56,6 +56,7 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   OtpChallenge: 'OtpChallenge',
   Subscription: 'Subscription',
+  ReconnectRequest: 'ReconnectRequest',
   PartnerMemories: 'PartnerMemories',
   PartnerMemoryItem: 'PartnerMemoryItem',
   UserMood: 'UserMood',
@@ -156,6 +157,17 @@ export const SubscriptionScalarFieldEnum = {
 } as const
 
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
+
+
+export const ReconnectRequestScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  requesterId: 'requesterId',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReconnectRequestScalarFieldEnum = (typeof ReconnectRequestScalarFieldEnum)[keyof typeof ReconnectRequestScalarFieldEnum]
 
 
 export const PartnerMemoriesScalarFieldEnum = {

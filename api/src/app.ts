@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { authRouter } from './modules/auth/auth.routes';
 import { spaceRouter } from './modules/space/space.routes';
+import { adminRouter } from './modules/admin/admin.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 
 export const createApp = () => {
@@ -16,6 +17,7 @@ export const createApp = () => {
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
   app.use('/api/auth', authRouter);
+  app.use('/api/admin', adminRouter);
   app.use('/api', spaceRouter);
 
   app.use(notFoundHandler);

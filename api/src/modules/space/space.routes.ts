@@ -123,7 +123,7 @@ spaceRouter.post('/weekly-check-ins', async (req, res, next) => {
 });
 
 spaceRouter.get('/weekly-check-ins', async (req, res, next) => {
-  try { const space = await spaceFor(req.user!.id); res.json(await prisma.weeklyCheckIn.findMany({ where: { userPartnerId: space.id }, include: { weeklyCheckInQnAs: true }, orderBy: { weekStart: 'desc' } })); } catch (error) { next(error); }
+  try { const space = await spaceFor(req.user!.id); res.json(await prisma.weeklyCheckIn.findMany({ where: { userPartnerId: space.id }, include: { weeklyCheckInQnAs: { where: { userId: req.user!.id } } }, orderBy: { weekStart: 'desc' } })); } catch (error) { next(error); }
 });
 
 spaceRouter.put('/weekly-check-ins/:id/answers/:answerId', async (req, res, next) => {
@@ -191,4 +191,124 @@ spaceRouter.get('/access', async (req, res, next) => {
 
 spaceRouter.post('/subscriptions', async (req, res, next) => {
   try { const body = parse(z.object({ plan: z.enum(['monthly', 'yearly']) }), req.body); const space = await spaceFor(req.user!.id); const activeUntil = new Date(); activeUntil.setMonth(activeUntil.getMonth() + (body.plan === 'yearly' ? 12 : 1)); res.json(await prisma.subscription.upsert({ where: { userPartnerId: space.id }, update: { plan: body.plan, activeUntil }, create: { userPartnerId: space.id, plan: body.plan, activeUntil } })); } catch (error) { next(error); }
+});
+
+spaceRouter.post('/relationships/invitations/resend', async (req, res, next) => {
+  try {
+    const space = await spaceFor(req.user!.id);
+    if (space.status !== 'invited') throw new AppError(409, 'This invite has already been accepted');
+    if (space.userId !== req.user!.id) throw new AppError(403, 'Only the inviter can resend this invite');
+    const updated = await prisma.userPartner.update({ where: { id: space.id }, data: { invitedAt: new Date() } });
+    res.json({ inviteCode: updated.invitationCode, invitedAt: updated.invitedAt });
+  } catch (error) { next(error); }
+});
+
+spaceRouter.patch('/daily-questions/answers/:id/reaction', async (req, res, next) => {
+  try {
+    const body = parse(z.object({ reaction: text.max(50) }), req.body); const space = await writableSpace(req.user!.id);
+    const answer = await prisma.dailyQuestionAnswer.findFirst({ where: { id: req.params.id, deletedAt: null, userId: { not: req.user!.id }, dailyQuestion: { userPartnerId: space.id } } });
+    if (!answer) throw new AppError(404, 'Answer not found');
+    res.json(await prisma.dailyQuestionAnswer.update({ where: { id: answer.id }, data: body }));
+  } catch (error) { next(error); }
+});
+
+spaceRouter.get('/weekly-check-ins/:id', async (req, res, next) => {
+  try {
+    const space = await spaceFor(req.user!.id);
+    const checkIn = await prisma.weeklyCheckIn.findFirst({ where: { id: req.params.id, userPartnerId: space.id }, include: { weeklyCheckInQnAs: true } });
+    if (!checkIn) throw new AppError(404, 'Check-in not found');
+    const answeredBy = (userId: string | null) => userId !== null && checkIn.weeklyCheckInQnAs.some((qna) => qna.userId === userId && qna.answer);
+    const revealed = answeredBy(space.userId) && answeredBy(space.partnerId) && checkIn.weeklyCheckInQnAs.every((qna) => qna.answer);
+    res.json({ ...checkIn, revealed, weeklyCheckInQnAs: revealed ? checkIn.weeklyCheckInQnAs : checkIn.weeklyCheckInQnAs.filter((qna) => qna.userId === req.user!.id) });
+  } catch (error) { next(error); }
+});
+
+spaceRouter.patch('/weekly-check-ins/:id', async (req, res, next) => {
+  try {
+    const body = parse(z.object({ notes: optionalText, nextWeekGoals: optionalText }), req.body); const space = await writableSpace(req.user!.id);
+    const result = await prisma.weeklyCheckIn.updateMany({ where: { id: req.params.id, userPartnerId: space.id }, data: body });
+    if (!result.count) throw new AppError(404, 'Check-in not found');
+    res.json(await prisma.weeklyCheckIn.findUnique({ where: { id: req.params.id } }));
+  } catch (error) { next(error); }
+});
+
+spaceRouter.patch('/plans/:id', async (req, res, next) => {
+  try {
+    const body = parse(z.object({ title: z.string().trim().min(1).max(500).optional(), type: z.string().trim().min(1).max(50).optional(), dateTime: z.string().datetime().optional(), location: optionalText, note: optionalText, remindAt: z.string().datetime().optional().nullable() }), req.body); const space = await writableSpace(req.user!.id);
+    const result = await prisma.userPartnerPlans.updateMany({ where: { id: req.params.id, userPartnerId: space.id }, data: { ...body, dateTime: body.dateTime ? new Date(body.dateTime) : undefined, remindAt: body.remindAt ? new Date(body.remindAt) : undefined } });
+    if (!result.count) throw new AppError(404, 'Plan not found');
+    res.json(await prisma.userPartnerPlans.findUnique({ where: { id: req.params.id } }));
+  } catch (error) { next(error); }
+});
+
+spaceRouter.delete('/plans/:id', async (req, res, next) => {
+  try { const space = await writableSpace(req.user!.id); const result = await prisma.userPartnerPlans.deleteMany({ where: { id: req.params.id, userPartnerId: space.id } }); if (!result.count) throw new AppError(404, 'Plan not found'); res.status(204).send(); } catch (error) { next(error); }
+});
+
+spaceRouter.get('/memories/:id', async (req, res, next) => {
+  try { const space = await spaceFor(req.user!.id); const memory = await prisma.partnerMemories.findFirst({ where: { id: req.params.id, userPartnerId: space.id, deletedAt: null }, include: { partnerMemoryItems: { where: { deletedAt: null } }, creator: { select: { id: true, name: true, profilePicture: true } } } }); if (!memory) throw new AppError(404, 'Memory not found'); res.json(memory); } catch (error) { next(error); }
+});
+
+spaceRouter.delete('/memories/:id', async (req, res, next) => {
+  try { const space = await writableSpace(req.user!.id); const result = await prisma.partnerMemories.updateMany({ where: { id: req.params.id, userPartnerId: space.id, deletedAt: null }, data: { deletedAt: new Date() } }); if (!result.count) throw new AppError(404, 'Memory not found'); res.status(204).send(); } catch (error) { next(error); }
+});
+
+spaceRouter.delete('/lists/:id', async (req, res, next) => {
+  try { const space = await writableSpace(req.user!.id); const result = await prisma.sharedList.deleteMany({ where: { id: req.params.id, userPartnerId: space.id } }); if (!result.count) throw new AppError(404, 'List not found'); res.status(204).send(); } catch (error) { next(error); }
+});
+
+spaceRouter.delete('/list-items/:id', async (req, res, next) => {
+  try { const space = await writableSpace(req.user!.id); const result = await prisma.sharedListItem.deleteMany({ where: { id: req.params.id, list: { userPartnerId: space.id } } }); if (!result.count) throw new AppError(404, 'List item not found'); res.status(204).send(); } catch (error) { next(error); }
+});
+
+spaceRouter.get('/export', async (req, res, next) => {
+  try {
+    const space = await spaceFor(req.user!.id);
+    const [memories, plans, lists, checkIns, questions, moods, pokes] = await Promise.all([
+      prisma.partnerMemories.findMany({ where: { userPartnerId: space.id }, include: { partnerMemoryItems: true } }),
+      prisma.userPartnerPlans.findMany({ where: { userPartnerId: space.id } }),
+      prisma.sharedList.findMany({ where: { userPartnerId: space.id }, include: { items: true } }),
+      prisma.weeklyCheckIn.findMany({ where: { userPartnerId: space.id }, include: { weeklyCheckInQnAs: true } }),
+      prisma.dailyQuestion.findMany({ where: { userPartnerId: space.id }, include: { dailyQuestionAnswers: true } }),
+      prisma.userMood.findMany({ where: { userId: req.user!.id } }),
+      prisma.poke.findMany({ where: { userPartnerId: space.id } }),
+    ]);
+    res.json({ exportedAt: new Date(), relationship: space, memories, plans, lists, checkIns, questions, moods, pokes });
+  } catch (error) { next(error); }
+});
+
+spaceRouter.post('/relationships/unlink', async (req, res, next) => {
+  try {
+    const body = parse(z.object({ mode: z.enum(['archive', 'delete']).default('archive') }), req.body);
+    const space = await spaceFor(req.user!.id);
+    const partnerId = space.userId === req.user!.id ? space.partnerId : space.userId;
+    await prisma.$transaction(async (transaction) => {
+      await transaction.user.update({ where: { id: req.user!.id }, data: { partnerId: null } });
+      if (partnerId) await transaction.user.update({ where: { id: partnerId }, data: { partnerId: null } });
+      if (body.mode === 'delete') await transaction.userPartner.delete({ where: { id: space.id } });
+      else await transaction.userPartner.update({ where: { id: space.id }, data: { deletedAt: new Date(), brokenAt: new Date() } });
+    });
+    res.json({ mode: body.mode, unlinkedAt: new Date() });
+  } catch (error) { next(error); }
+});
+
+spaceRouter.post('/relationships/reconnect', async (req, res, next) => {
+  try {
+    const space = await prisma.userPartner.findFirst({ where: { brokenAt: { not: null }, status: 'accepted', OR: [{ userId: req.user!.id }, { partnerId: req.user!.id }] }, orderBy: { brokenAt: 'desc' }, include: { reconnectRequests: { where: { cancelledAt: null } } } });
+    if (!space) throw new AppError(404, 'No previous relationship to reconnect');
+    await prisma.reconnectRequest.upsert({ where: { userPartnerId_requesterId: { userPartnerId: space.id, requesterId: req.user!.id } }, update: { cancelledAt: null }, create: { userPartnerId: space.id, requesterId: req.user!.id } });
+    const otherId = space.userId === req.user!.id ? space.partnerId : space.userId;
+    const mutual = otherId !== null && space.reconnectRequests.some((request) => request.requesterId === otherId);
+    if (!mutual) {
+      res.status(202).json({ mutual: false, message: 'Request saved. Your partner will not be told unless they also ask.' });
+      return;
+    }
+    await prisma.$transaction(async (transaction) => {
+      await transaction.userPartner.update({ where: { id: space.id }, data: { deletedAt: null, brokenAt: null, restoredAt: new Date() } });
+      await transaction.user.update({ where: { id: space.userId }, data: { partnerId: space.partnerId } });
+      if (space.partnerId) await transaction.user.update({ where: { id: space.partnerId }, data: { partnerId: space.userId } });
+      await transaction.reconnectRequest.deleteMany({ where: { userPartnerId: space.id } });
+    });
+    res.json({ mutual: true, message: 'You are reconnected.' });
+  } catch (error) { next(error); }
 });

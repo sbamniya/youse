@@ -271,6 +271,7 @@ export type UserPartnerWhereInput = {
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
   sharedLists?: Prisma.SharedListListRelationFilter
   pokes?: Prisma.PokeListRelationFilter
+  reconnectRequests?: Prisma.ReconnectRequestListRelationFilter
 }
 
 export type UserPartnerOrderByWithRelationInput = {
@@ -298,6 +299,7 @@ export type UserPartnerOrderByWithRelationInput = {
   subscription?: Prisma.SubscriptionOrderByWithRelationInput
   sharedLists?: Prisma.SharedListOrderByRelationAggregateInput
   pokes?: Prisma.PokeOrderByRelationAggregateInput
+  reconnectRequests?: Prisma.ReconnectRequestOrderByRelationAggregateInput
 }
 
 export type UserPartnerWhereUniqueInput = Prisma.AtLeast<{
@@ -329,6 +331,7 @@ export type UserPartnerWhereUniqueInput = Prisma.AtLeast<{
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
   sharedLists?: Prisma.SharedListListRelationFilter
   pokes?: Prisma.PokeListRelationFilter
+  reconnectRequests?: Prisma.ReconnectRequestListRelationFilter
 }, "id" | "userId_partnerId">
 
 export type UserPartnerOrderByWithAggregationInput = {
@@ -396,6 +399,7 @@ export type UserPartnerCreateInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateInput = {
@@ -421,6 +425,7 @@ export type UserPartnerUncheckedCreateInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUpdateInput = {
@@ -446,6 +451,7 @@ export type UserPartnerUpdateInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateInput = {
@@ -471,6 +477,7 @@ export type UserPartnerUncheckedUpdateInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateManyInput = {
@@ -701,6 +708,20 @@ export type UserPartnerUpdateOneRequiredWithoutSubscriptionNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserPartnerUpdateToOneWithWhereWithoutSubscriptionInput, Prisma.UserPartnerUpdateWithoutSubscriptionInput>, Prisma.UserPartnerUncheckedUpdateWithoutSubscriptionInput>
 }
 
+export type UserPartnerCreateNestedOneWithoutReconnectRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserPartnerCreateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedCreateWithoutReconnectRequestsInput>
+  connectOrCreate?: Prisma.UserPartnerCreateOrConnectWithoutReconnectRequestsInput
+  connect?: Prisma.UserPartnerWhereUniqueInput
+}
+
+export type UserPartnerUpdateOneRequiredWithoutReconnectRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserPartnerCreateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedCreateWithoutReconnectRequestsInput>
+  connectOrCreate?: Prisma.UserPartnerCreateOrConnectWithoutReconnectRequestsInput
+  upsert?: Prisma.UserPartnerUpsertWithoutReconnectRequestsInput
+  connect?: Prisma.UserPartnerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserPartnerUpdateToOneWithWhereWithoutReconnectRequestsInput, Prisma.UserPartnerUpdateWithoutReconnectRequestsInput>, Prisma.UserPartnerUncheckedUpdateWithoutReconnectRequestsInput>
+}
+
 export type UserPartnerCreateNestedOneWithoutPartnerMemoriesInput = {
   create?: Prisma.XOR<Prisma.UserPartnerCreateWithoutPartnerMemoriesInput, Prisma.UserPartnerUncheckedCreateWithoutPartnerMemoriesInput>
   connectOrCreate?: Prisma.UserPartnerCreateOrConnectWithoutPartnerMemoriesInput
@@ -807,6 +828,7 @@ export type UserPartnerCreateWithoutUserInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutUserInput = {
@@ -831,6 +853,7 @@ export type UserPartnerUncheckedCreateWithoutUserInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutUserInput = {
@@ -865,6 +888,7 @@ export type UserPartnerCreateWithoutPartnerInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutPartnerInput = {
@@ -889,6 +913,7 @@ export type UserPartnerUncheckedCreateWithoutPartnerInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutPartnerInput = {
@@ -976,6 +1001,7 @@ export type UserPartnerCreateWithoutSubscriptionInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInCreateNestedManyWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutSubscriptionInput = {
@@ -1000,6 +1026,7 @@ export type UserPartnerUncheckedCreateWithoutSubscriptionInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedCreateNestedManyWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutSubscriptionInput = {
@@ -1040,6 +1067,7 @@ export type UserPartnerUpdateWithoutSubscriptionInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUpdateManyWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutSubscriptionInput = {
@@ -1062,6 +1090,123 @@ export type UserPartnerUncheckedUpdateWithoutSubscriptionInput = {
   dailyQuestions?: Prisma.DailyQuestionUncheckedUpdateManyWithoutUserPartnerNestedInput
   userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutUserPartnerNestedInput
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedUpdateManyWithoutUserPartnerNestedInput
+  sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
+  pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
+}
+
+export type UserPartnerCreateWithoutReconnectRequestsInput = {
+  id?: string
+  relationshipType: string
+  locationType?: string | null
+  goal?: string | null
+  dailyQuestionTime?: Date | string | null
+  status?: $Enums.RelationshipStatus
+  anniversary?: Date | string | null
+  invitationCode?: string | null
+  invitedAt?: Date | string | null
+  joinedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  brokenAt?: Date | string | null
+  restoredAt?: Date | string | null
+  user: Prisma.UserCreateNestedOneWithoutUserPartnersOneInput
+  partner?: Prisma.UserCreateNestedOneWithoutUserPartnersTwoInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutUserPartnerInput
+  dailyQuestions?: Prisma.DailyQuestionCreateNestedManyWithoutUserPartnerInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutUserPartnerInput
+  weeklyCheckIns?: Prisma.WeeklyCheckInCreateNestedManyWithoutUserPartnerInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
+  sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
+  pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+}
+
+export type UserPartnerUncheckedCreateWithoutReconnectRequestsInput = {
+  id?: string
+  userId: string
+  partnerId?: string | null
+  relationshipType: string
+  locationType?: string | null
+  goal?: string | null
+  dailyQuestionTime?: Date | string | null
+  status?: $Enums.RelationshipStatus
+  anniversary?: Date | string | null
+  invitationCode?: string | null
+  invitedAt?: Date | string | null
+  joinedAt?: Date | string | null
+  deletedAt?: Date | string | null
+  brokenAt?: Date | string | null
+  restoredAt?: Date | string | null
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutUserPartnerInput
+  dailyQuestions?: Prisma.DailyQuestionUncheckedCreateNestedManyWithoutUserPartnerInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutUserPartnerInput
+  weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedCreateNestedManyWithoutUserPartnerInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
+  sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
+  pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+}
+
+export type UserPartnerCreateOrConnectWithoutReconnectRequestsInput = {
+  where: Prisma.UserPartnerWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserPartnerCreateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedCreateWithoutReconnectRequestsInput>
+}
+
+export type UserPartnerUpsertWithoutReconnectRequestsInput = {
+  update: Prisma.XOR<Prisma.UserPartnerUpdateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedUpdateWithoutReconnectRequestsInput>
+  create: Prisma.XOR<Prisma.UserPartnerCreateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedCreateWithoutReconnectRequestsInput>
+  where?: Prisma.UserPartnerWhereInput
+}
+
+export type UserPartnerUpdateToOneWithWhereWithoutReconnectRequestsInput = {
+  where?: Prisma.UserPartnerWhereInput
+  data: Prisma.XOR<Prisma.UserPartnerUpdateWithoutReconnectRequestsInput, Prisma.UserPartnerUncheckedUpdateWithoutReconnectRequestsInput>
+}
+
+export type UserPartnerUpdateWithoutReconnectRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
+  locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
+  anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitationCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  brokenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  restoredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutUserPartnersOneNestedInput
+  partner?: Prisma.UserUpdateOneWithoutUserPartnersTwoNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutUserPartnerNestedInput
+  dailyQuestions?: Prisma.DailyQuestionUpdateManyWithoutUserPartnerNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutUserPartnerNestedInput
+  weeklyCheckIns?: Prisma.WeeklyCheckInUpdateManyWithoutUserPartnerNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
+  sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
+  pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+}
+
+export type UserPartnerUncheckedUpdateWithoutReconnectRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
+  locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
+  anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  invitationCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  joinedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  brokenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  restoredAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutUserPartnerNestedInput
+  dailyQuestions?: Prisma.DailyQuestionUncheckedUpdateManyWithoutUserPartnerNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutUserPartnerNestedInput
+  weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedUpdateManyWithoutUserPartnerNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
@@ -1088,6 +1233,7 @@ export type UserPartnerCreateWithoutPartnerMemoriesInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutPartnerMemoriesInput = {
@@ -1112,6 +1258,7 @@ export type UserPartnerUncheckedCreateWithoutPartnerMemoriesInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutPartnerMemoriesInput = {
@@ -1152,6 +1299,7 @@ export type UserPartnerUpdateWithoutPartnerMemoriesInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutPartnerMemoriesInput = {
@@ -1176,6 +1324,7 @@ export type UserPartnerUncheckedUpdateWithoutPartnerMemoriesInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateWithoutPokesInput = {
@@ -1200,6 +1349,7 @@ export type UserPartnerCreateWithoutPokesInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInCreateNestedManyWithoutUserPartnerInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutPokesInput = {
@@ -1224,6 +1374,7 @@ export type UserPartnerUncheckedCreateWithoutPokesInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedCreateNestedManyWithoutUserPartnerInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutPokesInput = {
@@ -1264,6 +1415,7 @@ export type UserPartnerUpdateWithoutPokesInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUpdateManyWithoutUserPartnerNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutPokesInput = {
@@ -1288,6 +1440,7 @@ export type UserPartnerUncheckedUpdateWithoutPokesInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedUpdateManyWithoutUserPartnerNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateWithoutDailyQuestionsInput = {
@@ -1312,6 +1465,7 @@ export type UserPartnerCreateWithoutDailyQuestionsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutDailyQuestionsInput = {
@@ -1336,6 +1490,7 @@ export type UserPartnerUncheckedCreateWithoutDailyQuestionsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutDailyQuestionsInput = {
@@ -1376,6 +1531,7 @@ export type UserPartnerUpdateWithoutDailyQuestionsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutDailyQuestionsInput = {
@@ -1400,6 +1556,7 @@ export type UserPartnerUncheckedUpdateWithoutDailyQuestionsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateWithoutUserPartnerPlansInput = {
@@ -1424,6 +1581,7 @@ export type UserPartnerCreateWithoutUserPartnerPlansInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutUserPartnerPlansInput = {
@@ -1448,6 +1606,7 @@ export type UserPartnerUncheckedCreateWithoutUserPartnerPlansInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutUserPartnerPlansInput = {
@@ -1488,6 +1647,7 @@ export type UserPartnerUpdateWithoutUserPartnerPlansInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutUserPartnerPlansInput = {
@@ -1512,6 +1672,7 @@ export type UserPartnerUncheckedUpdateWithoutUserPartnerPlansInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateWithoutWeeklyCheckInsInput = {
@@ -1536,6 +1697,7 @@ export type UserPartnerCreateWithoutWeeklyCheckInsInput = {
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutWeeklyCheckInsInput = {
@@ -1560,6 +1722,7 @@ export type UserPartnerUncheckedCreateWithoutWeeklyCheckInsInput = {
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   sharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutWeeklyCheckInsInput = {
@@ -1600,6 +1763,7 @@ export type UserPartnerUpdateWithoutWeeklyCheckInsInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutWeeklyCheckInsInput = {
@@ -1624,6 +1788,7 @@ export type UserPartnerUncheckedUpdateWithoutWeeklyCheckInsInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateWithoutSharedListsInput = {
@@ -1648,6 +1813,7 @@ export type UserPartnerCreateWithoutSharedListsInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInCreateNestedManyWithoutUserPartnerInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserPartnerInput
   pokes?: Prisma.PokeCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerUncheckedCreateWithoutSharedListsInput = {
@@ -1672,6 +1838,7 @@ export type UserPartnerUncheckedCreateWithoutSharedListsInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedCreateNestedManyWithoutUserPartnerInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserPartnerInput
   pokes?: Prisma.PokeUncheckedCreateNestedManyWithoutUserPartnerInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutUserPartnerInput
 }
 
 export type UserPartnerCreateOrConnectWithoutSharedListsInput = {
@@ -1712,6 +1879,7 @@ export type UserPartnerUpdateWithoutSharedListsInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUpdateManyWithoutUserPartnerNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutSharedListsInput = {
@@ -1736,6 +1904,7 @@ export type UserPartnerUncheckedUpdateWithoutSharedListsInput = {
   weeklyCheckIns?: Prisma.WeeklyCheckInUncheckedUpdateManyWithoutUserPartnerNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerCreateManyUserInput = {
@@ -1794,6 +1963,7 @@ export type UserPartnerUpdateWithoutUserInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutUserInput = {
@@ -1818,6 +1988,7 @@ export type UserPartnerUncheckedUpdateWithoutUserInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateManyWithoutUserInput = {
@@ -1859,6 +2030,7 @@ export type UserPartnerUpdateWithoutPartnerInput = {
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateWithoutPartnerInput = {
@@ -1883,6 +2055,7 @@ export type UserPartnerUncheckedUpdateWithoutPartnerInput = {
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserPartnerNestedInput
   sharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutUserPartnerNestedInput
   pokes?: Prisma.PokeUncheckedUpdateManyWithoutUserPartnerNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutUserPartnerNestedInput
 }
 
 export type UserPartnerUncheckedUpdateManyWithoutPartnerInput = {
@@ -1914,6 +2087,7 @@ export type UserPartnerCountOutputType = {
   weeklyCheckIns: number
   sharedLists: number
   pokes: number
+  reconnectRequests: number
 }
 
 export type UserPartnerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1923,6 +2097,7 @@ export type UserPartnerCountOutputTypeSelect<ExtArgs extends runtime.Types.Exten
   weeklyCheckIns?: boolean | UserPartnerCountOutputTypeCountWeeklyCheckInsArgs
   sharedLists?: boolean | UserPartnerCountOutputTypeCountSharedListsArgs
   pokes?: boolean | UserPartnerCountOutputTypeCountPokesArgs
+  reconnectRequests?: boolean | UserPartnerCountOutputTypeCountReconnectRequestsArgs
 }
 
 /**
@@ -1977,6 +2152,13 @@ export type UserPartnerCountOutputTypeCountPokesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.PokeWhereInput
 }
 
+/**
+ * UserPartnerCountOutputType without action
+ */
+export type UserPartnerCountOutputTypeCountReconnectRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReconnectRequestWhereInput
+}
+
 
 export type UserPartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2003,6 +2185,7 @@ export type UserPartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   subscription?: boolean | Prisma.UserPartner$subscriptionArgs<ExtArgs>
   sharedLists?: boolean | Prisma.UserPartner$sharedListsArgs<ExtArgs>
   pokes?: boolean | Prisma.UserPartner$pokesArgs<ExtArgs>
+  reconnectRequests?: boolean | Prisma.UserPartner$reconnectRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserPartnerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userPartner"]>
 
@@ -2075,6 +2258,7 @@ export type UserPartnerInclude<ExtArgs extends runtime.Types.Extensions.Internal
   subscription?: boolean | Prisma.UserPartner$subscriptionArgs<ExtArgs>
   sharedLists?: boolean | Prisma.UserPartner$sharedListsArgs<ExtArgs>
   pokes?: boolean | Prisma.UserPartner$pokesArgs<ExtArgs>
+  reconnectRequests?: boolean | Prisma.UserPartner$reconnectRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserPartnerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserPartnerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2098,6 +2282,7 @@ export type $UserPartnerPayload<ExtArgs extends runtime.Types.Extensions.Interna
     subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
     sharedLists: Prisma.$SharedListPayload<ExtArgs>[]
     pokes: Prisma.$PokePayload<ExtArgs>[]
+    reconnectRequests: Prisma.$ReconnectRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2518,6 +2703,7 @@ export interface Prisma__UserPartnerClient<T, Null = never, ExtArgs extends runt
   subscription<T extends Prisma.UserPartner$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserPartner$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   sharedLists<T extends Prisma.UserPartner$sharedListsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserPartner$sharedListsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharedListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pokes<T extends Prisma.UserPartner$pokesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserPartner$pokesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PokePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reconnectRequests<T extends Prisma.UserPartner$reconnectRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserPartner$reconnectRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReconnectRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3142,6 +3328,30 @@ export type UserPartner$pokesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.PokeScalarFieldEnum | Prisma.PokeScalarFieldEnum[]
+}
+
+/**
+ * UserPartner.reconnectRequests
+ */
+export type UserPartner$reconnectRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReconnectRequest
+   */
+  select?: Prisma.ReconnectRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReconnectRequest
+   */
+  omit?: Prisma.ReconnectRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconnectRequestInclude<ExtArgs> | null
+  where?: Prisma.ReconnectRequestWhereInput
+  orderBy?: Prisma.ReconnectRequestOrderByWithRelationInput | Prisma.ReconnectRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ReconnectRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReconnectRequestScalarFieldEnum | Prisma.ReconnectRequestScalarFieldEnum[]
 }
 
 /**

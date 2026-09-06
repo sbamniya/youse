@@ -402,6 +402,7 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   OtpChallenge: 'OtpChallenge',
   Subscription: 'Subscription',
+  ReconnectRequest: 'ReconnectRequest',
   PartnerMemories: 'PartnerMemories',
   PartnerMemoryItem: 'PartnerMemoryItem',
   UserMood: 'UserMood',
@@ -428,7 +429,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPartner" | "refreshToken" | "otpChallenge" | "subscription" | "partnerMemories" | "partnerMemoryItem" | "userMood" | "poke" | "dailyQuestion" | "dailyQuestionAnswer" | "userPartnerPlans" | "weeklyCheckIn" | "weeklyCheckInQnA" | "sharedList" | "sharedListItem"
+    modelProps: "user" | "userPartner" | "refreshToken" | "otpChallenge" | "subscription" | "reconnectRequest" | "partnerMemories" | "partnerMemoryItem" | "userMood" | "poke" | "dailyQuestion" | "dailyQuestionAnswer" | "userPartnerPlans" | "weeklyCheckIn" | "weeklyCheckInQnA" | "sharedList" | "sharedListItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -799,6 +800,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SubscriptionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
+    ReconnectRequest: {
+      payload: Prisma.$ReconnectRequestPayload<ExtArgs>
+      fields: Prisma.ReconnectRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ReconnectRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ReconnectRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.ReconnectRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ReconnectRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        findMany: {
+          args: Prisma.ReconnectRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>[]
+        }
+        create: {
+          args: Prisma.ReconnectRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        createMany: {
+          args: Prisma.ReconnectRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ReconnectRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.ReconnectRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        update: {
+          args: Prisma.ReconnectRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.ReconnectRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ReconnectRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ReconnectRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.ReconnectRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ReconnectRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.ReconnectRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateReconnectRequest>
+        }
+        groupBy: {
+          args: Prisma.ReconnectRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReconnectRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ReconnectRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ReconnectRequestCountAggregateOutputType> | number
         }
       }
     }
@@ -1728,6 +1803,17 @@ export const SubscriptionScalarFieldEnum = {
 export type SubscriptionScalarFieldEnum = (typeof SubscriptionScalarFieldEnum)[keyof typeof SubscriptionScalarFieldEnum]
 
 
+export const ReconnectRequestScalarFieldEnum = {
+  id: 'id',
+  userPartnerId: 'userPartnerId',
+  requesterId: 'requesterId',
+  cancelledAt: 'cancelledAt',
+  createdAt: 'createdAt'
+} as const
+
+export type ReconnectRequestScalarFieldEnum = (typeof ReconnectRequestScalarFieldEnum)[keyof typeof ReconnectRequestScalarFieldEnum]
+
+
 export const PartnerMemoriesScalarFieldEnum = {
   id: 'id',
   userPartnerId: 'userPartnerId',
@@ -2122,6 +2208,7 @@ export type GlobalOmitConfig = {
   refreshToken?: Prisma.RefreshTokenOmit
   otpChallenge?: Prisma.OtpChallengeOmit
   subscription?: Prisma.SubscriptionOmit
+  reconnectRequest?: Prisma.ReconnectRequestOmit
   partnerMemories?: Prisma.PartnerMemoriesOmit
   partnerMemoryItem?: Prisma.PartnerMemoryItemOmit
   userMood?: Prisma.UserMoodOmit

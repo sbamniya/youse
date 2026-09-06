@@ -228,6 +228,7 @@ export type UserWhereInput = {
   sentPokes?: Prisma.PokeListRelationFilter
   receivedPokes?: Prisma.PokeListRelationFilter
   createdSharedLists?: Prisma.SharedListListRelationFilter
+  reconnectRequests?: Prisma.ReconnectRequestListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -254,6 +255,7 @@ export type UserOrderByWithRelationInput = {
   sentPokes?: Prisma.PokeOrderByRelationAggregateInput
   receivedPokes?: Prisma.PokeOrderByRelationAggregateInput
   createdSharedLists?: Prisma.SharedListOrderByRelationAggregateInput
+  reconnectRequests?: Prisma.ReconnectRequestOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -283,6 +285,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   sentPokes?: Prisma.PokeListRelationFilter
   receivedPokes?: Prisma.PokeListRelationFilter
   createdSharedLists?: Prisma.SharedListListRelationFilter
+  reconnectRequests?: Prisma.ReconnectRequestListRelationFilter
 }, "id" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -338,6 +341,7 @@ export type UserCreateInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -363,6 +367,7 @@ export type UserUncheckedCreateInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUpdateInput = {
@@ -388,6 +393,7 @@ export type UserUpdateInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -413,6 +419,7 @@ export type UserUncheckedUpdateInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -624,6 +631,20 @@ export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
+export type UserCreateNestedOneWithoutReconnectRequestsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReconnectRequestsInput, Prisma.UserUncheckedCreateWithoutReconnectRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReconnectRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutReconnectRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReconnectRequestsInput, Prisma.UserUncheckedCreateWithoutReconnectRequestsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReconnectRequestsInput
+  upsert?: Prisma.UserUpsertWithoutReconnectRequestsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReconnectRequestsInput, Prisma.UserUpdateWithoutReconnectRequestsInput>, Prisma.UserUncheckedUpdateWithoutReconnectRequestsInput>
+}
+
 export type UserCreateNestedOneWithoutPartnerMemoriesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutPartnerMemoriesInput, Prisma.UserUncheckedCreateWithoutPartnerMemoriesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutPartnerMemoriesInput
@@ -772,6 +793,7 @@ export type UserCreateWithoutPartnersInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutPartnersInput = {
@@ -796,6 +818,7 @@ export type UserUncheckedCreateWithoutPartnersInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutPartnersInput = {
@@ -825,6 +848,7 @@ export type UserCreateWithoutPartnerInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutPartnerInput = {
@@ -849,6 +873,7 @@ export type UserUncheckedCreateWithoutPartnerInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutPartnerInput = {
@@ -894,6 +919,7 @@ export type UserUpdateWithoutPartnersInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartnersInput = {
@@ -918,6 +944,7 @@ export type UserUncheckedUpdateWithoutPartnersInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutPartnerInput = {
@@ -973,6 +1000,7 @@ export type UserCreateWithoutUserPartnersOneInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutUserPartnersOneInput = {
@@ -997,6 +1025,7 @@ export type UserUncheckedCreateWithoutUserPartnersOneInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutUserPartnersOneInput = {
@@ -1026,6 +1055,7 @@ export type UserCreateWithoutUserPartnersTwoInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutUserPartnersTwoInput = {
@@ -1050,6 +1080,7 @@ export type UserUncheckedCreateWithoutUserPartnersTwoInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutUserPartnersTwoInput = {
@@ -1090,6 +1121,7 @@ export type UserUpdateWithoutUserPartnersOneInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserPartnersOneInput = {
@@ -1114,6 +1146,7 @@ export type UserUncheckedUpdateWithoutUserPartnersOneInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithoutUserPartnersTwoInput = {
@@ -1149,6 +1182,7 @@ export type UserUpdateWithoutUserPartnersTwoInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserPartnersTwoInput = {
@@ -1173,6 +1207,7 @@ export type UserUncheckedUpdateWithoutUserPartnersTwoInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -1197,6 +1232,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -1221,6 +1257,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1261,6 +1298,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1273,6 +1311,123 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUncheckedUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
+}
+
+export type UserCreateWithoutReconnectRequestsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  partner?: Prisma.UserCreateNestedOneWithoutPartnersInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutReconnectRequestsInput = {
+  id?: string
+  phone: string
+  name?: string | null
+  profilePicture?: string | null
+  partnerId?: string | null
+  timezone?: string | null
+  deletedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  partners?: Prisma.UserUncheckedCreateNestedManyWithoutPartnerInput
+  userPartnersOne?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutUserInput
+  userPartnersTwo?: Prisma.UserPartnerUncheckedCreateNestedManyWithoutPartnerInput
+  partnerMemories?: Prisma.PartnerMemoriesUncheckedCreateNestedManyWithoutCreatorInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUncheckedCreateNestedManyWithoutUploaderInput
+  userMoods?: Prisma.UserMoodUncheckedCreateNestedManyWithoutUserInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutUserInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUncheckedCreateNestedManyWithoutCreatorInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
+  sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
+  receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutReconnectRequestsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutReconnectRequestsInput, Prisma.UserUncheckedCreateWithoutReconnectRequestsInput>
+}
+
+export type UserUpsertWithoutReconnectRequestsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReconnectRequestsInput, Prisma.UserUncheckedUpdateWithoutReconnectRequestsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReconnectRequestsInput, Prisma.UserUncheckedCreateWithoutReconnectRequestsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReconnectRequestsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReconnectRequestsInput, Prisma.UserUncheckedUpdateWithoutReconnectRequestsInput>
+}
+
+export type UserUpdateWithoutReconnectRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  partner?: Prisma.UserUpdateOneWithoutPartnersNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  partners?: Prisma.UserUpdateManyWithoutPartnerNestedInput
+  userPartnersOne?: Prisma.UserPartnerUpdateManyWithoutUserNestedInput
+  userPartnersTwo?: Prisma.UserPartnerUpdateManyWithoutPartnerNestedInput
+  partnerMemories?: Prisma.PartnerMemoriesUpdateManyWithoutCreatorNestedInput
+  partnerMemoryItems?: Prisma.PartnerMemoryItemUpdateManyWithoutUploaderNestedInput
+  userMoods?: Prisma.UserMoodUpdateManyWithoutUserNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutUserNestedInput
+  userPartnerPlans?: Prisma.UserPartnerPlansUpdateManyWithoutCreatorNestedInput
+  weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
+  sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
+  receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReconnectRequestsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profilePicture?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   partners?: Prisma.UserUncheckedUpdateManyWithoutPartnerNestedInput
   userPartnersOne?: Prisma.UserPartnerUncheckedUpdateManyWithoutUserNestedInput
   userPartnersTwo?: Prisma.UserPartnerUncheckedUpdateManyWithoutPartnerNestedInput
@@ -1309,6 +1464,7 @@ export type UserCreateWithoutPartnerMemoriesInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutPartnerMemoriesInput = {
@@ -1333,6 +1489,7 @@ export type UserUncheckedCreateWithoutPartnerMemoriesInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutPartnerMemoriesInput = {
@@ -1373,6 +1530,7 @@ export type UserUpdateWithoutPartnerMemoriesInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartnerMemoriesInput = {
@@ -1397,6 +1555,7 @@ export type UserUncheckedUpdateWithoutPartnerMemoriesInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutPartnerMemoryItemsInput = {
@@ -1421,6 +1580,7 @@ export type UserCreateWithoutPartnerMemoryItemsInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutPartnerMemoryItemsInput = {
@@ -1445,6 +1605,7 @@ export type UserUncheckedCreateWithoutPartnerMemoryItemsInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutPartnerMemoryItemsInput = {
@@ -1485,6 +1646,7 @@ export type UserUpdateWithoutPartnerMemoryItemsInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartnerMemoryItemsInput = {
@@ -1509,6 +1671,7 @@ export type UserUncheckedUpdateWithoutPartnerMemoryItemsInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutUserMoodsInput = {
@@ -1533,6 +1696,7 @@ export type UserCreateWithoutUserMoodsInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutUserMoodsInput = {
@@ -1557,6 +1721,7 @@ export type UserUncheckedCreateWithoutUserMoodsInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutUserMoodsInput = {
@@ -1597,6 +1762,7 @@ export type UserUpdateWithoutUserMoodsInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserMoodsInput = {
@@ -1621,6 +1787,7 @@ export type UserUncheckedUpdateWithoutUserMoodsInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutSentPokesInput = {
@@ -1645,6 +1812,7 @@ export type UserCreateWithoutSentPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutSentPokesInput = {
@@ -1669,6 +1837,7 @@ export type UserUncheckedCreateWithoutSentPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutSentPokesInput = {
@@ -1698,6 +1867,7 @@ export type UserCreateWithoutReceivedPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutReceivedPokesInput = {
@@ -1722,6 +1892,7 @@ export type UserUncheckedCreateWithoutReceivedPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutReceivedPokesInput = {
@@ -1762,6 +1933,7 @@ export type UserUpdateWithoutSentPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSentPokesInput = {
@@ -1786,6 +1958,7 @@ export type UserUncheckedUpdateWithoutSentPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUpsertWithoutReceivedPokesInput = {
@@ -1821,6 +1994,7 @@ export type UserUpdateWithoutReceivedPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReceivedPokesInput = {
@@ -1845,6 +2019,7 @@ export type UserUncheckedUpdateWithoutReceivedPokesInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutDailyQuestionAnswersInput = {
@@ -1869,6 +2044,7 @@ export type UserCreateWithoutDailyQuestionAnswersInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutDailyQuestionAnswersInput = {
@@ -1893,6 +2069,7 @@ export type UserUncheckedCreateWithoutDailyQuestionAnswersInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutDailyQuestionAnswersInput = {
@@ -1933,6 +2110,7 @@ export type UserUpdateWithoutDailyQuestionAnswersInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDailyQuestionAnswersInput = {
@@ -1957,6 +2135,7 @@ export type UserUncheckedUpdateWithoutDailyQuestionAnswersInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutUserPartnerPlansInput = {
@@ -1981,6 +2160,7 @@ export type UserCreateWithoutUserPartnerPlansInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutUserPartnerPlansInput = {
@@ -2005,6 +2185,7 @@ export type UserUncheckedCreateWithoutUserPartnerPlansInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutUserPartnerPlansInput = {
@@ -2045,6 +2226,7 @@ export type UserUpdateWithoutUserPartnerPlansInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserPartnerPlansInput = {
@@ -2069,6 +2251,7 @@ export type UserUncheckedUpdateWithoutUserPartnerPlansInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutWeeklyCheckInQnAsInput = {
@@ -2093,6 +2276,7 @@ export type UserCreateWithoutWeeklyCheckInQnAsInput = {
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutWeeklyCheckInQnAsInput = {
@@ -2117,6 +2301,7 @@ export type UserUncheckedCreateWithoutWeeklyCheckInQnAsInput = {
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
   createdSharedLists?: Prisma.SharedListUncheckedCreateNestedManyWithoutCreatorInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutWeeklyCheckInQnAsInput = {
@@ -2157,6 +2342,7 @@ export type UserUpdateWithoutWeeklyCheckInQnAsInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput = {
@@ -2181,6 +2367,7 @@ export type UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateWithoutCreatedSharedListsInput = {
@@ -2205,6 +2392,7 @@ export type UserCreateWithoutCreatedSharedListsInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnACreateNestedManyWithoutUserInput
   sentPokes?: Prisma.PokeCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeCreateNestedManyWithoutRecipientInput
+  reconnectRequests?: Prisma.ReconnectRequestCreateNestedManyWithoutRequesterInput
 }
 
 export type UserUncheckedCreateWithoutCreatedSharedListsInput = {
@@ -2229,6 +2417,7 @@ export type UserUncheckedCreateWithoutCreatedSharedListsInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedCreateNestedManyWithoutUserInput
   sentPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutSenderInput
   receivedPokes?: Prisma.PokeUncheckedCreateNestedManyWithoutRecipientInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedCreateNestedManyWithoutRequesterInput
 }
 
 export type UserCreateOrConnectWithoutCreatedSharedListsInput = {
@@ -2269,6 +2458,7 @@ export type UserUpdateWithoutCreatedSharedListsInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUpdateManyWithoutUserNestedInput
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedSharedListsInput = {
@@ -2293,6 +2483,7 @@ export type UserUncheckedUpdateWithoutCreatedSharedListsInput = {
   weeklyCheckInQnAs?: Prisma.WeeklyCheckInQnAUncheckedUpdateManyWithoutUserNestedInput
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserCreateManyPartnerInput = {
@@ -2328,6 +2519,7 @@ export type UserUpdateWithoutPartnerInput = {
   sentPokes?: Prisma.PokeUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPartnerInput = {
@@ -2352,6 +2544,7 @@ export type UserUncheckedUpdateWithoutPartnerInput = {
   sentPokes?: Prisma.PokeUncheckedUpdateManyWithoutSenderNestedInput
   receivedPokes?: Prisma.PokeUncheckedUpdateManyWithoutRecipientNestedInput
   createdSharedLists?: Prisma.SharedListUncheckedUpdateManyWithoutCreatorNestedInput
+  reconnectRequests?: Prisma.ReconnectRequestUncheckedUpdateManyWithoutRequesterNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutPartnerInput = {
@@ -2384,6 +2577,7 @@ export type UserCountOutputType = {
   sentPokes: number
   receivedPokes: number
   createdSharedLists: number
+  reconnectRequests: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2400,6 +2594,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   sentPokes?: boolean | UserCountOutputTypeCountSentPokesArgs
   receivedPokes?: boolean | UserCountOutputTypeCountReceivedPokesArgs
   createdSharedLists?: boolean | UserCountOutputTypeCountCreatedSharedListsArgs
+  reconnectRequests?: boolean | UserCountOutputTypeCountReconnectRequestsArgs
 }
 
 /**
@@ -2503,6 +2698,13 @@ export type UserCountOutputTypeCountCreatedSharedListsArgs<ExtArgs extends runti
   where?: Prisma.SharedListWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReconnectRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ReconnectRequestWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2528,6 +2730,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   sentPokes?: boolean | Prisma.User$sentPokesArgs<ExtArgs>
   receivedPokes?: boolean | Prisma.User$receivedPokesArgs<ExtArgs>
   createdSharedLists?: boolean | Prisma.User$createdSharedListsArgs<ExtArgs>
+  reconnectRequests?: boolean | Prisma.User$reconnectRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2585,6 +2788,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   sentPokes?: boolean | Prisma.User$sentPokesArgs<ExtArgs>
   receivedPokes?: boolean | Prisma.User$receivedPokesArgs<ExtArgs>
   createdSharedLists?: boolean | Prisma.User$createdSharedListsArgs<ExtArgs>
+  reconnectRequests?: boolean | Prisma.User$reconnectRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2611,6 +2815,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     sentPokes: Prisma.$PokePayload<ExtArgs>[]
     receivedPokes: Prisma.$PokePayload<ExtArgs>[]
     createdSharedLists: Prisma.$SharedListPayload<ExtArgs>[]
+    reconnectRequests: Prisma.$ReconnectRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3030,6 +3235,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   sentPokes<T extends Prisma.User$sentPokesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentPokesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PokePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   receivedPokes<T extends Prisma.User$receivedPokesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedPokesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PokePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdSharedLists<T extends Prisma.User$createdSharedListsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdSharedListsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SharedListPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reconnectRequests<T extends Prisma.User$reconnectRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reconnectRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReconnectRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3797,6 +4003,30 @@ export type User$createdSharedListsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.SharedListScalarFieldEnum | Prisma.SharedListScalarFieldEnum[]
+}
+
+/**
+ * User.reconnectRequests
+ */
+export type User$reconnectRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ReconnectRequest
+   */
+  select?: Prisma.ReconnectRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ReconnectRequest
+   */
+  omit?: Prisma.ReconnectRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReconnectRequestInclude<ExtArgs> | null
+  where?: Prisma.ReconnectRequestWhereInput
+  orderBy?: Prisma.ReconnectRequestOrderByWithRelationInput | Prisma.ReconnectRequestOrderByWithRelationInput[]
+  cursor?: Prisma.ReconnectRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReconnectRequestScalarFieldEnum | Prisma.ReconnectRequestScalarFieldEnum[]
 }
 
 /**
