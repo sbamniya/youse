@@ -247,13 +247,7 @@ export default function EmailOtp() {
           ) : null}
 
           {!inputFocused ? (
-            <View
-              className="absolute"
-              style={{
-                left: 12,
-                bottom: 28,
-              }}
-            >
+            <View className="mt-auto pb-7">
               <View className="mb-5 h-px w-8 bg-muted-foreground" />
               <Text className="font-serif text-[22px] italic leading-8 text-muted-foreground">
                 Same people{"\n"}brighter days.

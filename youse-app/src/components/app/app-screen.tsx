@@ -19,7 +19,7 @@ function AppScreen({ children, className }: AppScreenProps) {
   return (
     <View className={cn("flex-1 bg-background", className)}>
       <StatusBar style="light" />
-      <SafeAreaView className="flex-1" edges={["top", "bottom"]}>
+      <SafeAreaView className="flex-1" style={{ flex: 1 }} edges={["top", "bottom"]}>
         {children}
       </SafeAreaView>
     </View>
