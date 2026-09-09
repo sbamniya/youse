@@ -16,8 +16,8 @@ const trialDetails = [
   },
   {
     number: "2",
-    title: "Clock starts only\nafter you connect",
-    description: "Your 14 days begin when both\nof you have joined.",
+    title: "Your clock has\nalready started",
+    description: "You’re both connected, so your\n14 days are counting down now.",
   },
   {
     number: "3",
@@ -93,7 +93,6 @@ export default function Trial() {
 
       <View className="px-3 pb-3 pt-2">
         <PrimaryAction
-          className="h-16"
           label="Start using Youse"
           onPress={() => router.back()}
           showArrow
