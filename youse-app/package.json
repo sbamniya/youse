@@ -67,6 +67,6 @@
   "private": true,
   "packageManager": "npm@11.6.0",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   }
 }
