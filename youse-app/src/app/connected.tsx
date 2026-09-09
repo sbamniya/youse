@@ -40,6 +40,7 @@ export default function Connected() {
       />
       <ScrollView
         className="flex-1"
+        style={{ flex: 1 }}
         contentContainerClassName="px-3 pb-3"
         showsVerticalScrollIndicator={false}
       >

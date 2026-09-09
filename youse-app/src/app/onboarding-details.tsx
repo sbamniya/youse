@@ -45,6 +45,7 @@ export default function OnboardingDetails() {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         className="flex-1"
+        style={{ flex: 1 }}
       >
         <ScrollView
           contentContainerClassName="px-3 pb-3"

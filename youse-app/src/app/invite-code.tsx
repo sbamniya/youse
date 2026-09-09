@@ -36,8 +36,9 @@ export default function InviteCode() {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
+        style={{ flex: 1 }}
       >
-        <View className="flex-1 px-3">
+        <View className="flex-1 px-3" style={{ flex: 1 }}>
           <AppHeader />
 
           <View className="mt-14 px-2">

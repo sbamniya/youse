@@ -117,7 +117,7 @@ export default function EmailOtp() {
         className="flex-1"
         style={{ flex: 1 }}
       >
-        <View className="flex-1 px-3">
+        <View className="flex-1 px-3" style={{ flex: 1 }}>
           <BrandMark className="items-start pt-5" />
 
           <View className="mt-8">
