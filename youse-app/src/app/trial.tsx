@@ -94,7 +94,7 @@ export default function Trial() {
       <View className="px-3 pb-3 pt-2">
         <PrimaryAction
           label="Start using Youse"
-          onPress={() => router.back()}
+          onPress={() => router.replace("/(tabs)/today")}
           showArrow
         />
       </View>
