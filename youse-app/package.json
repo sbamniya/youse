@@ -64,5 +64,9 @@
     "web": "expo start --web",
     "lint": "expo lint"
   },
-  "private": true
+  "private": true,
+  "packageManager": "npm@11.6.0",
+  "engines": {
+    "node": ">=22"
+  }
 }
