@@ -1,46 +1,18 @@
 import { router } from "expo-router";
 import { Camera, ChevronLeft } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { FormField } from "@/components/app/form-field";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { ToggleRow } from "@/components/app/toggle-row";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = ["Dinner", "Trip", "Occasion"] as const;
-
-type PlanFieldProps = {
-  label: string;
-  placeholder: string;
-  value: string;
-  onChangeText: (value: string) => void;
-};
-
-function PlanField({ label, placeholder, value, onChangeText }: PlanFieldProps) {
-  const placeholderColor = useCSSVariable("--color-placeholder") as string;
-
-  return (
-    <View className="mt-6">
-      <Text
-        className="text-[11px] font-semibold text-muted-foreground"
-        style={{ letterSpacing: 2 }}
-      >
-        {label.toUpperCase()}
-      </Text>
-      <TextInput
-        className="mt-2 border-b border-border-subtle pb-3 text-[18px] text-foreground"
-        onChangeText={onChangeText}
-        placeholder={placeholder}
-        placeholderTextColor={placeholderColor}
-        value={value}
-      />
-    </View>
-  );
-}
 
 export default function CreatePlan() {
   const [title, setTitle] = useState("Dinner at Veronica’s");
@@ -72,31 +44,31 @@ export default function CreatePlan() {
           title="Something to look forward to."
         />
 
-        <PlanField
+        <FormField
           label="Title"
           onChangeText={setTitle}
           placeholder="Dinner at Veronica’s"
           value={title}
         />
-        <PlanField
+        <FormField
           label="Date"
           onChangeText={setDate}
           placeholder="07 Sep 2026"
           value={date}
         />
-        <PlanField
+        <FormField
           label="Time"
           onChangeText={setTime}
           placeholder="8:30 PM"
           value={time}
         />
-        <PlanField
+        <FormField
           label="Location"
           onChangeText={setLocation}
           placeholder="Bandra West"
           value={location}
         />
-        <PlanField
+        <FormField
           label="Notes"
           onChangeText={setNotes}
           placeholder="Add a note (optional)"
@@ -153,21 +125,7 @@ export default function CreatePlan() {
           })}
         </View>
 
-        {/* Remind toggle */}
-        <Pressable
-          className="mt-7 flex-row items-center justify-between"
-          onPress={() => setRemindBoth((current) => !current)}
-        >
-          <Text className="text-[17px] text-foreground">Remind both of us</Text>
-          <View
-            className={cn(
-              "h-8 w-14 justify-center rounded-full p-1",
-              remindBoth ? "items-end bg-primary" : "items-start bg-muted",
-            )}
-          >
-            <View className="h-6 w-6 rounded-full bg-foreground" />
-          </View>
-        </Pressable>
+        <ToggleRow label="Remind both of us" onValueChange={setRemindBoth} value={remindBoth} />
       </ScrollView>
 
       <View className="px-4 pb-3 pt-2">
