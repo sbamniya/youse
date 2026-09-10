@@ -70,8 +70,8 @@ function getCalendarWeeks(month: Dayjs) {
 
 export default function Plans() {
   const [view, setView] = useState<"calendar" | "agenda">("calendar");
-  const [month, setMonth] = useState(() => dayjs("2026-09-01"));
-  const [selectedDay, setSelectedDay] = useState(dayjs());
+  const [selectedDay, setSelectedDay] = useState(() => dayjs());
+  const [month, setMonth] = useState(() => selectedDay.startOf("month"));
 
   const weeks = useMemo(() => getCalendarWeeks(month), [month]);
 
@@ -181,12 +181,17 @@ export default function Plans() {
                 <View key={weekIndex} className="flex-row">
                   {week.map((day, dayIndex) => {
                     const dots = day ? eventDots[day] : undefined;
-                    const isSelected = dayjs(day).isSame(selectedDay, "day");
+                    const cellDate = day ? month.date(day) : null;
+                    const isSelected = cellDate
+                      ? cellDate.isSame(selectedDay, "day")
+                      : false;
 
                     return (
-                      <View
+                      <Pressable
                         key={dayIndex}
                         className="flex-1 items-center justify-center py-2.5"
+                        disabled={!day}
+                        onPress={() => cellDate && setSelectedDay(cellDate)}
                       >
                         {day ? (
                           <>
@@ -222,7 +227,7 @@ export default function Plans() {
                             )}
                           </>
                         ) : null}
-                      </View>
+                      </Pressable>
                     );
                   })}
                 </View>
