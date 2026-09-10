@@ -7,6 +7,8 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
+const logoFull = require("../../assets/images/logo-full.png");
+
 const DEFAULT_QUESTION = "What’s something you wish we did more often?";
 const DEFAULT_MY_ANSWER = "Small answers make a big difference.";
 const DEFAULT_PARTNER_ANSWER = "How you make ordinary mornings feel special.";
@@ -36,15 +38,19 @@ export default function AnswerResults() {
   return (
     <AppScreen>
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-        <View className="flex-row items-center gap-2 pt-2">
+        <View className="flex-row items-center gap-3 pt-2">
           <Pressable
             accessibilityLabel="Go back"
-            className="h-10 w-10 items-center justify-center"
+            hitSlop={12}
             onPress={() => router.back()}
           >
             <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
           </Pressable>
-          <Text className="font-serif text-[26px] font-bold text-accent">Youse</Text>
+          <Image
+            source={logoFull}
+            resizeMode="contain"
+            style={{ height: 22, width: 66 }}
+          />
         </View>
 
         <Text

@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { Camera, ChevronLeft } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
+import { Image, Pressable, TextInput, View } from "react-native";
 import { useCSSVariable } from "uniwind";
 
 import { AppScreen } from "@/components/app/app-screen";
@@ -9,6 +9,8 @@ import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+
+const logoFull = require("../../assets/images/logo-full.png");
 
 const MAX_LENGTH = 500;
 const DEFAULT_QUESTION = "What’s something you wish we did more often?";
@@ -28,13 +30,20 @@ export default function Answer() {
   return (
     <AppScreen>
       <View className="flex-1 px-4">
-        <Pressable
-          accessibilityLabel="Go back"
-          className="h-10 w-10 items-center justify-center"
-          onPress={() => router.back()}
-        >
-          <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
-        </Pressable>
+        <View className="flex-row items-center gap-3 pt-2">
+          <Pressable
+            accessibilityLabel="Go back"
+            hitSlop={12}
+            onPress={() => router.back()}
+          >
+            <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
+          </Pressable>
+          <Image
+            source={logoFull}
+            resizeMode="contain"
+            style={{ height: 22, width: 66 }}
+          />
+        </View>
 
         <PageIntro
           className="mt-4"
