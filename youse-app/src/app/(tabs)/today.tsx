@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import {
     Check,
     ChevronRight,
@@ -51,6 +52,9 @@ const pokeRows = [
   ["Thinking of you", "Proud of you"],
   ["Miss you", "Call me"],
 ];
+
+const todayQuestion = "What’s something you wish we did more often?";
+const partnerName = "Arjun";
 
 export default function Today() {
   const insets = useSafeAreaInsets();
@@ -122,7 +126,7 @@ export default function Today() {
               Wednesday, September 9, 2026
             </Text>
             <Text className="mt-3 font-serif text-[34px] font-semibold leading-9 text-foreground">
-              What’s something you wish we did more often?
+              {todayQuestion}
             </Text>
 
             <View className="mt-3 flex-row items-end justify-between">
@@ -138,6 +142,12 @@ export default function Today() {
               className="mt-5"
               icon={Pencil}
               label="Write my answer"
+              onPress={() =>
+                router.push({
+                  pathname: "/answer",
+                  params: { question: todayQuestion, partner: partnerName },
+                })
+              }
             />
 
             <View className="mt-5 flex-row items-center">
