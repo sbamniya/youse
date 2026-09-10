@@ -69,7 +69,7 @@ function getCalendarWeeks(month: Dayjs) {
 }
 
 export default function Plans() {
-  const [view, setView] = useState<"calendar" | "agenda">("calendar");
+  const [view, setView] = useState<"calendar" | "list">("calendar");
   const [selectedDay, setSelectedDay] = useState(() => dayjs());
   const [month, setMonth] = useState(() => selectedDay.startOf("month"));
 
@@ -107,7 +107,7 @@ export default function Plans() {
 
         {/* Segmented control */}
         <View className="mt-6 flex-row rounded-full border border-border-subtle p-1">
-          {(["calendar", "agenda"] as const).map((tab) => (
+          {(["calendar", "list"] as const).map((tab) => (
             <Pressable
               key={tab}
               className={cn(
