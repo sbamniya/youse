@@ -17,7 +17,7 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
-const logo = require("../../../assets/images/icon.png");
+const logo = require("../../../assets/images/logo-full-white.png");
 
 const heroImage =
   "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -90,11 +90,8 @@ export default function Today() {
                 <Image
                   source={logo}
                   resizeMode="contain"
-                  className="h-6 w-6"
+                  className="h-6 w-16"
                 />
-                <Text className="font-serif text-[17px] font-semibold text-foreground">
-                  Youse
-                </Text>
               </View>
               <Text
                 className="mt-0.5 text-[9px] font-medium text-muted-foreground"

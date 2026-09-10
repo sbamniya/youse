@@ -7,7 +7,7 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
-const logoFull = require("../../assets/images/logo-full.png");
+const logoFull = require("../../assets/images/logo-full-white.png");
 
 const DEFAULT_QUESTION = "What’s something you wish we did more often?";
 const DEFAULT_MY_ANSWER = "Small answers make a big difference.";
@@ -49,7 +49,7 @@ export default function AnswerResults() {
           <Image
             source={logoFull}
             resizeMode="contain"
-            style={{ height: 22, width: 66 }}
+            style={{ height: 50, width: 120 }}
           />
         </View>
 
