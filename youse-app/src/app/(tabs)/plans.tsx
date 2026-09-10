@@ -1,4 +1,5 @@
 import dayjs, { type Dayjs } from "dayjs";
+import { router } from "expo-router";
 import {
     ChevronLeft,
     ChevronRight,
@@ -100,6 +101,7 @@ export default function Plans() {
           <Pressable
             accessibilityLabel="Add a plan"
             className="h-9 w-9 items-center justify-center"
+            onPress={() => router.push("/create-plan")}
           >
             <ThemedIcon icon={Plus} size={26} strokeWidth={1.8} />
           </Pressable>
