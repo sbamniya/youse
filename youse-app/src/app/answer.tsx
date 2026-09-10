@@ -73,7 +73,15 @@ export default function Answer() {
       </View>
 
       <View className="px-4 pb-3 pt-2">
-        <PrimaryAction label="Save my answer" onPress={() => router.back()} />
+        <PrimaryAction
+          label="Save my answer"
+          onPress={() =>
+            router.replace({
+              pathname: "/answer-results",
+              params: { question: resolvedQuestion, myAnswer: answer },
+            })
+          }
+        />
       </View>
     </AppScreen>
   );
