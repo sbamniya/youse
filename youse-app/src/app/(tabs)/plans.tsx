@@ -130,8 +130,8 @@ export default function Plans() {
         {isCalendar && (
           <>
             {/* Month nav */}
-            <View className="mt-7 flex-row items-center justify-between">
-              <Text className="font-serif text-[30px] text-foreground">
+            <View className="mt-4 flex-row items-center justify-between">
+              <Text className="font-serif text-[26px] text-foreground">
                 {month.format("MMMM YYYY")}
               </Text>
               <View className="flex-row items-center gap-5">
@@ -189,7 +189,7 @@ export default function Plans() {
                     return (
                       <Pressable
                         key={dayIndex}
-                        className="flex-1 items-center justify-center py-2.5"
+                        className="flex-1 items-center justify-center py-1"
                         disabled={!day}
                         onPress={() => cellDate && setSelectedDay(cellDate)}
                       >
@@ -197,13 +197,13 @@ export default function Plans() {
                           <>
                             <View
                               className={cn(
-                                "h-9 w-9 items-center justify-center rounded-full",
+                                "h-7 w-7 items-center justify-center rounded-full",
                                 isSelected && "bg-primary",
                               )}
                             >
                               <Text
                                 className={cn(
-                                  "text-[16px] text-foreground",
+                                  "text-[14px] text-foreground",
                                   isSelected &&
                                     "font-bold text-primary-foreground",
                                 )}
@@ -234,7 +234,7 @@ export default function Plans() {
               ))}
             </View>
 
-            <View className="my-6 h-px bg-border-subtle" />
+            <View className="my-2 h-px bg-border-subtle" />
 
             {/* Upcoming plans */}
             <View>
