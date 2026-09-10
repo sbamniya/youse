@@ -12,6 +12,7 @@ import { Image, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
+import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
@@ -125,7 +126,7 @@ export default function Today() {
             </Text>
 
             <View className="mt-3 flex-row items-end justify-between">
-              <Text className="max-w-[180px] font-serif text-[15px] italic leading-5 text-muted-foreground">
+              <Text className="max-w-45 font-serif text-[15px] italic leading-5 text-muted-foreground">
                 Small answers make a big difference.
               </Text>
               <Text className="text-right font-serif text-[13px] italic leading-4 text-muted-foreground">
@@ -133,20 +134,19 @@ export default function Today() {
               </Text>
             </View>
 
-            <Pressable className="mt-5 flex-row items-center justify-center gap-2.5 rounded-full border border-primary/25 bg-primary/15 py-4">
-              <ThemedIcon icon={Pencil} size={16} strokeWidth={1.8} />
-              <Text className="text-[15px] font-medium text-foreground">
-                Write my answer
-              </Text>
-            </Pressable>
+            <PrimaryAction
+              className="mt-5"
+              icon={Pencil}
+              label="Write my answer"
+            />
 
             <View className="mt-5 flex-row items-center">
               <View className="flex-1 flex-row items-center gap-2.5">
-                <View className="relative h-11 w-11">
+                <View className="relative h-12 w-12">
                   <Image
                     source={{ uri: meeraImage }}
                     resizeMode="cover"
-                    className="h-11 w-11 rounded-full border-2 border-foreground/10"
+                    className="h-12 w-12 rounded-full border-2 border-foreground/10"
                   />
                   <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
                     <Check color="#1d1115" size={9} strokeWidth={3} />
@@ -165,11 +165,11 @@ export default function Today() {
               <View className="mx-1 h-9 w-px bg-foreground/10" />
 
               <View className="flex-1 flex-row items-center gap-2.5 pl-1">
-                <View className="relative h-11 w-11">
+                <View className="relative h-12 w-12">
                   <Image
                     source={{ uri: arjunImage }}
                     resizeMode="cover"
-                    className="h-11 w-11 rounded-full border-2 border-foreground/10"
+                    className="h-12 w-12 rounded-full border-2 border-foreground/10"
                   />
                   <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background bg-transparent" />
                 </View>
