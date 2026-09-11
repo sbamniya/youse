@@ -12,6 +12,16 @@ import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { ToggleRow } from "@/components/app/toggle-row";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +30,7 @@ const CATEGORIES = ["Dinner", "Trip", "Occasion"] as const;
 export default function CreatePlan() {
   const [title, setTitle] = useState("Dinner at Veronica’s");
   const [selectedDate, setSelectedDate] = useState(() => dayjs("2026-09-07"));
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pendingDate, setPendingDate] = useState(selectedDate);
   const [time, setTime] = useState("8:30 PM");
   const [location, setLocation] = useState("Bandra West");
   const [notes, setNotes] = useState("");
@@ -47,26 +57,34 @@ export default function CreatePlan() {
           placeholder="Dinner at Veronica’s"
           value={title}
         />
-        <View className="mt-6">
-          <Text className="text-[11px] font-semibold tracking-[2px] text-muted-foreground">DATE</Text>
-          <Pressable
-            accessibilityLabel="Choose plan date"
-            className="mt-2 border-b border-input py-2.5 active:opacity-70"
-            onPress={() => setShowDatePicker((current) => !current)}
-          >
-            <Text className="text-[18px] text-foreground">{selectedDate.format("DD MMM YYYY")}</Text>
-          </Pressable>
-          {showDatePicker ? (
-            <Calendar
-              className="mt-5 rounded-2xl border border-border-subtle bg-card p-4"
-              onValueChange={(date) => {
-                setSelectedDate(date);
-                setShowDatePicker(false);
-              }}
-              value={selectedDate}
-            />
-          ) : null}
-        </View>
+          <View className="mt-6">
+            <Text className="text-[11px] font-semibold tracking-[2px] text-muted-foreground">DATE</Text>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Pressable
+                  accessibilityLabel="Choose plan date"
+                  className="mt-2 border-b border-input py-2.5 active:opacity-70"
+                  onPress={() => setPendingDate(selectedDate)}
+                >
+                  <Text className="text-[18px] text-foreground">{selectedDate.format("DD MMM YYYY")}</Text>
+                </Pressable>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="mx-4 w-[calc(100%-2rem)] max-w-[420px] rounded-3xl border-border-subtle bg-card p-5">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-left text-[22px] text-foreground">Choose a date</AlertDialogTitle>
+                </AlertDialogHeader>
+                <Calendar className="mt-1" onValueChange={setPendingDate} value={pendingDate} />
+                <AlertDialogFooter className="mt-3 flex-row gap-3">
+                  <AlertDialogCancel className="flex-1 border-border-subtle bg-transparent">
+                    <Text>Cancel</Text>
+                  </AlertDialogCancel>
+                  <AlertDialogAction className="flex-1" onPress={() => setSelectedDate(pendingDate)}>
+                    <Text>Done</Text>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </View>
         <FormField
           label="Time"
           onChangeText={setTime}

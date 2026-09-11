@@ -1,18 +1,11 @@
 import { ChevronRight } from "lucide-react-native";
-import { useState } from "react";
-import {
-    Alert,
-    Image,
-    Pressable,
-    ScrollView,
-    Switch,
-    View,
-} from "react-native";
+import { Alert, Image, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
 import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 import { router } from "expo-router";
 
 const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
@@ -31,6 +24,7 @@ const settingsRows = [
     detail: "Download a copy of your memories",
     section: "PRIVACY & DATA",
     title: "Export our data",
+    comingSoon: true,
   },
   {
     detail: "How we keep your data safe",
@@ -40,7 +34,6 @@ const settingsRows = [
 
 export default function Us() {
   const insets = useSafeAreaInsets();
-  const [darkMode, setDarkMode] = useState(true);
 
   return (
     <View className="flex-1 bg-background">
@@ -113,7 +106,7 @@ export default function Us() {
             </Pressable>
           </View>
 
-          <View className="mt-4 border-t border-border-subtle pt-4">
+          {/* <View className="mt-4 border-t border-border-subtle pt-4">
             <SectionLabel label="APPEARANCE" />
             <View className="mt-5 flex-row items-center">
               <View className="flex-1">
@@ -132,9 +125,9 @@ export default function Us() {
                 value={darkMode}
               />
             </View>
-          </View>
+          </View> */}
 
-          {settingsRows.map(({ detail, section, title }, index) => (
+          {settingsRows.map(({ detail, section, title, comingSoon }, index) => (
             <View
               key={title}
               className="mt-4 border-t border-border-subtle pt-4"
@@ -142,16 +135,21 @@ export default function Us() {
               {section ? <SectionLabel label={section} /> : null}
               <Pressable
                 accessibilityLabel={title}
-                className={
+                className={cn(
                   section
                     ? "mt-5 flex-row items-center active:opacity-70"
-                    : "flex-row items-center active:opacity-70"
-                }
-                onPress={() => Alert.alert(title, detail)}
+                    : "flex-row items-center active:opacity-70",
+                  {
+                    "opacity-50": comingSoon,
+                  },
+                )}
+                disabled={comingSoon}
+                onPress={() => !comingSoon && Alert.alert(title, detail)}
               >
                 <View className="flex-1">
                   <Text className="font-serif text-[16px] text-foreground">
                     {title}
+                    {comingSoon ? " (Coming Soon)" : ""}
                   </Text>
                   <Text className="mt-1 font-serif text-[14px] text-primary">
                     {detail}
