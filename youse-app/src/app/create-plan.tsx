@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Camera } from "lucide-react-native";
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
+import { Calendar } from "@/components/app/calendar";
 import { FormField } from "@/components/app/form-field";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
@@ -17,7 +19,8 @@ const CATEGORIES = ["Dinner", "Trip", "Occasion"] as const;
 
 export default function CreatePlan() {
   const [title, setTitle] = useState("Dinner at Veronica’s");
-  const [date, setDate] = useState("07 Sep 2026");
+  const [selectedDate, setSelectedDate] = useState(() => dayjs("2026-09-07"));
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [time, setTime] = useState("8:30 PM");
   const [location, setLocation] = useState("Bandra West");
   const [notes, setNotes] = useState("");
@@ -44,12 +47,26 @@ export default function CreatePlan() {
           placeholder="Dinner at Veronica’s"
           value={title}
         />
-        <FormField
-          label="Date"
-          onChangeText={setDate}
-          placeholder="07 Sep 2026"
-          value={date}
-        />
+        <View className="mt-6">
+          <Text className="text-[11px] font-semibold tracking-[2px] text-muted-foreground">DATE</Text>
+          <Pressable
+            accessibilityLabel="Choose plan date"
+            className="mt-2 border-b border-input py-2.5 active:opacity-70"
+            onPress={() => setShowDatePicker((current) => !current)}
+          >
+            <Text className="text-[18px] text-foreground">{selectedDate.format("DD MMM YYYY")}</Text>
+          </Pressable>
+          {showDatePicker ? (
+            <Calendar
+              className="mt-5 rounded-2xl border border-border-subtle bg-card p-4"
+              onValueChange={(date) => {
+                setSelectedDate(date);
+                setShowDatePicker(false);
+              }}
+              value={selectedDate}
+            />
+          ) : null}
+        </View>
         <FormField
           label="Time"
           onChangeText={setTime}
