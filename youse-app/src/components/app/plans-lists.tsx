@@ -1,9 +1,9 @@
 import { ArrowRight, Check } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, TextInput, View } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { Pressable, View } from "react-native";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
@@ -43,7 +43,6 @@ const initialItems: Record<string, ListItem[]> = {
 };
 
 function OurLists() {
-  const placeholder = useCSSVariable("--color-placeholder") as string;
   const [activeCategory, setActiveCategory] = useState<string>(CATEGORIES[0].id);
   const [itemsByCategory, setItemsByCategory] = useState(initialItems);
   const [newIdea, setNewIdea] = useState("");
@@ -134,14 +133,14 @@ function OurLists() {
 
       {/* Add an idea */}
       <View className="mt-4 flex-row items-center rounded-full bg-secondary/60 py-1.5 pl-5 pr-1.5">
-        <TextInput
+        <Input
           className="flex-1 text-[16px] text-foreground"
           onChangeText={setNewIdea}
           onSubmitEditing={addIdea}
           placeholder="Add an idea…"
-          placeholderTextColor={placeholder}
           returnKeyType="done"
           value={newIdea}
+          variant="plain"
         />
         <Pressable
           accessibilityLabel="Add idea"

@@ -1,32 +1,33 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
-  Bell,
-  CalendarDays,
-  Camera,
-  ChevronDown,
-  ChevronLeft,
-  Clock,
-  Globe2,
-  Heart,
-  UserRound,
+    Bell,
+    CalendarDays,
+    Camera,
+    ChevronDown,
+    Clock,
+    Globe2,
+    Heart,
+    UserRound,
 } from "lucide-react-native";
 import { useState } from "react";
 import {
-  Alert,
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  TextInput,
-  View,
+    Alert,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    ScrollView,
+    View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
+import { BackButton } from "@/components/app/back-button";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TrialBadge } from "@/components/app/trial-badge";
+import { Input, type InputProps } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 
 const logo = require("../../assets/images/logo-full-white.png");
@@ -34,10 +35,7 @@ const meeraAvatar = require("../../assets/images/memory-meera-avatar.png");
 
 export default function Profile() {
   const insets = useSafeAreaInsets();
-  const [background, placeholder] = useCSSVariable([
-    "--color-background",
-    "--color-placeholder",
-  ]) as [string, string];
+  const background = useCSSVariable("--color-background") as string;
   const [name, setName] = useState("Meera Singh");
   const [birthday, setBirthday] = useState("");
   const [timezone, setTimezone] = useState("Select timezone");
@@ -81,20 +79,10 @@ export default function Profile() {
               style={{ paddingTop: insets.top + 10 }}
             >
               <View className="flex-row items-center gap-3">
-                <Pressable
-                  accessibilityLabel="Go back"
-                  className="h-9 w-9 items-center justify-center rounded-full border border-primary/35 bg-background/60 active:opacity-70"
-                  onPress={() => router.back()}
-                >
-                  <ThemedIcon icon={ChevronLeft} size={20} strokeWidth={1.8} />
-                </Pressable>
+                <BackButton />
                 <Image source={logo} resizeMode="contain" className="h-6 w-16" />
               </View>
-              <View className="rounded-full border border-primary/35 bg-background/60 px-2.5 py-1.5">
-                <Text className="text-[11px] font-medium text-accent">
-                  11 days left
-                </Text>
-              </View>
+              <TrialBadge days={11} />
             </View>
 
             <View className="absolute inset-x-0 bottom-0 px-4 pb-5">
@@ -148,7 +136,6 @@ export default function Profile() {
               label="YOUR BIRTHDAY"
               onChangeText={setBirthday}
               placeholder="DD / MM / YYYY"
-              placeholderTextColor={placeholder}
               value={birthday}
             />
             <SelectField
@@ -197,7 +184,6 @@ export default function Profile() {
               label="ANNIVERSARY DATE"
               onChangeText={setAnniversary}
               placeholder="DD / MM / YYYY"
-              placeholderTextColor={placeholder}
               value={anniversary}
             />
 
@@ -216,7 +202,7 @@ export default function Profile() {
   );
 }
 
-type EditableFieldProps = React.ComponentProps<typeof TextInput> & {
+type EditableFieldProps = InputProps & {
   icon: typeof UserRound;
   label: string;
 };
@@ -231,10 +217,9 @@ function EditableField({ icon, label, ...inputProps }: EditableFieldProps) {
         <Text className="text-[10px] font-medium tracking-[3px] text-primary">
           {label}
         </Text>
-        <TextInput
+        <Input
           className="mt-2 p-0 font-serif text-[18px] text-foreground"
-          cursorColorClassName="accent-primary"
-          selectionColorClassName="accent-primary"
+          variant="plain"
           {...inputProps}
         />
       </View>

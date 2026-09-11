@@ -1,9 +1,8 @@
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
+import { BackButton } from "@/components/app/back-button";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
-import { ChevronLeft } from "lucide-react-native";
-import { ThemedIcon } from "./themed-icon";
 
 type PageIntroProps = {
   title: string;
@@ -32,14 +31,7 @@ function PageIntro({
     <View className={cn(centered && "items-center", className)}>
       <View className="flex flex-row gap-1 items-center">
         {backArrow && (
-          <Pressable
-            accessibilityLabel="Back to trial details"
-            className="h-11 w-8 items-start justify-center active:opacity-65"
-            hitSlop={12}
-            onPress={backArrow?.onPress}
-          >
-            <ThemedIcon icon={ChevronLeft} size={24} strokeWidth={1.7} />
-          </Pressable>
+          <BackButton className="mr-2" onPress={backArrow.onPress} />
         )}
         {eyebrow ? (
           <Text

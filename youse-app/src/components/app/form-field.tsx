@@ -1,6 +1,6 @@
-import { TextInput, View } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { View } from "react-native";
 
+import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 
 type FormFieldProps = {
@@ -18,8 +18,6 @@ function FormField({
   onChangeText,
   multiline = false,
 }: FormFieldProps) {
-  const placeholderColor = useCSSVariable("--color-placeholder") as string;
-
   return (
     <View className="mt-6">
       <Text
@@ -28,12 +26,12 @@ function FormField({
       >
         {label.toUpperCase()}
       </Text>
-      <TextInput
-        className="mt-2 border-b border-border-subtle pb-3 text-[18px] text-foreground"
+      <Input
+        className="mt-2 text-[18px]"
         multiline={multiline}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={placeholderColor}
+        variant="underline"
         value={value}
       />
     </View>

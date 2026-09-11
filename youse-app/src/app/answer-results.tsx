@@ -1,10 +1,9 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { ChevronLeft } from "lucide-react-native";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { BackButton } from "@/components/app/back-button";
 import { PrimaryAction } from "@/components/app/primary-action";
-import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
 const logoFull = require("../../assets/images/logo-full-white.png");
@@ -39,13 +38,7 @@ export default function AnswerResults() {
     <AppScreen>
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
         <View className="flex-row items-center gap-3 pt-2">
-          <Pressable
-            accessibilityLabel="Go back"
-            hitSlop={12}
-            onPress={() => router.back()}
-          >
-            <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
-          </Pressable>
+          <BackButton />
           <Image
             source={logoFull}
             resizeMode="contain"

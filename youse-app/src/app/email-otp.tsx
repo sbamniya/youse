@@ -1,29 +1,28 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
+import type { TextInput as TextInputInstance } from "react-native";
 import {
     KeyboardAvoidingView,
     Platform,
     Pressable,
-    TextInput,
     View,
 } from "react-native";
-import { useCSSVariable } from "uniwind";
 
   import { AppScreen } from "@/components/app/app-screen";
 import { BrandMark } from "@/components/app/brand-mark";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
+import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 
 export default function EmailOtp() {
   const { flow } = useLocalSearchParams<{ flow?: string }>();
-  const placeholder = useCSSVariable("--color-placeholder") as string;
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [codeSent, setCodeSent] = useState(false);
   const [resendSeconds, setResendSeconds] = useState(30);
   const [inputFocused, setInputFocused] = useState(false);
-  const otpInputs = useRef<(TextInput | null)[]>([]);
+  const otpInputs = useRef<(TextInputInstance | null)[]>([]);
 
   useEffect(() => {
     if (!codeSent || resendSeconds === 0) {
@@ -159,7 +158,7 @@ export default function EmailOtp() {
               <View className="mt-8 flex-row items-center rounded-[20px] border border-input px-4 py-2">
                 <Text className="text-[16px] font-bold text-foreground">+91</Text>
                 <View className="mx-3 h-9 w-px bg-input" />
-                <TextInput
+                <Input
                   autoComplete="tel"
                   importantForAutofill="yes"
                   keyboardType="phone-pad"
@@ -170,10 +169,10 @@ export default function EmailOtp() {
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
                   placeholder="98765 43210"
-                  placeholderTextColor={placeholder}
                   textContentType="telephoneNumber"
                   className="flex-1 text-[16px] text-foreground"
                   value={phoneNumber}
+                  variant="plain"
                 />
               </View>
 
@@ -197,7 +196,7 @@ export default function EmailOtp() {
               </Text>
               <View className="mt-1 flex-row justify-between">
                 {otp.map((digit, index) => (
-                  <TextInput
+                  <Input
                     key={index}
                     ref={(input) => {
                       otpInputs.current[index] = input;
@@ -216,6 +215,7 @@ export default function EmailOtp() {
                     textContentType={index === 0 ? "oneTimeCode" : "none"}
                     className="h-14 w-11 border-b border-foreground text-center text-[29px] text-foreground"
                     value={digit}
+                    variant="plain"
                   />
                 ))}
               </View>

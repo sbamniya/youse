@@ -1,10 +1,11 @@
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
-import { ChevronLeft, ImagePlus, Pencil } from "lucide-react-native";
+import { ImagePlus, Pencil } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { BackButton } from "@/components/app/back-button";
 import { FormField } from "@/components/app/form-field";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -41,9 +42,7 @@ export default function AddPhoto() {
     <AppScreen>
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
         <View className="flex-row items-center gap-2 pt-2">
-          <Pressable accessibilityLabel="Go back" hitSlop={12} onPress={() => router.back()}>
-            <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
-          </Pressable>
+          <BackButton />
           <Text className="text-[12px] text-muted-foreground" style={{ letterSpacing: 4 }}>
             ADD PHOTO
           </Text>

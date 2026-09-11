@@ -1,18 +1,19 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { ChevronLeft, Ellipsis, ImagePlus, Pencil } from "lucide-react-native";
+import { Ellipsis, ImagePlus, Pencil } from "lucide-react-native";
 import { useState } from "react";
 import {
-  Alert,
-  Animated,
-  Image,
-  ImageBackground,
-  Pressable,
-  View,
+    Alert,
+    Animated,
+    Image,
+    ImageBackground,
+    Pressable,
+    View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
+import { BackButton } from "@/components/app/back-button";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 import { featuredMemory } from "@/lib/memories";
@@ -173,18 +174,7 @@ export default function MemoryDetail() {
           pointerEvents="box-none"
           style={{ paddingTop: Math.max(insets.top + 8, 24) }}
         >
-          <Pressable
-            accessibilityLabel="Go back"
-            className="h-10 w-10 items-center justify-center"
-            hitSlop={8}
-            onPress={returnToMemories}
-          >
-            <Animated.View
-              className="absolute inset-0 rounded-full bg-black/45"
-              style={{ opacity: controlCircleOpacity }}
-            />
-            <ThemedIcon icon={ChevronLeft} tone="foreground" size={25} strokeWidth={2} />
-          </Pressable>
+          <BackButton onPress={returnToMemories} />
 
           <Animated.Text
             numberOfLines={1}

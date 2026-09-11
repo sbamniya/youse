@@ -15,6 +15,7 @@ import { useCSSVariable } from "uniwind";
 
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TrialBadge } from "@/components/app/trial-badge";
 import { Text } from "@/components/ui/text";
 
 const logo = require("../../../assets/images/logo-full-white.png");
@@ -102,11 +103,7 @@ export default function Today() {
             </View>
 
             <View className="flex-row items-center gap-2">
-              <View className="flex-row items-center gap-1 rounded-full border border-primary/35 bg-background/60 px-2.5 py-1.5">
-                <Text className="text-[11px] font-medium text-accent">
-                  14 days left
-                </Text>
-              </View>
+              <TrialBadge days={14} />
               <Image
                 source={{ uri: meeraImage }}
                 resizeMode="cover"

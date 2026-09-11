@@ -1,16 +1,17 @@
 import { ChevronRight } from "lucide-react-native";
 import { useState } from "react";
 import {
-  Alert,
-  Image,
-  Pressable,
-  ScrollView,
-  Switch,
-  View,
+    Alert,
+    Image,
+    Pressable,
+    ScrollView,
+    Switch,
+    View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TrialBadge } from "@/components/app/trial-badge";
 import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
 
@@ -83,13 +84,7 @@ export default function Us() {
 
           <View className="mt-4 border-t border-border-subtle pt-4">
             <SectionLabel label="RELATIONSHIP" />
-            <Pressable
-              accessibilityLabel="Manage your relationship and trial"
-              className="mt-1 flex-row items-center active:opacity-70"
-              onPress={() =>
-                router.push('/billing')
-              }
-            >
+            <View className="mt-1 flex-row items-center">
               <View className="flex-1">
                 <Text className="font-serif text-[16px] text-foreground">
                   Meera + Arjun
@@ -103,12 +98,10 @@ export default function Us() {
                 <Text className="font-serif text-[16px] text-foreground">
                   Youse trial
                 </Text>
-                <Text className="mt-1 font-serif text-[12px] text-primary">
-                  11 days left
-                </Text>
+                <TrialBadge className="mt-1 self-start" days={11} />
               </View>
               <ThemedIcon icon={ChevronRight} size={24} strokeWidth={1.5} />
-            </Pressable>
+            </View>
           </View>
 
           <View className="mt-4 border-t border-border-subtle pt-4">

@@ -1,9 +1,10 @@
 import { router } from "expo-router";
-import { Camera, ChevronLeft } from "lucide-react-native";
+import { Camera } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { BackButton } from "@/components/app/back-button";
 import { FormField } from "@/components/app/form-field";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
@@ -27,14 +28,7 @@ export default function CreatePlan() {
   return (
     <AppScreen>
       <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
-        <Pressable
-          accessibilityLabel="Go back"
-          className="pt-2"
-          hitSlop={12}
-          onPress={() => router.back()}
-        >
-          <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
-        </Pressable>
+        <BackButton className="mt-2" />
 
         <PageIntro
           className="mt-4"

@@ -1,23 +1,24 @@
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  CalendarDays,
-  CircleHelp,
-  HeartPulse,
-  UsersRound,
+    CalendarDays,
+    CircleHelp,
+    HeartPulse,
+    UsersRound,
 } from "lucide-react-native";
 import {
-  Alert,
-  Image,
-  Pressable,
-  ScrollView,
-  View,
-  useWindowDimensions,
+    Alert,
+    Image,
+    Pressable,
+    ScrollView,
+    View,
+    useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Polyline } from "react-native-svg";
 import { useCSSVariable } from "uniwind";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TrialBadge } from "@/components/app/trial-badge";
 import { Text } from "@/components/ui/text";
 
 const logo = require("../../../assets/images/logo-full-white.png");
@@ -106,11 +107,7 @@ export default function Insight() {
                   A BRIGHTER US, DAILY
                 </Text> */}
               </View>
-              <View className="rounded-full border border-primary/35 bg-background/60 px-2.5 py-1.5">
-                <Text className="text-[11px] font-medium text-accent">
-                  11 days left
-                </Text>
-              </View>
+              <TrialBadge days={11} />
             </View>
 
             <View className="absolute inset-x-0 bottom-0 px-4 pb-5">

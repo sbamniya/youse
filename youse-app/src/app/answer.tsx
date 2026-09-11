@@ -1,13 +1,14 @@
 import { router, useLocalSearchParams } from "expo-router";
-import { Camera, ChevronLeft } from "lucide-react-native";
+import { Camera } from "lucide-react-native";
 import { useState } from "react";
-import { Image, Pressable, TextInput, View } from "react-native";
-import { useCSSVariable } from "uniwind";
+import { Image, Pressable, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { BackButton } from "@/components/app/back-button";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 
 const logoFull = require("../../assets/images/logo-full-white.png");
@@ -21,7 +22,6 @@ export default function Answer() {
     question?: string;
     partner?: string;
   }>();
-  const placeholder = useCSSVariable("--color-placeholder") as string;
   const [answer, setAnswer] = useState("");
 
   const resolvedQuestion = question ?? DEFAULT_QUESTION;
@@ -31,13 +31,7 @@ export default function Answer() {
     <AppScreen>
       <View className="flex-1 px-4">
         <View className="flex-row items-center gap-3 pt-2">
-          <Pressable
-            accessibilityLabel="Go back"
-            hitSlop={12}
-            onPress={() => router.back()}
-          >
-            <ThemedIcon icon={ChevronLeft} tone="foreground" size={26} strokeWidth={2} />
-          </Pressable>
+          <BackButton />
           <Image
             source={logoFull}
             resizeMode="contain"
@@ -54,16 +48,16 @@ export default function Answer() {
         />
 
         <View className="mt-8 flex-1 border-l-2 border-primary/70 pl-4">
-          <TextInput
+          <Input
             autoFocus
             className="flex-1 font-serif text-[20px] text-foreground"
             maxLength={MAX_LENGTH}
             multiline
             onChangeText={setAnswer}
             placeholder="Write what comes to mind…"
-            placeholderTextColor={placeholder}
             style={{ textAlignVertical: "top" }}
             value={answer}
+            variant="plain"
           />
         </View>
 
