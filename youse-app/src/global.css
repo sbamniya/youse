@@ -21,6 +21,8 @@
       --color-accent-foreground: #1d1115;
       --color-card: #28131d;
       --color-card-foreground: #fff6f2;
+      --color-popover: #28131d;
+      --color-popover-foreground: #fff6f2;
       --color-border: #d9b0b2;
       --color-border-subtle: #4c3036;
       --color-input: #d9adae;
@@ -43,6 +45,8 @@
       --color-accent-foreground: #1d1115;
       --color-card: #28131d;
       --color-card-foreground: #fff6f2;
+      --color-popover: #28131d;
+      --color-popover-foreground: #fff6f2;
       --color-border: #d9b0b2;
       --color-border-subtle: #4c3036;
       --color-input: #d9adae;
@@ -62,4 +66,10 @@ body {
   width: 100%;
   max-width: 440px;
   margin: 0 auto;
+}
+
+/* Radix portals Select content outside the app root on web. Keep its wrapper
+ * above modal overlays, while limiting the stacking rule to our Select UI. */
+[data-radix-popper-content-wrapper]:has(.app-select-content) {
+  z-index: 60 !important;
 }

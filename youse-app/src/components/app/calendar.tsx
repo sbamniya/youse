@@ -1,13 +1,35 @@
-import { type Dayjs } from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
+import {
+  NativeSelectScrollView,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
 const WEEKDAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+const MONTHS = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 type CalendarProps = {
   value: Dayjs;
@@ -31,11 +53,50 @@ function getCalendarWeeks(month: Dayjs) {
 function Calendar({ value, onValueChange, getMarkerCount, className }: CalendarProps) {
   const [month, setMonth] = useState(() => value.startOf("month"));
   const weeks = useMemo(() => getCalendarWeeks(month), [month]);
+  const years = useMemo(
+    () => Array.from({ length: 126 }, (_, index) => dayjs().year() - 100 + index),
+    [],
+  );
 
   return (
     <View className={className}>
       <View className="flex-row items-center justify-between">
-        <Text className="font-serif text-[26px] text-foreground">{month.format("MMMM YYYY")}</Text>
+        <View className="flex-row items-center gap-2">
+          <Select
+            onValueChange={(option) => {
+              if (option) setMonth((current) => current.month(Number(option.value)));
+            }}
+            value={{ label: MONTHS[month.month()], value: String(month.month()) }}
+          >
+            <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
+              <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Month" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72" position="popper">
+              <NativeSelectScrollView>
+                {MONTHS.map((monthName, index) => (
+                  <SelectItem key={monthName} label={monthName} value={String(index)} />
+                ))}
+              </NativeSelectScrollView>
+            </SelectContent>
+          </Select>
+          <Select
+            onValueChange={(option) => {
+              if (option) setMonth((current) => current.year(Number(option.value)));
+            }}
+            value={{ label: String(month.year()), value: String(month.year()) }}
+          >
+            <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
+              <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Year" />
+            </SelectTrigger>
+            <SelectContent className="max-h-72" position="popper">
+              <NativeSelectScrollView>
+                {years.map((year) => (
+                  <SelectItem key={year} label={String(year)} value={String(year)} />
+                ))}
+              </NativeSelectScrollView>
+            </SelectContent>
+          </Select>
+        </View>
         <View className="flex-row items-center gap-5">
           <Pressable accessibilityLabel="Previous month" onPress={() => setMonth((current) => current.subtract(1, "month"))}>
             <ThemedIcon icon={ChevronLeft} tone="muted" size={20} strokeWidth={2} />
