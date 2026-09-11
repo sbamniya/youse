@@ -54,6 +54,7 @@ export default function Us() {
   const insets = useSafeAreaInsets();
   const [dailyQuestionTime, setDailyQuestionTime] = useState("08:00 PM");
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
+  const [pokesEnabled, setPokesEnabled] = useState(true);
 
   return (
     <View className="flex-1 bg-background">
@@ -149,7 +150,12 @@ export default function Us() {
 
           {settingsRows.map(({ detail, section, title, comingSoon }) => {
             const isDailyQuestion = title === "Daily question";
-            const rowDetail = isDailyQuestion ? dailyQuestionTime : detail;
+            const isPokes = title === "Pokes from Arjun";
+            const rowDetail = isDailyQuestion
+              ? dailyQuestionTime
+              : isPokes
+                ? pokesEnabled ? "On" : "Off"
+                : detail;
 
             return (
             <View
@@ -172,6 +178,10 @@ export default function Us() {
                   if (comingSoon) return;
                   if (isDailyQuestion) {
                     setIsTimePickerOpen(true);
+                    return;
+                  }
+                  if (isPokes) {
+                    setPokesEnabled((current) => !current);
                     return;
                   }
                   Alert.alert(title, rowDetail);
