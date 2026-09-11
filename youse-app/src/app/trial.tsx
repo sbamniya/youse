@@ -48,7 +48,7 @@ export default function Trial() {
         contentContainerClassName="px-3 pb-3"
         showsVerticalScrollIndicator={false}
       >
-        <BrandMark className="pt-2" showName showTagline />
+        <BrandMark className="pt-2" logoClassName="w-40" showTagline />
 
         <View className="mt-6">
           <Text className="text-[12px] text-muted-foreground" style={{ letterSpacing: 5 }}>

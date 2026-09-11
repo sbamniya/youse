@@ -122,6 +122,7 @@ export default function Billing() {
 
           <PrimaryAction
             accessibilityLabel={`Continue with ${isYearly ? "yearly" : "monthly"} plan`}
+            className="mt-4"
             label={`Continue with ${isYearly ? "yearly" : "monthly"}`}
             onPress={continueWithPlan}
             icon={CreditCard}

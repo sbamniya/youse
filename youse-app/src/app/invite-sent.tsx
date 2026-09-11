@@ -1,10 +1,10 @@
 import {
-    ArrowRight,
-    CalendarDays,
-    ClipboardList,
-    Image as ImageIcon,
-    MessageCircle,
-    Send,
+  ArrowRight,
+  CalendarDays,
+  ClipboardList,
+  Image as ImageIcon,
+  MessageCircle,
+  Send,
 } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 
@@ -28,7 +28,7 @@ export default function InviteSent() {
     <AppScrollScreen>
       <BrandMark className="items-start" />
       <PageIntro
-        className="mt-8"
+        className="mt-4"
         description={`Your invite code ${DEMO_INVITE.displayCode} is active\nand your 14-day trial has not started.`}
         displayTitle
         eyebrow="INVITE SENT"

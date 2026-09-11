@@ -11,15 +11,15 @@ const meeraPortrait = require("../../assets/images/memory-meera-avatar.png");
 export default function UnlinkSuccess() {
   return (
     <AppScrollScreen contentClassName="px-5 pb-11">
-      <BrandMark className="mt-4 items-start" logoClassName="h-12 w-12" />
+      <BrandMark className="mt-4 items-start" logoClassName="h-20 w-36" />
       <Image
         accessibilityLabel="Meera"
-        className="mt-10 h-56 w-56 self-center overflow-hidden"
+        className="mt-4 h-56 w-56 self-center overflow-hidden"
         resizeMode="cover"
         source={meeraPortrait}
       />
       <PageIntro
-        className="mt-8"
+        className="mt-4"
         description="Your journal, moods and personal memories are still here. Invite someone new whenever you’re ready."
         displayTitle
         title={"Your space\nis yours now."}

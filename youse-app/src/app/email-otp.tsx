@@ -2,9 +2,9 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import type { TextInput as TextInputInstance } from "react-native";
 import {
-    Pressable,
-    ScrollView,
-    View,
+  Pressable,
+  ScrollView,
+  View,
 } from "react-native";
 
   import { AppScreen } from "@/components/app/app-screen";
@@ -119,7 +119,7 @@ export default function EmailOtp() {
       >
           <BrandMark className="items-start pt-5" />
 
-          <View className="mt-8">
+          <View className="mt-2">
             <Text
               className="text-[12px] leading-6 text-accent"
               style={{ letterSpacing: 6 }}

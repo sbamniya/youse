@@ -1,14 +1,32 @@
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, X } from "lucide-react-native";
+import { useState } from "react";
 import { Alert, Image, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 import { router } from "expo-router";
 
 const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
+
+const dailyQuestionTimes = Array.from({ length: 46 }, (_, index) => {
+  const totalMinutes = 60 + index * 30;
+  const hour = Math.floor(totalMinutes / 60);
+  const minute = totalMinutes % 60;
+  const period = hour < 12 ? "AM" : "PM";
+  const displayHour = hour % 12 || 12;
+
+  return `${String(displayHour).padStart(2, "0")}:${String(minute).padStart(2, "0")} ${period}`;
+});
 
 const settingsRows = [
   {
@@ -34,6 +52,8 @@ const settingsRows = [
 
 export default function Us() {
   const insets = useSafeAreaInsets();
+  const [dailyQuestionTime, setDailyQuestionTime] = useState("08:00 PM");
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
 
   return (
     <View className="flex-1 bg-background">
@@ -127,7 +147,11 @@ export default function Us() {
             </View>
           </View> */}
 
-          {settingsRows.map(({ detail, section, title, comingSoon }, index) => (
+          {settingsRows.map(({ detail, section, title, comingSoon }) => {
+            const isDailyQuestion = title === "Daily question";
+            const rowDetail = isDailyQuestion ? dailyQuestionTime : detail;
+
+            return (
             <View
               key={title}
               className="mt-4 border-t border-border-subtle pt-4"
@@ -144,7 +168,14 @@ export default function Us() {
                   },
                 )}
                 disabled={comingSoon}
-                onPress={() => !comingSoon && Alert.alert(title, detail)}
+                onPress={() => {
+                  if (comingSoon) return;
+                  if (isDailyQuestion) {
+                    setIsTimePickerOpen(true);
+                    return;
+                  }
+                  Alert.alert(title, rowDetail);
+                }}
               >
                 <View className="flex-1">
                   <Text className="font-serif text-[16px] text-foreground">
@@ -152,13 +183,14 @@ export default function Us() {
                     {comingSoon ? " (Coming Soon)" : ""}
                   </Text>
                   <Text className="mt-1 font-serif text-[14px] text-primary">
-                    {detail}
+                    {rowDetail}
                   </Text>
                 </View>
                 <ThemedIcon icon={ChevronRight} size={24} strokeWidth={1.5} />
               </Pressable>
             </View>
-          ))}
+            );
+          })}
 
           <View className="mt-8 border-t border-border-subtle pt-7">
             <SectionLabel label="RELATIONSHIP STATUS" />
@@ -176,6 +208,59 @@ export default function Us() {
           </View>
         </View>
       </ScrollView>
+      <AlertDialog onOpenChange={setIsTimePickerOpen} open={isTimePickerOpen}>
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader className="relative pr-12">
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              Daily question time
+            </AlertDialogTitle>
+            <AlertDialogCancel
+              accessibilityLabel="Close time picker"
+              className="absolute -right-1 -top-1 h-10 w-10 items-center justify-center rounded-full border-0 bg-transparent p-0 active:bg-muted"
+            >
+              <ThemedIcon icon={X} size={19} strokeWidth={2} />
+            </AlertDialogCancel>
+          </AlertDialogHeader>
+          <Text className="-mt-2 font-serif text-[14px] text-muted-foreground">
+            Choose when you’d like your daily question.
+          </Text>
+          <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
+            <View className="-mx-1 flex-row flex-wrap">
+              {dailyQuestionTimes.map((time) => {
+                const isSelected = time === dailyQuestionTime;
+
+                return (
+                  <View key={time} className="w-1/2 p-1">
+                    <Pressable
+                      accessibilityRole="radio"
+                      accessibilityState={{ checked: isSelected }}
+                      className={cn(
+                        "h-11 items-center justify-center rounded-xl border active:opacity-75",
+                        isSelected
+                          ? "border-primary bg-primary"
+                          : "border-border-subtle bg-background",
+                      )}
+                      onPress={() => {
+                        setDailyQuestionTime(time);
+                        setIsTimePickerOpen(false);
+                      }}
+                    >
+                      <Text
+                        className={cn(
+                          "text-[14px] font-semibold",
+                          isSelected ? "text-primary-foreground" : "text-foreground",
+                        )}
+                      >
+                        {time}
+                      </Text>
+                    </Pressable>
+                  </View>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </AlertDialogContent>
+      </AlertDialog>
     </View>
   );
 }

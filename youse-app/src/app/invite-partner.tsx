@@ -1,11 +1,11 @@
 import * as Clipboard from "expo-clipboard";
 import { router } from "expo-router";
 import {
-    Check,
-    Clipboard as ClipboardIcon,
-    LockKeyhole,
-    Share2,
-    Smartphone,
+  Check,
+  Clipboard as ClipboardIcon,
+  LockKeyhole,
+  Share2,
+  Smartphone,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, Share, View } from "react-native";
@@ -44,7 +44,7 @@ export default function InvitePartner() {
     <AppScrollScreen>
       <BrandMark className="items-start" />
       <PageIntro
-        className="mt-8"
+        className="mt-4"
         description={"Your space will become shared\nonly after he accepts your invite."}
         eyebrow="CONNECT YOUR SPACE"
         title={`Invite ${DEMO_INVITE.inviteeName}`}

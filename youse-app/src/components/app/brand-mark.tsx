@@ -3,7 +3,7 @@ import { Image, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
-const logo = require("../../../assets/images/icon.png");
+const logo = require("../../../assets/images/logo-full-white.png");
 
 type BrandMarkProps = {
   className?: string;
@@ -23,7 +23,7 @@ function BrandMark({
       <Image
         source={logo}
         resizeMode="contain"
-        className={cn("h-14 w-14", logoClassName)}
+        className={cn("h-16 w-24", logoClassName)}
       />
       {showName ? (
         <Text className="mt-1 text-[28px] font-bold text-accent">Youse</Text>

@@ -49,7 +49,7 @@ export default function Connected() {
         contentContainerClassName="px-3 pb-3"
         showsVerticalScrollIndicator={false}
       >
-        <BrandMark className="pt-2" showName showTagline />
+        <BrandMark className="pt-2" logoClassName="w-40" showTagline />
 
         <View className="relative mt-6 flex-row items-center justify-center">
           <Image
