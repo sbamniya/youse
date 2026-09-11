@@ -1,7 +1,9 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
+import { ChevronLeft } from "lucide-react-native";
+import { ThemedIcon } from "./themed-icon";
 
 type PageIntroProps = {
   title: string;
@@ -10,6 +12,9 @@ type PageIntroProps = {
   align?: "left" | "center";
   className?: string;
   displayTitle?: boolean;
+  backArrow?: {
+    onPress: () => void;
+  };
 };
 
 function PageIntro({
@@ -19,19 +24,35 @@ function PageIntro({
   align = "left",
   className,
   displayTitle = false,
+  backArrow,
 }: PageIntroProps) {
   const centered = align === "center";
 
   return (
     <View className={cn(centered && "items-center", className)}>
-      {eyebrow ? (
-        <Text
-          className={cn("text-[12px] text-muted-foreground", centered && "text-center")}
-          style={{ letterSpacing: 5 }}
-        >
-          {eyebrow}
-        </Text>
-      ) : null}
+      <View className="flex flex-row gap-1 items-center">
+        {backArrow && (
+          <Pressable
+            accessibilityLabel="Back to trial details"
+            className="h-11 w-11 items-center justify-center active:opacity-65"
+            hitSlop={12}
+            onPress={backArrow?.onPress}
+          >
+            <ThemedIcon icon={ChevronLeft} size={36} strokeWidth={1.7} />
+          </Pressable>
+        )}
+        {eyebrow ? (
+          <Text
+            className={cn(
+              "text-[12px] text-muted-foreground",
+              centered && "text-center",
+            )}
+            style={{ letterSpacing: 5 }}
+          >
+            {eyebrow}
+          </Text>
+        ) : null}
+      </View>
       <Text
         className={cn(
           "mt-4 font-bold text-foreground",
