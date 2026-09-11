@@ -4,7 +4,7 @@ import {
   CreditCard,
   Heart,
   Image as ImageIcon,
-  UsersRound
+  UsersRound,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, Pressable, ScrollView, View } from "react-native";
@@ -65,16 +65,19 @@ export default function Billing() {
       >
         <View style={{ paddingTop: Math.max(insets.top + 18, 42) }}>
           <PageIntro
-            className="mt-4"
+            className="mt-2"
             eyebrow="YOUR 14-DAY TRIAL"
             description={`Keep your space going.\nYour shared history stays\nviewable, always.`}
             title="Welcome back"
             backArrow={{
-              onPress: () => router.replace("/connected"),
+              onPress: () =>
+                router.canGoBack()
+                  ? router.back()
+                  : router.replace("/(tabs)/today"),
             }}
           />
 
-          <View className="mt-4">
+          <View className="mt-2">
             {benefits.map(({ description, icon, title }, index) => (
               <View
                 key={title}

@@ -34,11 +34,11 @@ function PageIntro({
         {backArrow && (
           <Pressable
             accessibilityLabel="Back to trial details"
-            className="h-11 w-11 items-center justify-center active:opacity-65"
+            className="h-11 w-8 items-start justify-center active:opacity-65"
             hitSlop={12}
             onPress={backArrow?.onPress}
           >
-            <ThemedIcon icon={ChevronLeft} size={36} strokeWidth={1.7} />
+            <ThemedIcon icon={ChevronLeft} size={24} strokeWidth={1.7} />
           </Pressable>
         )}
         {eyebrow ? (
