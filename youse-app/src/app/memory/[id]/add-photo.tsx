@@ -27,7 +27,13 @@ export default function AddPhoto() {
 
   return (
     <AppScreen>
-      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        className="flex-1 px-4"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <View className="flex-row items-center gap-2 pt-2">
           <BackButton />
           <Text className="text-[12px] text-muted-foreground" style={{ letterSpacing: 4 }}>

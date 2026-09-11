@@ -1,11 +1,7 @@
 import { router } from "expo-router";
 import { KeyRound } from "lucide-react-native";
 import { useState } from "react";
-import {
-    KeyboardAvoidingView,
-    Platform,
-    View,
-} from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { AppHeader } from "@/components/app/app-header";
 import { AppScreen } from "@/components/app/app-screen";
@@ -33,55 +29,55 @@ export default function InviteCode() {
 
   return (
     <AppScreen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-        style={{ flex: 1 }}
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        contentContainerClassName="flex-grow px-3 pb-6"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <View className="flex-1 px-3" style={{ flex: 1 }}>
-          <AppHeader />
+        <AppHeader />
 
-          <View className="mt-14 px-2">
-            <View className="h-16 w-16 self-center items-center justify-center rounded-full bg-secondary">
-              <ThemedIcon icon={KeyRound} size={30} strokeWidth={1.7} />
-            </View>
-            <PageIntro
-              align="center"
-              className="mt-8"
-              description="Use the private code your partner shared with you."
-              displayTitle
-              eyebrow="JOIN YOUR SPACE"
-              title="Enter your invite code"
-            />
-
-            <Input
-              autoCapitalize="characters"
-              autoCorrect={false}
-              className="mt-10 h-16 rounded-2xl border border-input px-5 text-center text-[23px] font-bold text-foreground"
-              maxLength={8}
-              onChangeText={(value) => {
-                setInviteCode(value);
-                setError("");
-              }}
-              placeholder={DEMO_INVITE.code}
-              returnKeyType="done"
-              value={inviteCode}
-              onSubmitEditing={handleContinue}
-            />
-            {error ? (
-              <Text className="mt-3 font-serif text-[15px] text-destructive">{error}</Text>
-            ) : null}
-
-            <PrimaryAction
-              className="mt-7"
-              disabled={!normalizedCode}
-              label="Continue"
-              onPress={handleContinue}
-              showArrow
-            />
+        <View className="mt-14 px-2">
+          <View className="h-16 w-16 self-center items-center justify-center rounded-full bg-secondary">
+            <ThemedIcon icon={KeyRound} size={30} strokeWidth={1.7} />
           </View>
+          <PageIntro
+            align="center"
+            className="mt-8"
+            description="Use the private code your partner shared with you."
+            displayTitle
+            eyebrow="JOIN YOUR SPACE"
+            title="Enter your invite code"
+          />
+
+          <Input
+            autoCapitalize="characters"
+            autoCorrect={false}
+            className="mt-10 h-16 rounded-2xl border border-input px-5 text-center text-[23px] font-bold text-foreground"
+            maxLength={8}
+            onChangeText={(value) => {
+              setInviteCode(value);
+              setError("");
+            }}
+            onSubmitEditing={handleContinue}
+            placeholder={DEMO_INVITE.code}
+            returnKeyType="done"
+            value={inviteCode}
+          />
+          {error ? (
+            <Text className="mt-3 font-serif text-[15px] text-destructive">{error}</Text>
+          ) : null}
+
+          <PrimaryAction
+            className="mt-7"
+            disabled={!normalizedCode}
+            label="Continue"
+            onPress={handleContinue}
+            showArrow
+          />
         </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </AppScreen>
   );
 }

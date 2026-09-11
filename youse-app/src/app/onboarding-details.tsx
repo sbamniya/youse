@@ -4,8 +4,6 @@ import { CalendarDays, Camera, Check } from "lucide-react-native";
 import { useState } from "react";
 import {
     Image,
-    KeyboardAvoidingView,
-    Platform,
     Pressable,
     ScrollView,
     View,
@@ -43,16 +41,13 @@ export default function OnboardingDetails() {
 
   return (
     <AppScreen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        className="flex-1"
-        style={{ flex: 1 }}
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        contentContainerClassName="px-3 pb-3"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerClassName="px-3 pb-3"
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
             <View className="flex-row items-center pt-2">
               <View className="flex-1 justify-center">
                 <View className="h-1 bg-muted">
@@ -255,8 +250,7 @@ export default function OnboardingDetails() {
                 }
               }}
             />
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </AppScreen>
   );
 }

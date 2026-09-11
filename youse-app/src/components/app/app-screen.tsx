@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import type { ReactNode } from "react";
-import { ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { cn } from "@/lib/utils";
@@ -20,7 +20,12 @@ function AppScreen({ children, className }: AppScreenProps) {
     <View className={cn("flex-1 bg-background", className)}>
       <StatusBar style="light" />
       <SafeAreaView className="flex-1" style={{ flex: 1 }} edges={["top", "bottom"]}>
-        {children}
+        <KeyboardAvoidingView
+          behavior={Platform.select({ android: "height", ios: "padding" })}
+          className="flex-1"
+        >
+          {children}
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
   );
@@ -35,8 +40,10 @@ function AppScrollScreen({
   return (
     <AppScreen className={className}>
       <ScrollView
+        automaticallyAdjustKeyboardInsets
         contentContainerClassName={cn("px-3 pb-3", contentClassName)}
-        keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps={keyboardShouldPersistTaps ?? "handled"}
         showsVerticalScrollIndicator={false}
       >
         {children}

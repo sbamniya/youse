@@ -30,7 +30,13 @@ export default function CreatePlan() {
 
   return (
     <AppScreen>
-      <ScrollView className="flex-1 px-4" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        className="flex-1 px-4"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
         <BackButton className="mt-2" />
 
         <PageIntro

@@ -2,9 +2,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import type { TextInput as TextInputInstance } from "react-native";
 import {
-    KeyboardAvoidingView,
-    Platform,
     Pressable,
+    ScrollView,
     View,
 } from "react-native";
 
@@ -111,12 +110,13 @@ export default function EmailOtp() {
 
   return (
     <AppScreen>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
-        style={{ flex: 1 }}
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
+        contentContainerClassName="flex-grow px-3 pb-6"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <View className="flex-1 px-3" style={{ flex: 1 }}>
           <BrandMark className="items-start pt-5" />
 
           <View className="mt-8">
@@ -254,8 +254,7 @@ export default function EmailOtp() {
               </Text>
             </View>
           ) : null}
-        </View>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </AppScreen>
   );
 }

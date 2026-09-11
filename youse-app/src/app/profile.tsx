@@ -15,8 +15,6 @@ import { useState } from "react";
 import {
     Alert,
     Image,
-    KeyboardAvoidingView,
-    Platform,
     Pressable,
     ScrollView,
     View,
@@ -60,16 +58,14 @@ export default function Profile() {
 
   return (
     <View className="flex-1 bg-background">
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      <ScrollView
+        automaticallyAdjustKeyboardInsets
         className="flex-1"
+        contentContainerClassName="pb-12"
+        keyboardDismissMode="interactive"
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="pb-12"
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
           <View className="relative h-60 overflow-hidden">
             <View className="absolute inset-0 bg-black/40" />
             <LinearGradient
@@ -202,8 +198,7 @@ export default function Profile() {
               }}
             />
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </View>
   );
 }
