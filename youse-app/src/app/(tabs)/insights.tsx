@@ -84,7 +84,7 @@ export default function Insight() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <View className="relative h-40 overflow-hidden">
+          <View className="relative h-48 overflow-hidden">
             <View className="absolute inset-0 bg-black/40" />
             <LinearGradient
               colors={["transparent", `${background}e6`, background]}
