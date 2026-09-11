@@ -1,9 +1,15 @@
 import { DarkTheme, Stack, ThemeProvider } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { MemoryProvider } from "@/lib/memory-store";
 
 import "../global.css";
+
+SplashScreen.setOptions({
+  duration: 350,
+  fade: true,
+});
 
 const navigationTheme = {
   ...DarkTheme,
