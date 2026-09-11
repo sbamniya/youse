@@ -12,9 +12,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
-import { SelectionOption } from "@/components/app/selection-option";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 
 type Plan = "yearly" | "monthly";
 
@@ -101,18 +101,18 @@ export default function Billing() {
           </View>
 
           <View className="mt-4 gap-3">
-            <SelectionOption
+            <PlanOption
               badge="Save 44%"
               caption="JUST ₹83/MONTH"
               isSelected={isYearly}
               onPress={() => setPlan("yearly")}
-              title="₹999/year"
+              price="₹999/year"
             />
-            <SelectionOption
+            <PlanOption
               caption="BILLED MONTHLY"
               isSelected={!isYearly}
               onPress={() => setPlan("monthly")}
-              title="₹149/month"
+              price="₹149/month"
             />
           </View>
 
@@ -139,5 +139,59 @@ export default function Billing() {
         </View>
       </ScrollView>
     </View>
+  );
+}
+
+type PlanOptionProps = {
+  badge?: string;
+  caption: string;
+  isSelected: boolean;
+  onPress: () => void;
+  price: string;
+};
+
+function PlanOption({
+  badge,
+  caption,
+  isSelected,
+  onPress,
+  price,
+}: PlanOptionProps) {
+  return (
+    <Pressable
+      accessibilityRole="radio"
+      accessibilityState={{ checked: isSelected }}
+      className={cn(
+        "min-h-20 flex-row items-center rounded-[18px] border px-4 active:opacity-80",
+        isSelected ? "border-primary bg-secondary/20" : "border-border-subtle",
+      )}
+      onPress={onPress}
+    >
+      <View
+        className={cn(
+          "h-6 w-6 items-center justify-center rounded-full border-2",
+          isSelected ? "border-primary" : "border-primary/80",
+        )}
+      >
+        {isSelected ? (
+          <View className="h-2 w-2 rounded-full bg-primary" />
+        ) : null}
+      </View>
+      <View className="ml-5 flex-1">
+        <Text className="text-[20px] font-bold leading-7 text-foreground">
+          {price}
+        </Text>
+        <Text className="mt-0.5 text-[8px] font-medium tracking-[3px] text-primary">
+          {caption}
+        </Text>
+      </View>
+      {badge ? (
+        <View className="rounded-full bg-primary px-2 py-1.5">
+          <Text className="text-[12px] font-semibold text-primary-foreground">
+            {badge}
+          </Text>
+        </View>
+      ) : null}
+    </Pressable>
   );
 }

@@ -14,18 +14,21 @@ type DataOption = "export" | "archive" | "delete";
 
 const options = [
   {
+    comingSoon: true,
     description: "Download a copy of all shared photos, plans and memories to keep.",
     icon: Download,
     title: "Export everything",
     value: "export",
   },
   {
+    comingSoon: true,
     description: "Keep everything, but move it out of your shared space. Only you can see it.",
     icon: Archive,
     title: "Archive privately",
     value: "archive",
   },
   {
+    comingSoon: false,
     description: "Permanently delete all shared photos, plans and memories from both of our accounts.",
     icon: Trash2,
     title: "Delete shared data",
@@ -35,7 +38,7 @@ const options = [
 
 export default function UnlinkPartner() {
   const insets = useSafeAreaInsets();
-  const [selection, setSelection] = useState<DataOption>("archive");
+  const [selection, setSelection] = useState<DataOption>("delete");
 
   return (
     <View className="flex-1 bg-background">
@@ -54,11 +57,13 @@ export default function UnlinkPartner() {
           />
 
           <View className="mt-6 gap-3">
-            {options.map(({ description, icon, title, value }) => (
+            {options.map(({ comingSoon, description, icon, title, value }) => (
               <SelectionOption
+                badge={comingSoon ? "Coming soon" : undefined}
                 compact
                 key={value}
                 description={description}
+                disabled={comingSoon}
                 icon={icon}
                 isSelected={selection === value}
                 onPress={() => setSelection(value)}

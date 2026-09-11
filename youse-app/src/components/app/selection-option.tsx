@@ -10,6 +10,7 @@ type SelectionOptionProps = {
   caption?: string;
   compact?: boolean;
   description?: string;
+  disabled?: boolean;
   icon?: LucideIcon;
   isSelected: boolean;
   onPress: () => void;
@@ -21,6 +22,7 @@ function SelectionOption({
   caption,
   compact = false,
   description,
+  disabled = false,
   icon,
   isSelected,
   onPress,
@@ -29,14 +31,16 @@ function SelectionOption({
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityState={{ checked: isSelected }}
+      accessibilityState={{ checked: isSelected, disabled }}
       className={cn(
         "flex-row items-center border active:opacity-80",
         compact
           ? "min-h-0 rounded-2xl px-3"
           : "min-h-20 rounded-[18px] px-4",
         isSelected ? "border-primary bg-secondary/20" : "border-border-subtle",
+        disabled && "opacity-50",
       )}
+      disabled={disabled}
       onPress={onPress}
     >
       <View

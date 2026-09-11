@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
-import { router } from "expo-router";
+import { router, type Href } from "expo-router";
 
 const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
 
@@ -28,7 +28,15 @@ const dailyQuestionTimes = Array.from({ length: 46 }, (_, index) => {
   return `${String(displayHour).padStart(2, "0")}:${String(minute).padStart(2, "0")} ${period}`;
 });
 
-const settingsRows = [
+type SettingsRow = {
+  comingSoon?: boolean;
+  detail: string;
+  route?: Href;
+  section?: string;
+  title: string;
+};
+
+const settingsRows: SettingsRow[] = [
   {
     detail: "8:00 PM",
     section: "NOTIFICATIONS",
@@ -47,6 +55,12 @@ const settingsRows = [
   {
     detail: "How we keep your data safe",
     title: "Privacy",
+    route: "/privacy",
+  },
+  {
+    detail: "The guidelines for using Youse",
+    title: "Terms & conditions",
+    route: "/terms",
   },
 ];
 
@@ -148,7 +162,7 @@ export default function Us() {
             </View>
           </View> */}
 
-          {settingsRows.map(({ detail, section, title, comingSoon }) => {
+          {settingsRows.map(({ detail, section, title, comingSoon, route }) => {
             const isDailyQuestion = title === "Daily question";
             const isPokes = title === "Pokes from Arjun";
             const rowDetail = isDailyQuestion
@@ -182,6 +196,10 @@ export default function Us() {
                   }
                   if (isPokes) {
                     setPokesEnabled((current) => !current);
+                    return;
+                  }
+                  if (route) {
+                    router.push(route);
                     return;
                   }
                   Alert.alert(title, rowDetail);
