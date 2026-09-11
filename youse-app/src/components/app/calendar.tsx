@@ -36,6 +36,8 @@ type CalendarProps = {
   onValueChange: (date: Dayjs) => void;
   getMarkerCount?: (date: Dayjs) => number;
   className?: string;
+  // needed so the month/year dropdowns render above a parent AlertDialog/Dialog
+  portalHost?: string;
 };
 
 function getCalendarWeeks(month: Dayjs) {
@@ -50,7 +52,7 @@ function getCalendarWeeks(month: Dayjs) {
   return Array.from({ length: cells.length / 7 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
 }
 
-function Calendar({ value, onValueChange, getMarkerCount, className }: CalendarProps) {
+function Calendar({ value, onValueChange, getMarkerCount, className, portalHost }: CalendarProps) {
   const [month, setMonth] = useState(() => value.startOf("month"));
   const weeks = useMemo(() => getCalendarWeeks(month), [month]);
   const years = useMemo(
@@ -71,7 +73,7 @@ function Calendar({ value, onValueChange, getMarkerCount, className }: CalendarP
             <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
               <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Month" />
             </SelectTrigger>
-            <SelectContent className="max-h-72" position="popper">
+            <SelectContent className="max-h-72" portalHost={portalHost} position="popper">
               <NativeSelectScrollView>
                 {MONTHS.map((monthName, index) => (
                   <SelectItem key={monthName} label={monthName} value={String(index)} />
@@ -88,7 +90,7 @@ function Calendar({ value, onValueChange, getMarkerCount, className }: CalendarP
             <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
               <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Year" />
             </SelectTrigger>
-            <SelectContent className="max-h-72" position="popper">
+            <SelectContent className="max-h-72" portalHost={portalHost} position="popper">
               <NativeSelectScrollView>
                 {years.map((year) => (
                   <SelectItem key={year} label={String(year)} value={String(year)} />
@@ -160,3 +162,4 @@ function Calendar({ value, onValueChange, getMarkerCount, className }: CalendarP
 
 export { Calendar };
 export type { CalendarProps };
+

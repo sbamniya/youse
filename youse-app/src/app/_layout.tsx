@@ -2,6 +2,7 @@ import { MemoryProvider } from "@/lib/memory-store";
 import { PortalHost } from "@rn-primitives/portal";
 import { DarkTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import "../global.css";
@@ -22,19 +23,21 @@ const navigationTheme = {
 
 export default function RootLayout() {
   return (
-    <SafeAreaProvider>
-      <ThemeProvider value={navigationTheme}>
-        <MemoryProvider>
-          <Stack
-            screenOptions={{
-              animation: "slide_from_right",
-              contentStyle: { backgroundColor: "#160d11" },
-              headerShown: false,
-            }}
-          />
-        </MemoryProvider>
-        <PortalHost />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ThemeProvider value={navigationTheme}>
+          <MemoryProvider>
+            <Stack
+              screenOptions={{
+                animation: "slide_from_right",
+                contentStyle: { backgroundColor: "#160d11" },
+                headerShown: false,
+              }}
+            />
+          </MemoryProvider>
+          <PortalHost />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
