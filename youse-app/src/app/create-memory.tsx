@@ -12,7 +12,7 @@ import { ToggleRow } from "@/components/app/toggle-row";
 import { Text } from "@/components/ui/text";
 
 const photo =
-  "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop";
 
 export default function CreateMemory() {
   const [title, setTitle] = useState("Goa");
@@ -53,12 +53,8 @@ export default function CreateMemory() {
         />
 
         <Pressable className="relative mt-6">
-          <Image
-            source={{ uri: photo }}
-            resizeMode="cover"
-            className="aspect-square w-full rounded-3xl h-60"
-          />
-          <View className="absolute bottom-3 right-3 flex-row items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5">
+          <Image source={{ uri: photo }} resizeMode="cover" className="h-60 w-full rounded-3xl" />
+          <View className="absolute bottom-3 right-3 flex-row items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5">
             <ThemedIcon icon={Pencil} size={14} strokeWidth={1.8} />
             <Text className="text-[13px] text-foreground">Change photo</Text>
           </View>

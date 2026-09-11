@@ -5,45 +5,11 @@ import { Image, Pressable, ScrollView, View } from "react-native";
 import { AppScreen } from "@/components/app/app-screen";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
-
-const featuredMemory = {
-  title: "Goa",
-  dateLabel: "3 FEB",
-  quote: "Same place,\nbrighter days.",
-  image:
-    "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-};
-
-const memories = [
-  {
-    key: "ladakh",
-    title: "Ladakh",
-    dateLabel: "12 JUN",
-    image:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=700&auto=format&fit=crop",
-  },
-  {
-    key: "goa",
-    title: "Goa",
-    dateLabel: "3 FEB",
-    image:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=700&auto=format&fit=crop",
-  },
-  {
-    key: "apartment",
-    title: "Our apartment",
-    dateLabel: "14 DEC",
-    image: "https://picsum.photos/seed/our-apartment/700/900",
-  },
-  {
-    key: "diwali",
-    title: "Diwali",
-    dateLabel: "1 NOV",
-    image: "https://picsum.photos/seed/diwali-lights/700/900",
-  },
-];
+import { featuredMemory } from "@/lib/memories";
+import { useMemories } from "@/lib/memory-store";
 
 export default function Memories() {
+  const { memories } = useMemories();
   return (
     <AppScreen>
       <ScrollView
@@ -80,9 +46,12 @@ export default function Memories() {
         >
           ON THIS DAY
         </Text>
-        <Pressable className="mt-3 flex-row items-center gap-4">
+        <Pressable
+          className="mt-3 flex-row items-center gap-4 active:opacity-80"
+          onPress={() => router.push(`/memory/${featuredMemory.id}`)}
+        >
           <Image
-            source={{ uri: featuredMemory.image }}
+            source={featuredMemory.image}
             resizeMode="cover"
             className="h-24 w-32 rounded-2xl"
           />
@@ -98,7 +67,7 @@ export default function Memories() {
             </Text>
             <View className="mt-2 h-px w-5 bg-muted-foreground" />
             <Text className="mt-2 font-serif text-[15px] leading-5 text-muted-foreground">
-              {featuredMemory.quote}
+              Same place,{"\n"}brighter days.
             </Text>
           </View>
         </Pressable>
@@ -106,12 +75,18 @@ export default function Memories() {
         {/* Grid */}
         <View className="mt-6 flex-row flex-wrap gap-2">
           {memories.map((memory) => (
-            <Pressable key={memory.key} className="w-[48.5%]">
-              <Image
-                source={{ uri: memory.image }}
-                resizeMode="cover"
-                className="aspect-[3/4] w-full rounded-2xl"
-              />
+            <Pressable
+              key={memory.id}
+              className="w-[48.5%] active:opacity-80"
+              onPress={() => router.push(`/memory/${memory.id}`)}
+            >
+              <View className="aspect-[3/4] w-full overflow-hidden rounded-2xl">
+                <Image
+                  source={memory.image}
+                  resizeMode="cover"
+                  className="absolute inset-0 h-full w-full"
+                />
+              </View>
               <View className="absolute inset-x-0 bottom-0 rounded-b-2xl bg-black/25 px-3 pb-3 pt-6">
                 <Text className="font-serif text-[18px] text-foreground">
                   {memory.title}

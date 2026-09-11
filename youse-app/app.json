@@ -23,6 +23,13 @@
       "expo-router",
       "expo-secure-store",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Youse to access your photos so you can add them to a memory.",
+          "microphonePermission": false
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/icon.png",
