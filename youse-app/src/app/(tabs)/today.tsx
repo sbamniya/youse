@@ -1,12 +1,12 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
-    Check,
-    ChevronRight,
-    Pencil,
-    Plane,
-    Smile,
-    UtensilsCrossed,
+  Check,
+  ChevronRight,
+  Pencil,
+  Plane,
+  Smile,
+  UtensilsCrossed,
 } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
@@ -104,11 +104,19 @@ export default function Today() {
 
             <View className="flex-row items-center gap-2">
               <TrialBadge days={14} />
-              <Image
-                source={{ uri: meeraImage }}
-                resizeMode="cover"
-                className="h-9 w-9 rounded-full border border-foreground/25"
-              />
+              <Pressable
+                accessibilityLabel="Open profile"
+                accessibilityRole="button"
+                className="rounded-full active:opacity-70"
+                hitSlop={8}
+                onPress={() => router.push("/profile")}
+              >
+                <Image
+                  source={{ uri: meeraImage }}
+                  resizeMode="cover"
+                  className="h-9 w-9 rounded-full border border-foreground/25"
+                />
+              </Pressable>
             </View>
           </View>
 
