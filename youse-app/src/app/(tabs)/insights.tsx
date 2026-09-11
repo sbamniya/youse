@@ -1,17 +1,17 @@
 import { LinearGradient } from "expo-linear-gradient";
 import {
-    CalendarDays,
-    CircleHelp,
-    HeartPulse,
-    UsersRound,
+  CalendarDays,
+  CircleHelp,
+  HeartPulse,
+  UsersRound,
 } from "lucide-react-native";
 import {
-    Alert,
-    Image,
-    Pressable,
-    ScrollView,
-    View,
-    useWindowDimensions,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+  useWindowDimensions,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Polyline } from "react-native-svg";
@@ -85,7 +85,7 @@ export default function Insight() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <View className="relative h-48 overflow-hidden">
+          <View className="relative h-44 overflow-hidden">
             <View className="absolute inset-0 bg-black/40" />
             <LinearGradient
               colors={["transparent", `${background}e6`, background]}
@@ -101,7 +101,7 @@ export default function Insight() {
                 <Image
                   source={logo}
                   resizeMode="contain"
-                  className="h-6 w-16"
+                  className="h-16 w-24"
                 />
                 {/* <Text className="mt-0.5 text-[9px] font-medium tracking-[2px] text-muted-foreground">
                   A BRIGHTER US, DAILY
