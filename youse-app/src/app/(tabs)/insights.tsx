@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import {
   CalendarDays,
   ChevronRight,
@@ -5,7 +6,6 @@ import {
   HeartPulse,
   UsersRound,
 } from "lucide-react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { Alert, Image, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Circle, Line, Polyline } from "react-native-svg";
@@ -80,13 +80,7 @@ export default function Insight() {
         showsVerticalScrollIndicator={false}
       >
         <View>
-          <View className="relative h-60 overflow-hidden">
-            <Image
-              accessibilityLabel="Couple enjoying a quiet moment"
-              source={{ uri: insightHeroImage }}
-              resizeMode="cover"
-              className="absolute inset-0 h-full w-full"
-            />
+          <View className="relative h-40 overflow-hidden">
             <View className="absolute inset-0 bg-black/40" />
             <LinearGradient
               colors={["transparent", `${background}e6`, background]}
@@ -95,7 +89,7 @@ export default function Insight() {
             />
 
             <View
-              className="absolute inset-x-0 top-0 flex-row items-start justify-between px-5"
+              className="absolute inset-x-0 top-0 flex-row items-start justify-between px-4"
               style={{ paddingTop: insets.top + 10 }}
             >
               <View>
@@ -109,7 +103,7 @@ export default function Insight() {
               </View>
             </View>
 
-            <View className="absolute inset-x-0 bottom-0 px-6 pb-5">
+            <View className="absolute inset-x-0 bottom-0 px-4 pb-5">
               <Text className="text-[10px] font-medium tracking-[2px] text-muted-foreground">
                 YOUR WEEK TOGETHER
               </Text>
@@ -120,22 +114,22 @@ export default function Insight() {
             </View>
           </View>
 
-          <View className="mt-3 border-t border-border-subtle px-7 pt-6">
-            <View className="flex-row items-end">
+          <View className="mt-1 border-t border-border-subtle px-4 pt-2">
+            <View className="flex-row items-center justify-center">
               <View className="flex-1">
-                <Text className="text-[96px] font-bold leading-[92px] tracking-[-4px] text-foreground">82</Text>
+                <Text className="text-[72px] font-bold leading-[92px] tracking-[-4px] text-foreground">82</Text>
               </View>
               <View className="mb-1 ml-5 w-30 border-l border-border-subtle pl-5">
-                <Text className="font-serif text-[19px] leading-7 text-primary">
-                  Small moments{"\n"}add up to a{"\n"}stronger us.
+                <Text className="font-serif text-[14px] leading-7 text-primary">
+                  Small moments add up to a{"\n"}stronger us.
                 </Text>
-                <View className="mt-4 h-px w-8 bg-primary" />
+                <View className="mt-1 h-px w-8 bg-primary" />
               </View>
             </View>
-            <Text className="mt-1 text-[28px] font-bold leading-8 text-foreground">
+            <Text className="mt-1 text-[20px] font-bold leading-8 text-foreground">
               Connection activity
             </Text>
-            <Text className="mt-2 font-serif text-[20px] text-primary">
+            <Text className="mt-2 font-serif text-[16px] text-primary">
               Not a relationship-health score.
             </Text>
           </View>
