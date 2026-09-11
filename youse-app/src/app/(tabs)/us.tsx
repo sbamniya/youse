@@ -166,16 +166,7 @@ export default function Us() {
               <Pressable
                 accessibilityRole="button"
                 className="rounded-full w-full border border-primary px-5 py-3 active:opacity-70"
-                onPress={() =>
-                  Alert.alert(
-                    "Unlink Arjun?",
-                    "This would end your shared connection. You can reconnect later with a new invite.",
-                    [
-                      { style: "cancel", text: "Keep connected" },
-                      { style: "destructive", text: "Unlink" },
-                    ],
-                  )
-                }
+                onPress={() => router.push("/unlink-partner")}
               >
                 <Text className="text-[17px] text-center font-semibold text-primary">
                   Unlink partner

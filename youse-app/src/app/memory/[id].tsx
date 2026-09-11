@@ -210,33 +210,37 @@ function Gallery({ memory }: { memory: ReturnType<typeof useMemories>["memories"
       >
         Gallery · {memory.photos.length} {memory.photos.length === 1 ? "photo" : "photos"}
       </Text>
-      <View className="mt-3 flex-row flex-wrap gap-3">
-        <Pressable
-          accessibilityLabel={`Add a photo to ${memory.title}`}
-          className="aspect-[3/4] w-[48%] items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 active:opacity-70"
-          onPress={() => router.push(`/memory/${memory.id}/add-photo`)}
-        >
-          <View className="h-11 w-11 items-center justify-center rounded-full bg-secondary">
-            <ThemedIcon icon={ImagePlus} size={22} strokeWidth={1.8} />
-          </View>
-          <Text className="mt-3 text-center text-[14px] font-semibold text-primary">Add photo</Text>
-          <Text className="mt-1 text-center text-[11px] text-muted-foreground">Caption optional</Text>
-        </Pressable>
-        {memory.photos.map((photo) => (
-          <View key={photo.id} className="w-[48%] overflow-hidden rounded-2xl bg-card">
-            <View className="aspect-[3/4] w-full overflow-hidden">
-              <Image
-                accessibilityLabel={photo.caption ?? `${memory.title} gallery photo`}
-                className="h-full w-full"
-                resizeMode="cover"
-                source={photo.image}
-              />
+      <View className="-mx-1.5 mt-3 flex-row flex-wrap">
+        <View className="w-1/2 p-1.5">
+          <Pressable
+            accessibilityLabel={`Add a photo to ${memory.title}`}
+            className="aspect-[3/4] w-full items-center justify-center rounded-2xl border border-dashed border-border bg-card px-4 active:opacity-70"
+            onPress={() => router.push(`/memory/${memory.id}/add-photo`)}
+          >
+            <View className="h-11 w-11 items-center justify-center rounded-full bg-secondary">
+              <ThemedIcon icon={ImagePlus} size={22} strokeWidth={1.8} />
             </View>
-            {photo.caption ? (
-              <Text className="px-3 py-2 font-serif text-[14px] leading-5 text-primary">
-                {photo.caption}
-              </Text>
-            ) : null}
+            <Text className="mt-3 text-center text-[14px] font-semibold text-primary">Add photo</Text>
+            <Text className="mt-1 text-center text-[11px] text-muted-foreground">Caption optional</Text>
+          </Pressable>
+        </View>
+        {memory.photos.map((photo) => (
+          <View key={photo.id} className="w-1/2 p-1.5">
+            <View className="overflow-hidden rounded-2xl bg-card">
+              <View className="aspect-[3/4] w-full overflow-hidden">
+                <Image
+                  accessibilityLabel={photo.caption ?? `${memory.title} gallery photo`}
+                  className="h-full w-full"
+                  resizeMode="cover"
+                  source={photo.image}
+                />
+              </View>
+              {photo.caption ? (
+                <Text className="px-3 py-2 font-serif text-[14px] leading-5 text-primary">
+                  {photo.caption}
+                </Text>
+              ) : null}
+            </View>
           </View>
         ))}
       </View>

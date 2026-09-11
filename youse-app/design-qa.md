@@ -104,3 +104,40 @@ No actionable P0, P1, or P2 differences remain.
 - Verified the selected Insights tab, compact hero, score, and mood chart render together in the in-app browser without horizontal overflow.
 
 final result: passed
+
+---
+
+# Unlink partner screen QA
+
+- Source visual truth: `/var/folders/r0/tvnbf4d953z7rm_3rs060x1m0000gn/T/codex-clipboard-7f1feb7b-3f8d-48aa-b745-2871d9b16b9d.png`
+- Implementation: `http://127.0.0.1:8081/unlink-partner`
+- Implementation evidence: captured in the in-app browser at 1280 × 720, with the app content constrained to its existing 440 px web frame.
+- State: Export everything selected; all three data choices, warning, primary action, and cancel action visible after one vertical scroll.
+
+## Comparison
+
+The supplied reference establishes the unlink information architecture and copy. The implemented page intentionally uses the current billing screen’s `PageIntro`, option-card, and `PrimaryAction` primitives as requested, so the newer, more compact typography and control dimensions take precedence over the older reference’s larger scale.
+
+Focused comparison covered the option cards and confirmation region. The shared card component uses a compact variant for this longer-copy flow: 16 px titles, 12 px supporting copy, 36 px icon circles, and reduced card padding. Billing retains its original 80 px option-card sizing. The warning remains visually distinct without changing the shared option treatment.
+
+## Fidelity surfaces
+
+- Fonts and typography: existing billing sans/serif hierarchy and compact sizes are reused.
+- Spacing and layout rhythm: billing’s 20 px page gutters, top inset, option gap, card radius, and CTA height are reused.
+- Colors and visual tokens: existing background, primary, secondary, border, and destructive tokens are used.
+- Image and icon fidelity: the screen has no raster imagery; existing Lucide icons are used consistently with the app.
+- Copy and content: matches the supplied unlink flow, including the three data outcomes, permanence notice, and partner notification.
+
+## Interaction checks
+
+- The unlink button on the Us tab opens `/unlink-partner`.
+- Each data option is a radio control and updates the selected state.
+- Back and Cancel return to the prior screen.
+- The primary action presents a final native confirmation prompt; confirming it opens the success screen.
+- The success screen has one action only, `Invite someone new`, and it opens `/invite-partner`.
+
+## Findings
+
+No actionable P0, P1, or P2 mismatches remain after applying the requested billing-component parity. The original reference’s larger headline and tall cards are intentional differences superseded by the request to use the refactored billing sizes.
+
+final result: passed

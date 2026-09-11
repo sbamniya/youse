@@ -3,6 +3,7 @@ import { useCSSVariable } from "uniwind";
 
 const colorVariables = {
   accent: "--color-accent",
+  destructive: "--color-destructive",
   foreground: "--color-foreground",
   muted: "--color-muted-foreground",
   primary: "--color-primary",
