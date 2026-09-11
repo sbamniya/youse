@@ -1,15 +1,17 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { ChevronLeft, Ellipsis, ImagePlus, Pencil } from "lucide-react-native";
+import { useState } from "react";
 import {
   Alert,
+  Animated,
   Image,
   ImageBackground,
   Pressable,
-  ScrollView,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCSSVariable } from "uniwind";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
@@ -17,12 +19,47 @@ import { featuredMemory } from "@/lib/memories";
 import { useMemories } from "@/lib/memory-store";
 
 const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
+const HERO_HEIGHT = 460;
 
 export default function MemoryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const [scrollY] = useState(() => new Animated.Value(0));
   const { memories } = useMemories();
   const memory = memories.find((item) => item.id === id) ?? featuredMemory;
+  const foreground = useCSSVariable("--color-foreground") as string;
+  const collapsedHeaderHeight = Math.max(insets.top + 56, 76);
+  const collapseDistance = HERO_HEIGHT - collapsedHeaderHeight;
+  const heroHeight = scrollY.interpolate({
+    inputRange: [0, collapseDistance],
+    outputRange: [HERO_HEIGHT, collapsedHeaderHeight],
+    extrapolate: "clamp",
+  });
+  const heroTranslateY = scrollY.interpolate({
+    inputRange: [0, collapseDistance],
+    outputRange: [0, -96],
+    extrapolate: "clamp",
+  });
+  const heroScale = scrollY.interpolate({
+    inputRange: [0, collapseDistance],
+    outputRange: [1, 1.08],
+    extrapolate: "clamp",
+  });
+  const compactHeaderOpacity = scrollY.interpolate({
+    inputRange: [collapseDistance * 0.55, collapseDistance],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const compactTitleOpacity = scrollY.interpolate({
+    inputRange: [collapseDistance * 0.7, collapseDistance],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  const controlCircleOpacity = scrollY.interpolate({
+    inputRange: [collapseDistance * 0.45, collapseDistance],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
 
   const openMemoryMenu = () => {
     Alert.alert(memory.title, "What would you like to do?", [
@@ -32,53 +69,36 @@ export default function MemoryDetail() {
     ]);
   };
 
+  const returnToMemories = () => {
+    router.replace("/memories");
+  };
+
   return (
     <View className="flex-1 bg-background">
       <StatusBar style="light" />
-      <ScrollView
+      <Animated.ScrollView
         className="flex-1"
         contentContainerClassName="bg-background"
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false },
+        )}
+        scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
       >
-        <ImageBackground
-          accessibilityLabel={`${memory.title} memory photo`}
-          className="h-[460px] w-full"
-          resizeMode="cover"
-          source={memory.image}
-        >
-          <View
-            className="flex-row items-center justify-between px-5"
-            style={{ paddingTop: Math.max(insets.top + 12, 28) }}
+        <Animated.View className="w-full overflow-hidden" style={{ height: heroHeight }}>
+          <Animated.View
+            className="h-[460px] w-full"
+            style={{ transform: [{ translateY: heroTranslateY }, { scale: heroScale }] }}
           >
-            <Pressable
-              accessibilityLabel="Go back"
-              className="h-10 w-10 items-center justify-center rounded-full bg-black/45 active:opacity-75"
-              hitSlop={8}
-              onPress={() => router.back()}
-            >
-              <ThemedIcon
-                icon={ChevronLeft}
-                tone="foreground"
-                size={25}
-                strokeWidth={2}
-              />
-            </Pressable>
-
-            <Pressable
-              accessibilityLabel="More memory options"
-              className="h-10 w-10 items-center justify-center rounded-full bg-black/45 active:opacity-75"
-              hitSlop={8}
-              onPress={openMemoryMenu}
-            >
-              <ThemedIcon
-                icon={Ellipsis}
-                tone="foreground"
-                size={26}
-                strokeWidth={2.4}
-              />
-            </Pressable>
-          </View>
-        </ImageBackground>
+            <ImageBackground
+              accessibilityLabel={`${memory.title} memory photo`}
+              className="h-full w-full"
+              resizeMode="cover"
+              source={memory.image}
+            />
+          </Animated.View>
+        </Animated.View>
         <View
           className="px-8 pt-9"
           style={{ paddingBottom: Math.max(insets.bottom + 34, 54) }}
@@ -136,7 +156,57 @@ export default function MemoryDetail() {
 
           <Gallery memory={memory} />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
+      <View
+        className="absolute inset-x-0 top-0 z-10"
+        pointerEvents="box-none"
+        style={{ height: collapsedHeaderHeight }}
+      >
+        <Animated.View
+          className="absolute inset-0 bg-background"
+          pointerEvents="none"
+          style={{ opacity: compactHeaderOpacity }}
+        />
+        <View
+          className="flex-row items-center justify-between px-5"
+          pointerEvents="box-none"
+          style={{ paddingTop: Math.max(insets.top + 8, 24) }}
+        >
+          <Pressable
+            accessibilityLabel="Go back"
+            className="h-10 w-10 items-center justify-center"
+            hitSlop={8}
+            onPress={returnToMemories}
+          >
+            <Animated.View
+              className="absolute inset-0 rounded-full bg-black/45"
+              style={{ opacity: controlCircleOpacity }}
+            />
+            <ThemedIcon icon={ChevronLeft} tone="foreground" size={25} strokeWidth={2} />
+          </Pressable>
+
+          <Animated.Text
+            numberOfLines={1}
+            style={{ color: foreground, fontSize: 18, fontWeight: "700", opacity: compactTitleOpacity }}
+          >
+            {memory.title}
+          </Animated.Text>
+
+          <Pressable
+            accessibilityLabel="More memory options"
+            className="h-10 w-10 items-center justify-center"
+            hitSlop={8}
+            onPress={openMemoryMenu}
+          >
+            <Animated.View
+              className="absolute inset-0 rounded-full bg-black/45"
+              style={{ opacity: controlCircleOpacity }}
+            />
+            <ThemedIcon icon={Ellipsis} tone="foreground" size={26} strokeWidth={2.4} />
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 }
