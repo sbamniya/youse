@@ -80,14 +80,14 @@ export default function Us() {
                 meera.singh@gmail.com
               </Text>
             </View>
-            <ThemedIcon icon={ChevronRight} size={34} strokeWidth={1.5} />
+            <ThemedIcon icon={ChevronRight} size={28} strokeWidth={1.5} />
           </Pressable>
 
           <View className="mt-4 border-t border-border-subtle pt-4">
             <SectionLabel label="RELATIONSHIP" />
             <Pressable
               accessibilityLabel="Manage your relationship and trial"
-              className="mt-5 flex-row items-center active:opacity-70"
+              className="mt-1 flex-row items-center active:opacity-70"
               onPress={() =>
                 router.push('/billing')
               }
@@ -96,7 +96,7 @@ export default function Us() {
                 <Text className="font-serif text-[16px] text-foreground">
                   Meera + Arjun
                 </Text>
-                <Text className="mt-1 font-serif text-[14px] text-primary">
+                <Text className="mt-1 font-serif text-[12px] text-primary">
                   Connected 3 Sep 2026
                 </Text>
               </View>
@@ -105,11 +105,11 @@ export default function Us() {
                 <Text className="font-serif text-[16px] text-foreground">
                   Youse trial
                 </Text>
-                <Text className="mt-1 font-serif text-[14px] text-primary">
+                <Text className="mt-1 font-serif text-[12px] text-primary">
                   11 days left
                 </Text>
               </View>
-              <ThemedIcon icon={ChevronRight} size={31} strokeWidth={1.5} />
+              <ThemedIcon icon={ChevronRight} size={24} strokeWidth={1.5} />
             </Pressable>
           </View>
 
