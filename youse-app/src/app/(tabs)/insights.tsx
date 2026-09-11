@@ -21,8 +21,6 @@ import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
 
 const logo = require("../../../assets/images/logo-full-white.png");
-const insightHeroImage =
-  "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop";
 
 const moodData = [
   { label: "Mon", value: 3 },
