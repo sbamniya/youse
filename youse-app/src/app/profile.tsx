@@ -1,3 +1,4 @@
+import { type Dayjs } from "dayjs";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
@@ -24,6 +25,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
 import { BackButton } from "@/components/app/back-button";
+import { DatePicker } from "@/components/app/date-picker";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
@@ -37,11 +39,11 @@ export default function Profile() {
   const insets = useSafeAreaInsets();
   const background = useCSSVariable("--color-background") as string;
   const [name, setName] = useState("Meera Singh");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [timezone, setTimezone] = useState("Select timezone");
   const [notificationTime, setNotificationTime] = useState("Select time");
   const [relationshipLength, setRelationshipLength] = useState("Select length");
-  const [anniversary, setAnniversary] = useState("");
+  const [anniversary, setAnniversary] = useState<Dayjs | null>(null);
 
   const choose = (
     title: string,
@@ -130,11 +132,10 @@ export default function Profile() {
               onChangeText={setName}
               value={name}
             />
-            <EditableField
+            <ProfileDateField
               icon={CalendarDays}
-              keyboardType="numbers-and-punctuation"
               label="YOUR BIRTHDAY"
-              onChangeText={setBirthday}
+              onValueChange={setBirthday}
               placeholder="DD / MM / YYYY"
               value={birthday}
             />
@@ -178,11 +179,10 @@ export default function Profile() {
               }
               value={relationshipLength}
             />
-            <EditableField
+            <ProfileDateField
               icon={Clock}
-              keyboardType="numbers-and-punctuation"
               label="ANNIVERSARY DATE"
-              onChangeText={setAnniversary}
+              onValueChange={setAnniversary}
               placeholder="DD / MM / YYYY"
               value={anniversary}
             />
@@ -224,6 +224,44 @@ function EditableField({ icon, label, ...inputProps }: EditableFieldProps) {
         />
       </View>
     </View>
+  );
+}
+
+type ProfileDateFieldProps = {
+  icon: typeof UserRound;
+  label: string;
+  onValueChange: (date: Dayjs) => void;
+  placeholder: string;
+  value: Dayjs | null;
+};
+
+function ProfileDateField({ icon, label, onValueChange, placeholder, value }: ProfileDateFieldProps) {
+  return (
+    <DatePicker
+      format="DD / MM / YYYY"
+      onValueChange={onValueChange}
+      placeholder={placeholder}
+      title={label}
+      value={value}
+    >
+      {({ displayValue, isPlaceholder, onPress }) => (
+        <Pressable
+          accessibilityLabel={`Choose ${label.toLowerCase()}`}
+          className="min-h-24 flex-row items-center border-b border-primary/75 py-4 active:opacity-70"
+          onPress={onPress}
+        >
+          <View className="w-14 items-center">
+            <ThemedIcon icon={icon} size={27} strokeWidth={1.5} />
+          </View>
+          <View className="ml-3 flex-1">
+            <Text className="text-[10px] font-medium tracking-[3px] text-primary">{label}</Text>
+            <Text className={isPlaceholder ? "mt-2 font-serif text-[18px] text-muted-foreground" : "mt-2 font-serif text-[18px] text-foreground"}>
+              {displayValue}
+            </Text>
+          </View>
+        </Pressable>
+      )}
+    </DatePicker>
   );
 }
 

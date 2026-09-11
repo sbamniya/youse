@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Pencil } from "lucide-react-native";
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { Image, Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
+import { DatePickerField } from "@/components/app/date-picker";
 import { FormField } from "@/components/app/form-field";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
@@ -17,7 +19,7 @@ const photo =
 
 export default function CreateMemory() {
   const [title, setTitle] = useState("Goa");
-  const [date, setDate] = useState("03 Feb 2026");
+  const [date, setDate] = useState(() => dayjs("2026-02-03"));
   const [location, setLocation] = useState("South Goa");
   const [story, setStory] = useState(
     "No itinerary. We stayed on the beach until it got dark.",
@@ -56,12 +58,7 @@ export default function CreateMemory() {
           placeholder="Goa"
           value={title}
         />
-        <FormField
-          label="Date"
-          onChangeText={setDate}
-          placeholder="03 Feb 2026"
-          value={date}
-        />
+        <DatePickerField label="Date" onValueChange={setDate} value={date} />
         <FormField
           label="Location"
           onChangeText={setLocation}

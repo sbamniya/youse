@@ -1,3 +1,4 @@
+import { type Dayjs } from "dayjs";
 import { router } from "expo-router";
 import { CalendarDays, Camera, Check } from "lucide-react-native";
 import { useState } from "react";
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
+import { DatePicker } from "@/components/app/date-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -30,11 +32,11 @@ const genders = ["Woman", "Man", "Non-binary", "Prefer not to say"];
 
 export default function OnboardingDetails() {
   const [name, setName] = useState("Meera");
-  const [birthday, setBirthday] = useState("");
+  const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [gender, setGender] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState(0);
   const [partnerName, setPartnerName] = useState("");
-  const [anniversary, setAnniversary] = useState("");
+  const [anniversary, setAnniversary] = useState<Dayjs | null>(null);
   const [step, setStep] = useState(1);
 
   return (
@@ -129,17 +131,12 @@ export default function OnboardingDetails() {
                 >
                   BIRTHDAY
                 </Text>
-                <View className="mt-2 h-12 flex-row items-center rounded-2xl border border-input px-4">
-                  <Input
-                    className="flex-1 text-[18px] text-foreground"
-                    keyboardType="numbers-and-punctuation"
-                    onChangeText={setBirthday}
-                    placeholder="MM / DD / YYYY"
-                    value={birthday}
-                    variant="plain"
-                  />
-                  <ThemedIcon icon={CalendarDays} size={20} strokeWidth={1.8} />
-                </View>
+                <OnboardingDatePicker
+                  onValueChange={setBirthday}
+                  placeholder="MM / DD / YYYY"
+                  title="Choose your birthday"
+                  value={birthday}
+                />
 
                 <Text
                   className="mt-4 text-[12px] text-muted-foreground"
@@ -231,17 +228,12 @@ export default function OnboardingDetails() {
                 >
                   ANNIVERSARY DATE
                 </Text>
-                <View className="mt-2 h-12 flex-row items-center rounded-2xl border border-input pr-6 pl-4">
-                  <Input
-                    className="flex-1 text-[18px] text-foreground"
-                    keyboardType="numbers-and-punctuation"
-                    onChangeText={setAnniversary}
-                    placeholder="MM / DD / YYYY"
-                    value={anniversary}
-                    variant="plain"
-                  />
-                  <ThemedIcon icon={CalendarDays} size={20} strokeWidth={1.8} />
-                </View>
+                <OnboardingDatePicker
+                  onValueChange={setAnniversary}
+                  placeholder="MM / DD / YYYY"
+                  title="Choose your anniversary date"
+                  value={anniversary}
+                />
               </View>
             ) : null}
 
@@ -259,5 +251,37 @@ export default function OnboardingDetails() {
         </ScrollView>
       </KeyboardAvoidingView>
     </AppScreen>
+  );
+}
+
+type OnboardingDatePickerProps = {
+  onValueChange: (date: Dayjs) => void;
+  placeholder: string;
+  title: string;
+  value: Dayjs | null;
+};
+
+function OnboardingDatePicker({ onValueChange, placeholder, title, value }: OnboardingDatePickerProps) {
+  return (
+    <DatePicker
+      format="MM / DD / YYYY"
+      onValueChange={onValueChange}
+      placeholder={placeholder}
+      title={title}
+      value={value}
+    >
+      {({ displayValue, isPlaceholder, onPress }) => (
+        <Pressable
+          accessibilityLabel={title}
+          className="mt-2 h-12 flex-row items-center rounded-2xl border border-input pr-6 pl-4 active:opacity-70"
+          onPress={onPress}
+        >
+          <Text className={isPlaceholder ? "flex-1 text-[18px] text-muted-foreground" : "flex-1 text-[18px] text-foreground"}>
+            {displayValue}
+          </Text>
+          <ThemedIcon icon={CalendarDays} size={20} strokeWidth={1.8} />
+        </Pressable>
+      )}
+    </DatePicker>
   );
 }
