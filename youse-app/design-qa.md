@@ -60,3 +60,47 @@ No actionable P0, P1, or P2 differences remain.
 - [x] Visual comparison passes at 393 × 852.
 
 final result: passed
+
+---
+
+# Insights Detail Design QA
+
+- Source visual truth: `/var/folders/r0/tvnbf4d953z7rm_3rs060x1m0000gn/T/codex-clipboard-f6eb42e3-d4ef-4f3d-ac0d-cb8d9ed319bb.png`
+- Implementation: `http://127.0.0.1:8081/insight`
+- Implementation screenshot: Codex in-app browser capture (inline evidence; the browser capture API does not expose a filesystem path)
+- Viewport: mobile responsive layout at the in-app browser’s portrait content width
+- State: initial Insights detail screen, weekly data shown
+
+## Full-view comparison evidence
+
+The rendered page reproduces the reference’s brand lockup and compact right-hand statement, Insights title and trial status, large 82 activity score, paired explanatory message, mood-check-in section, weekly line chart, and tappable weekly activity rows. The score’s label and description were moved below its split score/message row so that they use the intended full content width.
+
+## Focused-region comparison evidence
+
+- Mood chart: a native SVG visualization renders the seven daily points, labels, vertical axis, rose line, rose point markers, and horizontal rules as live data visualization.
+- Activity rows: each row contains the matching icon treatment, headline/subtitle hierarchy, progress total, chevron, and a press response with the activity description.
+- Typography and colour: system bold/Georgia serif styling and the existing foreground, rose primary, berry secondary, and subtle border tokens retain the reference’s hierarchy and dark palette.
+
+## Findings
+
+No actionable P0, P1, or P2 differences remain.
+
+- Fonts and typography: passed. The page uses a controlled display scale for the title/score and the existing serif supporting copy.
+- Spacing and layout rhythm: passed. Header, score, chart, and activity sections retain distinct vertical rhythm and no horizontal overflow.
+- Colors and visual tokens: passed. Existing app tokens match the supplied dark/rose treatment.
+- Image quality and asset fidelity: passed. The reference contains no photographic or decorative raster assets; chart rendering comes from the installed chart component and standard functional icons use the established Lucide library.
+- Copy and content: passed. All dashboard labels, values, supporting messages, and activity metrics match the supplied screen.
+
+## Interaction and runtime checks
+
+- Weekly activity rows are interactive and show their corresponding descriptions.
+- TypeScript, Expo lint, and whitespace diff checks: passed.
+- The chart does not introduce a visible development overlay or runtime failure in the rendered page.
+
+## Tab-header refinement
+
+- The Insights dashboard was moved into the existing Insights tab by the user.
+- Replaced the oversized text-only header with a 240 px image-led header matching the Today tab: shared logo lockup, trial-status pill, eyebrow, compact title, and serif supporting line.
+- Verified the selected Insights tab, compact hero, score, and mood chart render together in the in-app browser without horizontal overflow.
+
+final result: passed
