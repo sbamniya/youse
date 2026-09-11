@@ -24,7 +24,8 @@ export default function CreatePlan() {
   const [time, setTime] = useState("8:30 PM");
   const [location, setLocation] = useState("Bandra West");
   const [notes, setNotes] = useState("");
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("Dinner");
+  const [category, setCategory] =
+    useState<(typeof CATEGORIES)[number]>("Dinner");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [remindBoth, setRemindBoth] = useState(true);
 
@@ -53,7 +54,11 @@ export default function CreatePlan() {
           placeholder="Dinner at Veronica’s"
           value={title}
         />
-        <DatePickerField label="Date" onValueChange={setSelectedDate} value={selectedDate} />
+        <DatePickerField
+          label="Date"
+          onValueChange={setSelectedDate}
+          value={selectedDate}
+        />
         <FormField
           label="Time"
           onChangeText={setTime}
@@ -76,9 +81,16 @@ export default function CreatePlan() {
         {/* Photo */}
         <ImageSourcePicker aspect={[4, 3]} onImageSelected={setPhotoUri}>
           {({ onPress }) => (
-            <Pressable className="mt-6 flex-row items-center gap-3" onPress={onPress}>
+            <Pressable
+              className="mt-6 flex-row items-center gap-3"
+              onPress={onPress}
+            >
               {photoUri ? (
-                <Image className="h-11 w-11 rounded-full" resizeMode="cover" source={{ uri: photoUri }} />
+                <Image
+                  className="h-11 w-11 rounded-full"
+                  resizeMode="cover"
+                  source={{ uri: photoUri }}
+                />
               ) : (
                 <View className="h-11 w-11 items-center justify-center rounded-full bg-primary/20">
                   <ThemedIcon icon={Camera} size={18} strokeWidth={1.8} />
@@ -93,21 +105,21 @@ export default function CreatePlan() {
         </ImageSourcePicker>
 
         {/* Category */}
-        <View className="mt-7 flex-row gap-2">
+        <View className="mt-4 flex-row gap-2">
           {CATEGORIES.map((option) => {
             const active = option === category;
             return (
               <Pressable
                 key={option}
                 className={cn(
-                  "rounded-full border px-5 py-3",
+                  "rounded-full border px-3 py-2",
                   active ? "border-primary bg-primary" : "border-border-subtle",
                 )}
                 onPress={() => setCategory(option)}
               >
                 <Text
                   className={cn(
-                    "text-[15px] font-semibold",
+                    "text-[13px] font-semibold",
                     active ? "text-primary-foreground" : "text-foreground",
                   )}
                 >
@@ -118,10 +130,14 @@ export default function CreatePlan() {
           })}
         </View>
 
-        <ToggleRow label="Remind both of us" onValueChange={setRemindBoth} value={remindBoth} />
+        <ToggleRow
+          label="Remind both of us"
+          onValueChange={setRemindBoth}
+          value={remindBoth}
+        />
       </ScrollView>
 
-      <View className="px-4 pb-3 pt-2">
+      <View className="px-4 pb-3 pt-4">
         <PrimaryAction label="Add to our plans" onPress={() => router.back()} />
       </View>
     </AppScreen>
