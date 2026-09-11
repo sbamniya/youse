@@ -50,7 +50,7 @@ function DatePicker({
           onPress: () => setOpen(true),
         })}
       </AlertDialogTrigger>
-      <AlertDialogContent className="mx-4 w-[calc(100%-2rem)] max-w-[420px] rounded-3xl border-border-subtle bg-card p-5">
+      <AlertDialogContent className="mx-4 w-[calc(100%-2rem)] rounded-3xl border-border-subtle bg-card p-5">
         <AlertDialogHeader className="relative pr-12">
           <AlertDialogTitle className="text-left text-[22px] text-foreground">{title}</AlertDialogTitle>
           <AlertDialogCancel

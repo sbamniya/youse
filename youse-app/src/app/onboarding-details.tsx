@@ -13,6 +13,7 @@ import {
 
 import { AppScreen } from "@/components/app/app-screen";
 import { DatePicker } from "@/components/app/date-picker";
+import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -32,6 +33,7 @@ const genders = ["Woman", "Man", "Non-binary", "Prefer not to say"];
 
 export default function OnboardingDetails() {
   const [name, setName] = useState("Meera");
+  const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
   const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [gender, setGender] = useState<string | null>(null);
   const [selectedReason, setSelectedReason] = useState(0);
@@ -88,16 +90,21 @@ export default function OnboardingDetails() {
                 <View className="mt-4 flex-row items-center">
                   <View className="relative">
                     <Image
-                      source={{ uri: profileImage }}
+                      source={{ uri: profilePhotoUri ?? profileImage }}
                       resizeMode="cover"
                       className="h-24 w-24 rounded-full border border-input"
                     />
-                    <Pressable
-                      accessibilityLabel="Add profile photo"
-                      className="absolute bottom-0 right-0 h-10 w-10 items-center justify-center rounded-full bg-primary"
-                    >
-                      <ThemedIcon icon={Camera} tone="primaryForeground" size={20} strokeWidth={2} />
-                    </Pressable>
+                    <ImageSourcePicker aspect={[1, 1]} onImageSelected={setProfilePhotoUri} title="Add profile photo">
+                      {({ onPress }) => (
+                        <Pressable
+                          accessibilityLabel="Add profile photo"
+                          className="absolute bottom-0 right-0 h-10 w-10 items-center justify-center rounded-full bg-primary"
+                          onPress={onPress}
+                        >
+                          <ThemedIcon icon={Camera} tone="primaryForeground" size={20} strokeWidth={2} />
+                        </Pressable>
+                      )}
+                    </ImageSourcePicker>
                   </View>
                   <View className="ml-6 flex-1">
                     <Text className="font-serif text-[18px] text-foreground">

@@ -25,6 +25,7 @@
       [
         "expo-image-picker",
         {
+          "cameraPermission": "Allow Youse to use your camera so you can capture photos.",
           "photosPermission": "Allow Youse to access your photos so you can add them to a memory.",
           "microphonePermission": false
         }

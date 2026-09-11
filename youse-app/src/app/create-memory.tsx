@@ -8,6 +8,7 @@ import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
 import { DatePickerField } from "@/components/app/date-picker";
 import { FormField } from "@/components/app/form-field";
+import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -19,6 +20,7 @@ const photo =
 
 export default function CreateMemory() {
   const [title, setTitle] = useState("Goa");
+  const [photoUri, setPhotoUri] = useState(photo);
   const [date, setDate] = useState(() => dayjs("2026-02-03"));
   const [location, setLocation] = useState("South Goa");
   const [story, setStory] = useState(
@@ -44,13 +46,17 @@ export default function CreateMemory() {
           title="Keep this moment close."
         />
 
-        <Pressable className="relative mt-6">
-          <Image source={{ uri: photo }} resizeMode="cover" className="h-60 w-full rounded-3xl" />
-          <View className="absolute bottom-3 right-3 flex-row items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5">
-            <ThemedIcon icon={Pencil} size={14} strokeWidth={1.8} />
-            <Text className="text-[13px] text-foreground">Change photo</Text>
-          </View>
-        </Pressable>
+        <ImageSourcePicker aspect={[3, 4]} onImageSelected={setPhotoUri} title="Change memory photo">
+          {({ onPress }) => (
+            <Pressable className="relative mt-6" onPress={onPress}>
+              <Image source={{ uri: photoUri }} resizeMode="cover" className="h-60 w-full rounded-3xl" />
+              <View className="absolute bottom-3 right-3 flex-row items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5">
+                <ThemedIcon icon={Pencil} size={14} strokeWidth={1.8} />
+                <Text className="text-[13px] text-foreground">Change photo</Text>
+              </View>
+            </Pressable>
+          )}
+        </ImageSourcePicker>
 
         <FormField
           label="Title"

@@ -56,9 +56,9 @@ function AlertDialogContent({
       <AlertDialogOverlay>
         <AlertDialogPrimitive.Content
           className={cn(
-            'bg-background border-border z-50 flex flex-col gap-4 rounded-lg border p-6 shadow-lg shadow-black/5 sm:max-w-lg',
+            'bg-background border-border z-50 flex flex-col gap-4 rounded-lg border p-6 shadow-lg shadow-black/5',
             Platform.select({
-              web: 'animate-in fade-in-0 zoom-in-95 web:max-w-[calc(100%-2rem)] duration-200',
+              web: 'animate-in fade-in-0 zoom-in-95 web:w-[calc(100%-2rem)] web:max-w-[440px] duration-200',
             }),
             className
           )}
@@ -115,7 +115,7 @@ function AlertDialogAction({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Action>) {
   return (
-    <TextClassContext.Provider value={buttonTextVariants({ className })}>
+    <TextClassContext.Provider value={buttonTextVariants()}>
       <AlertDialogPrimitive.Action className={cn(buttonVariants(), className)} {...props} />
     </TextClassContext.Provider>
   );
@@ -126,7 +126,7 @@ function AlertDialogCancel({
   ...props
 }: React.ComponentProps<typeof AlertDialogPrimitive.Cancel>) {
   return (
-    <TextClassContext.Provider value={buttonTextVariants({ className, variant: 'outline' })}>
+    <TextClassContext.Provider value={buttonTextVariants({ variant: 'outline' })}>
       <AlertDialogPrimitive.Cancel
         className={cn(buttonVariants({ variant: 'outline' }), className)}
         {...props}

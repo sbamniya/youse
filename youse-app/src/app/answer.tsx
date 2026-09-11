@@ -5,6 +5,7 @@ import { Image, Pressable, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
+import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -23,6 +24,7 @@ export default function Answer() {
     partner?: string;
   }>();
   const [answer, setAnswer] = useState("");
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
 
   const resolvedQuestion = question ?? DEFAULT_QUESTION;
   const resolvedPartner = partner ?? DEFAULT_PARTNER;
@@ -65,14 +67,22 @@ export default function Answer() {
           {answer.length} / {MAX_LENGTH}
         </Text>
 
-        <Pressable className="mt-4 flex-row items-center gap-3">
-          <View className="h-11 w-11 items-center justify-center rounded-full bg-primary/20">
-            <ThemedIcon icon={Camera} size={18} strokeWidth={1.8} />
-          </View>
-          <Text className="text-[15px] text-foreground">
-            Add a photo <Text className="text-muted-foreground">(optional)</Text>
-          </Text>
-        </Pressable>
+        <ImageSourcePicker aspect={[4, 3]} onImageSelected={setPhotoUri}>
+          {({ onPress }) => (
+            <Pressable className="mt-4 flex-row items-center gap-3" onPress={onPress}>
+              {photoUri ? (
+                <Image className="h-11 w-11 rounded-full" resizeMode="cover" source={{ uri: photoUri }} />
+              ) : (
+                <View className="h-11 w-11 items-center justify-center rounded-full bg-primary/20">
+                  <ThemedIcon icon={Camera} size={18} strokeWidth={1.8} />
+                </View>
+              )}
+              <Text className="text-[15px] text-foreground">
+                {photoUri ? "Change photo" : "Add a photo"} <Text className="text-muted-foreground">(optional)</Text>
+              </Text>
+            </Pressable>
+          )}
+        </ImageSourcePicker>
       </View>
 
       <View className="px-4 pb-3 pt-2">

@@ -2,12 +2,13 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Camera } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Image, Pressable, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
 import { DatePickerField } from "@/components/app/date-picker";
 import { FormField } from "@/components/app/form-field";
+import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
@@ -24,7 +25,7 @@ export default function CreatePlan() {
   const [location, setLocation] = useState("Bandra West");
   const [notes, setNotes] = useState("");
   const [category, setCategory] = useState<(typeof CATEGORIES)[number]>("Dinner");
-  const [hasPhoto, setHasPhoto] = useState(false);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [remindBoth, setRemindBoth] = useState(true);
 
   return (
@@ -67,28 +68,23 @@ export default function CreatePlan() {
         />
 
         {/* Photo */}
-        <Pressable
-          className="mt-6 flex-row items-center gap-3"
-          onPress={() => setHasPhoto((current) => !current)}
-        >
-          <View
-            className={cn(
-              "h-11 w-11 items-center justify-center rounded-full",
-              hasPhoto ? "bg-primary" : "bg-primary/20",
-            )}
-          >
-            <ThemedIcon
-              icon={Camera}
-              size={18}
-              strokeWidth={1.8}
-              tone={hasPhoto ? "primaryForeground" : "accent"}
-            />
-          </View>
-          <Text className="text-[15px] text-foreground">
-            {hasPhoto ? "Photo added" : "Add a photo"}{" "}
-            <Text className="text-muted-foreground">(optional)</Text>
-          </Text>
-        </Pressable>
+        <ImageSourcePicker aspect={[4, 3]} onImageSelected={setPhotoUri}>
+          {({ onPress }) => (
+            <Pressable className="mt-6 flex-row items-center gap-3" onPress={onPress}>
+              {photoUri ? (
+                <Image className="h-11 w-11 rounded-full" resizeMode="cover" source={{ uri: photoUri }} />
+              ) : (
+                <View className="h-11 w-11 items-center justify-center rounded-full bg-primary/20">
+                  <ThemedIcon icon={Camera} size={18} strokeWidth={1.8} />
+                </View>
+              )}
+              <Text className="text-[15px] text-foreground">
+                {photoUri ? "Change photo" : "Add a photo"}{" "}
+                <Text className="text-muted-foreground">(optional)</Text>
+              </Text>
+            </Pressable>
+          )}
+        </ImageSourcePicker>
 
         {/* Category */}
         <View className="mt-7 flex-row gap-2">

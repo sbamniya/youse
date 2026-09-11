@@ -26,6 +26,7 @@ import { useCSSVariable } from "uniwind";
 
 import { BackButton } from "@/components/app/back-button";
 import { DatePicker } from "@/components/app/date-picker";
+import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
@@ -39,6 +40,7 @@ export default function Profile() {
   const insets = useSafeAreaInsets();
   const background = useCSSVariable("--color-background") as string;
   const [name, setName] = useState("Meera Singh");
+  const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
   const [birthday, setBirthday] = useState<Dayjs | null>(null);
   const [timezone, setTimezone] = useState("Select timezone");
   const [notificationTime, setNotificationTime] = useState("Select time");
@@ -104,22 +106,26 @@ export default function Profile() {
             <View className="flex-row items-center py-6">
               <View className="relative">
                 <Image
-                  source={meeraAvatar}
+                  source={profilePhotoUri ? { uri: profilePhotoUri } : meeraAvatar}
                   resizeMode="cover"
                   className="h-28 w-28 rounded-full border-2 border-primary"
                 />
-                <Pressable
-                  accessibilityLabel="Change profile photo"
-                  className="absolute -bottom-1 -right-1 h-11 w-11 items-center justify-center rounded-full bg-primary active:opacity-80"
-                  onPress={() => Alert.alert("Profile photo", "Choose a new profile photo.")}
-                >
-                  <ThemedIcon
-                    icon={Camera}
-                    tone="primaryForeground"
-                    size={20}
-                    strokeWidth={1.8}
-                  />
-                </Pressable>
+                <ImageSourcePicker aspect={[1, 1]} onImageSelected={setProfilePhotoUri} title="Change profile photo">
+                  {({ onPress }) => (
+                    <Pressable
+                      accessibilityLabel="Change profile photo"
+                      className="absolute -bottom-1 -right-1 h-11 w-11 items-center justify-center rounded-full bg-primary active:opacity-80"
+                      onPress={onPress}
+                    >
+                      <ThemedIcon
+                        icon={Camera}
+                        tone="primaryForeground"
+                        size={20}
+                        strokeWidth={1.8}
+                      />
+                    </Pressable>
+                  )}
+                </ImageSourcePicker>
               </View>
               <Text className="ml-8 flex-1 font-serif text-[18px] italic leading-7 text-primary">
                 Same team.{"\n"}Always.
