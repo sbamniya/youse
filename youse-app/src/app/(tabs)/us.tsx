@@ -63,9 +63,7 @@ export default function Us() {
           <Pressable
             accessibilityLabel="Edit Meera Singh profile"
             className="mt-6 flex-row items-center active:opacity-70"
-            onPress={() =>
-              Alert.alert("Profile", "Profile editing will be available here.")
-            }
+            onPress={() => router.push("/profile")}
           >
             <Image
               source={meeraAvatar}
