@@ -84,7 +84,12 @@ export default function Us() {
 
           <View className="mt-4 border-t border-border-subtle pt-4">
             <SectionLabel label="RELATIONSHIP" />
-            <View className="mt-1 flex-row items-center">
+            <Pressable
+              accessibilityLabel="Manage relationship and billing"
+              accessibilityRole="button"
+              className="mt-1 flex-row items-center active:opacity-70"
+              onPress={() => router.push("/billing")}
+            >
               <View className="flex-1">
                 <Text className="font-serif text-[16px] text-foreground">
                   Meera + Arjun
@@ -98,10 +103,14 @@ export default function Us() {
                 <Text className="font-serif text-[16px] text-foreground">
                   Youse trial
                 </Text>
-                <TrialBadge className="mt-1 self-start" days={11} />
+                <TrialBadge
+                  className="mt-1 self-start"
+                  days={11}
+                  interactive={false}
+                />
               </View>
               <ThemedIcon icon={ChevronRight} size={24} strokeWidth={1.5} />
-            </View>
+            </Pressable>
           </View>
 
           <View className="mt-4 border-t border-border-subtle pt-4">
