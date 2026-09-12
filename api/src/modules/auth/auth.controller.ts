@@ -74,7 +74,10 @@ export const updateProfilePicture = async (
     if (!req.file) {
       throw new AppError(400, 'profilePicture is required');
     }
-    const profile = await authService.updateProfilePicture(req.user.id, req.file);
+    const profile = await authService.updateProfilePicture(
+      req.user.id,
+      req.file as Express.MulterS3.File,
+    );
     res.status(200).json(profile);
   } catch (err) {
     next(err);

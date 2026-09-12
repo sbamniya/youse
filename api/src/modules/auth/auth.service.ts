@@ -1,5 +1,4 @@
 import { IS_PRODUCTION } from "../../config/config";
-import { randomUUID } from "node:crypto";
 import { env } from "../../config/env";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
@@ -10,7 +9,7 @@ import {
   verifyRefreshToken,
 } from "../../utils/jwt";
 import { comparePassword, hashPassword } from "../../utils/password";
-import { uploadToR2 } from "../../lib/r2";
+import { deleteFromR2 } from "../../lib/r2";
 import type { RequestOtpInput, UpdateProfileInput, VerifyOtpInput } from "./auth.schema";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
@@ -69,29 +68,24 @@ const issueTokens = async (user: { id: string; phone: string }) => {
   return { accessToken, refreshToken };
 };
 
+
+const profileRelations = {
+  userPartnersOne: {
+    where: { deletedAt: null },
+    select: { id: true },
+  },
+  userPartnersTwo: {
+    where: { deletedAt: null },
+    select: { id: true },
+  },
+} as const;
+
 export const userByIdCacheable = new Cacheable({
   generateKey: (id: string) => `user_by_id:${id}`,
   fetchData(id) {
     return prisma.user.findUnique({
       where: { id },
-      include: {
-        userPartnersOne: {
-          where: {
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-          },
-        },
-        userPartnersTwo: {
-          where: {
-            deletedAt: null,
-          },
-          select: {
-            id: true,
-          },
-        },
-      },
+      include: profileRelations,
     });
   },
   ttlSeconds: 60, // cache for 60 seconds
@@ -137,24 +131,7 @@ export const verifyOtp = async (input: VerifyOtpInput) => {
     where: { phone: input.phone },
     update: { deletedAt: null, ...(input.name ? { name: input.name } : {}) },
     create: { phone: input.phone, name: input.name },
-    include: {
-      userPartnersOne: {
-        where: {
-          deletedAt: null,
-        },
-        select: {
-          id: true,
-        },
-      },
-      userPartnersTwo: {
-        where: {
-          deletedAt: null,
-        },
-        select: {
-          id: true,
-        },
-      },
-    },
+    include: profileRelations,
   });
   const tokens = await issueTokens(user);
   return { user: sanitizeUser(user), ...tokens };
@@ -205,17 +182,6 @@ export const getUserProfile = async (userId: string) => {
   return sanitizeUser(user);
 };
 
-const profileRelations = {
-  userPartnersOne: {
-    where: { deletedAt: null },
-    select: { id: true },
-  },
-  userPartnersTwo: {
-    where: { deletedAt: null },
-    select: { id: true },
-  },
-} as const;
-
 export const updateUserProfile = async (
   userId: string,
   input: UpdateProfileInput,
@@ -234,46 +200,25 @@ export const updateUserProfile = async (
     data,
     include: profileRelations,
   });
-  await userByIdCacheable.invalidate(`user_by_id:${userId}`);
+  await userByIdCacheable.refresh(userId);
   return sanitizeUser(user);
 };
 
 export const updateProfilePicture = async (
   userId: string,
-  file: Express.Multer.File,
+  file: Express.MulterS3.File,
 ) => {
-  const extensionByMimeType: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/webp': 'webp',
-  };
-  const extension = extensionByMimeType[file.mimetype];
-  const isExpectedImage =
-    (file.mimetype === 'image/jpeg' &&
-      file.buffer[0] === 0xff &&
-      file.buffer[1] === 0xd8 &&
-      file.buffer[2] === 0xff) ||
-    (file.mimetype === 'image/png' &&
-      file.buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) ||
-    (file.mimetype === 'image/webp' &&
-      file.buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
-      file.buffer.subarray(8, 12).toString('ascii') === 'WEBP');
-
-  if (!extension || !isExpectedImage) {
-    throw new AppError(415, 'Only JPEG, PNG, and WebP images are supported');
+  let user;
+  try {
+    user = await prisma.user.update({
+      where: { id: userId },
+      data: { profilePicture: file.key },
+      include: profileRelations,
+    });
+  } catch (error) {
+    await deleteFromR2(file.key).catch(() => undefined);
+    throw error;
   }
-
-  const key = `profile-pictures/${userId}/${randomUUID()}.${extension}`;
-  const profilePicture = await uploadToR2({
-    key,
-    body: file.buffer,
-    contentType: file.mimetype,
-  });
-  const user = await prisma.user.update({
-    where: { id: userId },
-    data: { profilePicture },
-    include: profileRelations,
-  });
-  await userByIdCacheable.invalidate(`user_by_id:${userId}`);
+  await userByIdCacheable.refresh(userId);
   return sanitizeUser(user);
 };

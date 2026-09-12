@@ -1,4 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { env } from "../config/env";
 
 const config = {
@@ -8,7 +8,7 @@ const config = {
   endpoint: env.R2_UPLOAD_URL,
 };
 
-const r2Client = new S3Client({
+export const r2Client = new S3Client({
   region: "auto",
   endpoint: config.endpoint,
   credentials: {
@@ -17,20 +17,13 @@ const r2Client = new S3Client({
   },
 });
 
-export const uploadToR2 = async (input: {
-  key: string;
-  body: Buffer;
-  contentType: string;
-}) => {
+export const r2BucketName = config.bucketName;
+
+export const deleteFromR2 = async (key: string) => {
   await r2Client.send(
-    new PutObjectCommand({
+    new DeleteObjectCommand({
       Bucket: config.bucketName,
-      Key: input.key,
-      Body: input.body,
-      ContentType: input.contentType,
-      CacheControl: "public, max-age=31536000, immutable",
+      Key: key,
     }),
   );
-
-  return input.key;
 };
