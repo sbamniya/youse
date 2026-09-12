@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import type { TextInput as TextInputInstance } from "react-native";
 import { Pressable, ScrollView, View } from "react-native";
@@ -11,10 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import api from "@/lib/api";
 import { authStorage } from "@/lib/auth-storage";
+import {
+  type AuthenticationResponse,
+  getUserDestination,
+} from "@/lib/auth-user";
 import { useMutation } from "@tanstack/react-query";
 
 export default function EmailOtp() {
-  const { flow } = useLocalSearchParams<{ flow?: string }>();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [codeSent, setCodeSent] = useState(false);
@@ -58,15 +61,7 @@ export default function EmailOtp() {
 
   const { mutate: verifyCode, isPending: isVerifying } = useMutation({
     mutationFn: async (otpData: { phone: string; code: string }) => {
-      return api.post<{
-        accessToken: string;
-        refreshToken: string;
-        user: {
-          id: string;
-          name: string | null;
-          profilePicture: string | null;
-        };
-      }>("/auth/otp/verify", {
+      return api.post<AuthenticationResponse>("/auth/otp/verify", {
         phone: `+91${otpData.phone}`,
         code: otpData.code,
       });
@@ -77,11 +72,7 @@ export default function EmailOtp() {
         authStorage.setRefreshToken(data.refreshToken),
         authStorage.setUser(data.user),
       ]);
-      if (data.user.name && data.user.profilePicture) {
-        router.replace("/today");
-        return;
-      }
-      router.replace(flow === "invite" ? "/connected" : "/onboarding-details");
+      router.replace(getUserDestination(data.user, "login"));
     },
     onError: (err: any, variables: { phone: string; code: string }) => {
       console.log(

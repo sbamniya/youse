@@ -1,8 +1,11 @@
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 
+import type { AuthUser } from "./auth-user";
+
 const ACCESS_TOKEN_KEY = "access_token";
 const REFRESH_TOKEN_KEY = "refresh_token";
+const USER_KEY = "user";
 
 async function setItem(key: string, value: string) {
   if (Platform.OS === "web") {
@@ -43,13 +46,12 @@ export const authStorage = {
     await Promise.all([
       removeItem(ACCESS_TOKEN_KEY),
       removeItem(REFRESH_TOKEN_KEY),
+      removeItem(USER_KEY),
     ]);
   },
-  setUser: (user: {
-    id: string;
-    name: string | null;
-    profilePicture: string | null;
-  }) => setItem("user", JSON.stringify(user)),
+  setUser: (user: AuthUser) => setItem(USER_KEY, JSON.stringify(user)),
   getUser: () =>
-    getItem("user").then((user) => (user ? JSON.parse(user) : null)),
+    getItem(USER_KEY).then((user): AuthUser | null =>
+      user ? JSON.parse(user) : null,
+    ),
 };
