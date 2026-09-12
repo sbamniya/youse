@@ -1,0 +1,12 @@
+import { Router } from "express";
+import { requireAuth } from "../../middleware/auth.middleware";
+import { validate } from "../../middleware/validate";
+import * as controller from "./memory.controller";
+import { createMemorySchema, favoriteMemorySchema, memoryIdSchema } from "./memory.schema";
+export const memoryRouter = Router();
+memoryRouter.use(requireAuth);
+memoryRouter.get("/memories", controller.list);
+memoryRouter.post("/memories", validate(createMemorySchema), controller.create);
+memoryRouter.get("/memories/:id", validate(memoryIdSchema), controller.get);
+memoryRouter.patch("/memories/:id/favorite", validate(favoriteMemorySchema), controller.setFavorite);
+memoryRouter.delete("/memories/:id", validate(memoryIdSchema), controller.remove);

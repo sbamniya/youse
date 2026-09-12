@@ -177,6 +177,15 @@ const api = {
     });
     return response.data;
   },
+  async putForm<Response>(url: string, data: FormData) {
+    const response = await axiosInstance.put<Response>(url, data, {
+      headers: {
+        Authorization: await getAuthToken(),
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
   async delete<
     Response,
     Data = Record<string, any>,

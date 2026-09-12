@@ -25,7 +25,10 @@ export function getUserDestination(
   mode: UserRoutingMode,
 ): Href {
   if (!user.name?.trim() || !user.profilePicture) {
-    return "/onboarding-details";
+    return {
+      pathname: "/onboarding-details",
+      params: { mode, userId: user.id },
+    };
   }
 
   if (user.partnerId) {

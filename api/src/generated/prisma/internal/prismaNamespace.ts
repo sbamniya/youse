@@ -1754,6 +1754,7 @@ export const UserPartnerScalarFieldEnum = {
   relationshipType: 'relationshipType',
   locationType: 'locationType',
   goal: 'goal',
+  partnerName: 'partnerName',
   dailyQuestionTime: 'dailyQuestionTime',
   status: 'status',
   anniversary: 'anniversary',

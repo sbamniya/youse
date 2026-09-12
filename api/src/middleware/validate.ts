@@ -13,6 +13,7 @@ export const validate =
       });
       // Use the parsed body so Zod's allow-listing and transformations reach handlers.
       req.body = parsed.body;
+      req.params = parsed.params;
       next();
     } catch (err) {
       if (err instanceof ZodError) {

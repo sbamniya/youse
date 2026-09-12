@@ -31,6 +31,7 @@ export type UserPartnerMinAggregateOutputType = {
   relationshipType: string | null
   locationType: string | null
   goal: string | null
+  partnerName: string | null
   dailyQuestionTime: Date | null
   status: $Enums.RelationshipStatus | null
   anniversary: Date | null
@@ -49,6 +50,7 @@ export type UserPartnerMaxAggregateOutputType = {
   relationshipType: string | null
   locationType: string | null
   goal: string | null
+  partnerName: string | null
   dailyQuestionTime: Date | null
   status: $Enums.RelationshipStatus | null
   anniversary: Date | null
@@ -67,6 +69,7 @@ export type UserPartnerCountAggregateOutputType = {
   relationshipType: number
   locationType: number
   goal: number
+  partnerName: number
   dailyQuestionTime: number
   status: number
   anniversary: number
@@ -87,6 +90,7 @@ export type UserPartnerMinAggregateInputType = {
   relationshipType?: true
   locationType?: true
   goal?: true
+  partnerName?: true
   dailyQuestionTime?: true
   status?: true
   anniversary?: true
@@ -105,6 +109,7 @@ export type UserPartnerMaxAggregateInputType = {
   relationshipType?: true
   locationType?: true
   goal?: true
+  partnerName?: true
   dailyQuestionTime?: true
   status?: true
   anniversary?: true
@@ -123,6 +128,7 @@ export type UserPartnerCountAggregateInputType = {
   relationshipType?: true
   locationType?: true
   goal?: true
+  partnerName?: true
   dailyQuestionTime?: true
   status?: true
   anniversary?: true
@@ -214,6 +220,7 @@ export type UserPartnerGroupByOutputType = {
   relationshipType: string
   locationType: string | null
   goal: string | null
+  partnerName: string | null
   dailyQuestionTime: Date | null
   status: $Enums.RelationshipStatus
   anniversary: Date | null
@@ -253,6 +260,7 @@ export type UserPartnerWhereInput = {
   relationshipType?: Prisma.StringFilter<"UserPartner"> | string
   locationType?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   goal?: Prisma.StringNullableFilter<"UserPartner"> | string | null
+  partnerName?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   dailyQuestionTime?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
   status?: Prisma.EnumRelationshipStatusFilter<"UserPartner"> | $Enums.RelationshipStatus
   anniversary?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
@@ -281,6 +289,7 @@ export type UserPartnerOrderByWithRelationInput = {
   relationshipType?: Prisma.SortOrder
   locationType?: Prisma.SortOrderInput | Prisma.SortOrder
   goal?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerName?: Prisma.SortOrderInput | Prisma.SortOrder
   dailyQuestionTime?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   anniversary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -304,6 +313,7 @@ export type UserPartnerOrderByWithRelationInput = {
 
 export type UserPartnerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  invitationCode?: string
   userId_partnerId?: Prisma.UserPartnerUserIdPartnerIdCompoundUniqueInput
   AND?: Prisma.UserPartnerWhereInput | Prisma.UserPartnerWhereInput[]
   OR?: Prisma.UserPartnerWhereInput[]
@@ -313,10 +323,10 @@ export type UserPartnerWhereUniqueInput = Prisma.AtLeast<{
   relationshipType?: Prisma.StringFilter<"UserPartner"> | string
   locationType?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   goal?: Prisma.StringNullableFilter<"UserPartner"> | string | null
+  partnerName?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   dailyQuestionTime?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
   status?: Prisma.EnumRelationshipStatusFilter<"UserPartner"> | $Enums.RelationshipStatus
   anniversary?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
-  invitationCode?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   invitedAt?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
   joinedAt?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
   deletedAt?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
@@ -332,7 +342,7 @@ export type UserPartnerWhereUniqueInput = Prisma.AtLeast<{
   sharedLists?: Prisma.SharedListListRelationFilter
   pokes?: Prisma.PokeListRelationFilter
   reconnectRequests?: Prisma.ReconnectRequestListRelationFilter
-}, "id" | "userId_partnerId">
+}, "id" | "invitationCode" | "userId_partnerId">
 
 export type UserPartnerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -341,6 +351,7 @@ export type UserPartnerOrderByWithAggregationInput = {
   relationshipType?: Prisma.SortOrder
   locationType?: Prisma.SortOrderInput | Prisma.SortOrder
   goal?: Prisma.SortOrderInput | Prisma.SortOrder
+  partnerName?: Prisma.SortOrderInput | Prisma.SortOrder
   dailyQuestionTime?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   anniversary?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -365,6 +376,7 @@ export type UserPartnerScalarWhereWithAggregatesInput = {
   relationshipType?: Prisma.StringWithAggregatesFilter<"UserPartner"> | string
   locationType?: Prisma.StringNullableWithAggregatesFilter<"UserPartner"> | string | null
   goal?: Prisma.StringNullableWithAggregatesFilter<"UserPartner"> | string | null
+  partnerName?: Prisma.StringNullableWithAggregatesFilter<"UserPartner"> | string | null
   dailyQuestionTime?: Prisma.DateTimeNullableWithAggregatesFilter<"UserPartner"> | Date | string | null
   status?: Prisma.EnumRelationshipStatusWithAggregatesFilter<"UserPartner"> | $Enums.RelationshipStatus
   anniversary?: Prisma.DateTimeNullableWithAggregatesFilter<"UserPartner"> | Date | string | null
@@ -381,6 +393,7 @@ export type UserPartnerCreateInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -409,6 +422,7 @@ export type UserPartnerUncheckedCreateInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -433,6 +447,7 @@ export type UserPartnerUpdateInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -461,6 +476,7 @@ export type UserPartnerUncheckedUpdateInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -487,6 +503,7 @@ export type UserPartnerCreateManyInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -503,6 +520,7 @@ export type UserPartnerUpdateManyMutationInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -521,6 +539,7 @@ export type UserPartnerUncheckedUpdateManyInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -554,6 +573,7 @@ export type UserPartnerCountOrderByAggregateInput = {
   relationshipType?: Prisma.SortOrder
   locationType?: Prisma.SortOrder
   goal?: Prisma.SortOrder
+  partnerName?: Prisma.SortOrder
   dailyQuestionTime?: Prisma.SortOrder
   status?: Prisma.SortOrder
   anniversary?: Prisma.SortOrder
@@ -572,6 +592,7 @@ export type UserPartnerMaxOrderByAggregateInput = {
   relationshipType?: Prisma.SortOrder
   locationType?: Prisma.SortOrder
   goal?: Prisma.SortOrder
+  partnerName?: Prisma.SortOrder
   dailyQuestionTime?: Prisma.SortOrder
   status?: Prisma.SortOrder
   anniversary?: Prisma.SortOrder
@@ -590,6 +611,7 @@ export type UserPartnerMinOrderByAggregateInput = {
   relationshipType?: Prisma.SortOrder
   locationType?: Prisma.SortOrder
   goal?: Prisma.SortOrder
+  partnerName?: Prisma.SortOrder
   dailyQuestionTime?: Prisma.SortOrder
   status?: Prisma.SortOrder
   anniversary?: Prisma.SortOrder
@@ -811,6 +833,7 @@ export type UserPartnerCreateWithoutUserInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -837,6 +860,7 @@ export type UserPartnerUncheckedCreateWithoutUserInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -871,6 +895,7 @@ export type UserPartnerCreateWithoutPartnerInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -897,6 +922,7 @@ export type UserPartnerUncheckedCreateWithoutPartnerInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -952,6 +978,7 @@ export type UserPartnerScalarWhereInput = {
   relationshipType?: Prisma.StringFilter<"UserPartner"> | string
   locationType?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   goal?: Prisma.StringNullableFilter<"UserPartner"> | string | null
+  partnerName?: Prisma.StringNullableFilter<"UserPartner"> | string | null
   dailyQuestionTime?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
   status?: Prisma.EnumRelationshipStatusFilter<"UserPartner"> | $Enums.RelationshipStatus
   anniversary?: Prisma.DateTimeNullableFilter<"UserPartner"> | Date | string | null
@@ -984,6 +1011,7 @@ export type UserPartnerCreateWithoutSubscriptionInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1011,6 +1039,7 @@ export type UserPartnerUncheckedCreateWithoutSubscriptionInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1050,6 +1079,7 @@ export type UserPartnerUpdateWithoutSubscriptionInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1077,6 +1107,7 @@ export type UserPartnerUncheckedUpdateWithoutSubscriptionInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1100,6 +1131,7 @@ export type UserPartnerCreateWithoutReconnectRequestsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1127,6 +1159,7 @@ export type UserPartnerUncheckedCreateWithoutReconnectRequestsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1166,6 +1199,7 @@ export type UserPartnerUpdateWithoutReconnectRequestsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1193,6 +1227,7 @@ export type UserPartnerUncheckedUpdateWithoutReconnectRequestsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1216,6 +1251,7 @@ export type UserPartnerCreateWithoutPartnerMemoriesInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1243,6 +1279,7 @@ export type UserPartnerUncheckedCreateWithoutPartnerMemoriesInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1282,6 +1319,7 @@ export type UserPartnerUpdateWithoutPartnerMemoriesInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1309,6 +1347,7 @@ export type UserPartnerUncheckedUpdateWithoutPartnerMemoriesInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1332,6 +1371,7 @@ export type UserPartnerCreateWithoutPokesInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1359,6 +1399,7 @@ export type UserPartnerUncheckedCreateWithoutPokesInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1398,6 +1439,7 @@ export type UserPartnerUpdateWithoutPokesInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1425,6 +1467,7 @@ export type UserPartnerUncheckedUpdateWithoutPokesInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1448,6 +1491,7 @@ export type UserPartnerCreateWithoutDailyQuestionsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1475,6 +1519,7 @@ export type UserPartnerUncheckedCreateWithoutDailyQuestionsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1514,6 +1559,7 @@ export type UserPartnerUpdateWithoutDailyQuestionsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1541,6 +1587,7 @@ export type UserPartnerUncheckedUpdateWithoutDailyQuestionsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1564,6 +1611,7 @@ export type UserPartnerCreateWithoutUserPartnerPlansInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1591,6 +1639,7 @@ export type UserPartnerUncheckedCreateWithoutUserPartnerPlansInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1630,6 +1679,7 @@ export type UserPartnerUpdateWithoutUserPartnerPlansInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1657,6 +1707,7 @@ export type UserPartnerUncheckedUpdateWithoutUserPartnerPlansInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1680,6 +1731,7 @@ export type UserPartnerCreateWithoutWeeklyCheckInsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1707,6 +1759,7 @@ export type UserPartnerUncheckedCreateWithoutWeeklyCheckInsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1746,6 +1799,7 @@ export type UserPartnerUpdateWithoutWeeklyCheckInsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1773,6 +1827,7 @@ export type UserPartnerUncheckedUpdateWithoutWeeklyCheckInsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1796,6 +1851,7 @@ export type UserPartnerCreateWithoutSharedListsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1823,6 +1879,7 @@ export type UserPartnerUncheckedCreateWithoutSharedListsInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1862,6 +1919,7 @@ export type UserPartnerUpdateWithoutSharedListsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1889,6 +1947,7 @@ export type UserPartnerUncheckedUpdateWithoutSharedListsInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1913,6 +1972,7 @@ export type UserPartnerCreateManyUserInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1930,6 +1990,7 @@ export type UserPartnerCreateManyPartnerInput = {
   relationshipType: string
   locationType?: string | null
   goal?: string | null
+  partnerName?: string | null
   dailyQuestionTime?: Date | string | null
   status?: $Enums.RelationshipStatus
   anniversary?: Date | string | null
@@ -1946,6 +2007,7 @@ export type UserPartnerUpdateWithoutUserInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1972,6 +2034,7 @@ export type UserPartnerUncheckedUpdateWithoutUserInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1997,6 +2060,7 @@ export type UserPartnerUncheckedUpdateManyWithoutUserInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2013,6 +2077,7 @@ export type UserPartnerUpdateWithoutPartnerInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2039,6 +2104,7 @@ export type UserPartnerUncheckedUpdateWithoutPartnerInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2064,6 +2130,7 @@ export type UserPartnerUncheckedUpdateManyWithoutPartnerInput = {
   relationshipType?: Prisma.StringFieldUpdateOperationsInput | string
   locationType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   goal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  partnerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   dailyQuestionTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.EnumRelationshipStatusFieldUpdateOperationsInput | $Enums.RelationshipStatus
   anniversary?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2167,6 +2234,7 @@ export type UserPartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   relationshipType?: boolean
   locationType?: boolean
   goal?: boolean
+  partnerName?: boolean
   dailyQuestionTime?: boolean
   status?: boolean
   anniversary?: boolean
@@ -2196,6 +2264,7 @@ export type UserPartnerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   relationshipType?: boolean
   locationType?: boolean
   goal?: boolean
+  partnerName?: boolean
   dailyQuestionTime?: boolean
   status?: boolean
   anniversary?: boolean
@@ -2216,6 +2285,7 @@ export type UserPartnerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   relationshipType?: boolean
   locationType?: boolean
   goal?: boolean
+  partnerName?: boolean
   dailyQuestionTime?: boolean
   status?: boolean
   anniversary?: boolean
@@ -2236,6 +2306,7 @@ export type UserPartnerSelectScalar = {
   relationshipType?: boolean
   locationType?: boolean
   goal?: boolean
+  partnerName?: boolean
   dailyQuestionTime?: boolean
   status?: boolean
   anniversary?: boolean
@@ -2247,7 +2318,7 @@ export type UserPartnerSelectScalar = {
   restoredAt?: boolean
 }
 
-export type UserPartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "partnerId" | "relationshipType" | "locationType" | "goal" | "dailyQuestionTime" | "status" | "anniversary" | "invitationCode" | "invitedAt" | "joinedAt" | "deletedAt" | "brokenAt" | "restoredAt", ExtArgs["result"]["userPartner"]>
+export type UserPartnerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "partnerId" | "relationshipType" | "locationType" | "goal" | "partnerName" | "dailyQuestionTime" | "status" | "anniversary" | "invitationCode" | "invitedAt" | "joinedAt" | "deletedAt" | "brokenAt" | "restoredAt", ExtArgs["result"]["userPartner"]>
 export type UserPartnerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   partner?: boolean | Prisma.UserPartner$partnerArgs<ExtArgs>
@@ -2291,6 +2362,7 @@ export type $UserPartnerPayload<ExtArgs extends runtime.Types.Extensions.Interna
     relationshipType: string
     locationType: string | null
     goal: string | null
+    partnerName: string | null
     dailyQuestionTime: Date | null
     status: $Enums.RelationshipStatus
     anniversary: Date | null
@@ -2739,6 +2811,7 @@ export interface UserPartnerFieldRefs {
   readonly relationshipType: Prisma.FieldRef<"UserPartner", 'String'>
   readonly locationType: Prisma.FieldRef<"UserPartner", 'String'>
   readonly goal: Prisma.FieldRef<"UserPartner", 'String'>
+  readonly partnerName: Prisma.FieldRef<"UserPartner", 'String'>
   readonly dailyQuestionTime: Prisma.FieldRef<"UserPartner", 'DateTime'>
   readonly status: Prisma.FieldRef<"UserPartner", 'RelationshipStatus'>
   readonly anniversary: Prisma.FieldRef<"UserPartner", 'DateTime'>

@@ -51,10 +51,11 @@ model UserPartner {
     relationshipType  String
     locationType      String?
     goal              String?
+    partnerName       String?
     dailyQuestionTime DateTime?
     status            RelationshipStatus @default(invited)
     anniversary       DateTime?
-    invitationCode    String?
+    invitationCode    String?            @unique
     invitedAt         DateTime?
     joinedAt          DateTime?
     deletedAt         DateTime?
@@ -76,6 +77,7 @@ model UserPartner {
     @@unique([userId, partnerId])
     @@index([userId])
     @@index([partnerId])
+    @@index([invitationCode, deletedAt])
     @@map("user_partners")
 }
 

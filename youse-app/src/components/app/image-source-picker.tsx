@@ -18,7 +18,10 @@ import { Text } from "@/components/ui/text";
 type ImageSourcePickerProps = {
   aspect?: [number, number];
   children: (props: { onPress: () => void }) => ReactElement;
-  onImageSelected: (uri: string) => void;
+  onImageSelected: (
+    uri: string,
+    asset: ExpoImagePicker.ImagePickerAsset,
+  ) => void;
   title?: string;
 };
 
@@ -64,7 +67,7 @@ function ImageSourcePicker({
         });
 
     if (!result.canceled) {
-      onImageSelected(result.assets[0].uri);
+      onImageSelected(result.assets[0].uri, result.assets[0]);
     }
   };
 
