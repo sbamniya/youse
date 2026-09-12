@@ -31,17 +31,13 @@ async function removeItem(key: string) {
 }
 
 export const authStorage = {
-  setAccessToken: (token: string) =>
-    setItem(ACCESS_TOKEN_KEY, token),
+  setAccessToken: (token: string) => setItem(ACCESS_TOKEN_KEY, token),
 
-  getAccessToken: () =>
-    getItem(ACCESS_TOKEN_KEY),
+  getAccessToken: () => getItem(ACCESS_TOKEN_KEY),
 
-  setRefreshToken: (token: string) =>
-    setItem(REFRESH_TOKEN_KEY, token),
+  setRefreshToken: (token: string) => setItem(REFRESH_TOKEN_KEY, token),
 
-  getRefreshToken: () =>
-    getItem(REFRESH_TOKEN_KEY),
+  getRefreshToken: () => getItem(REFRESH_TOKEN_KEY),
 
   clear: async () => {
     await Promise.all([
@@ -49,4 +45,11 @@ export const authStorage = {
       removeItem(REFRESH_TOKEN_KEY),
     ]);
   },
+  setUser: (user: {
+    id: string;
+    name: string | null;
+    profilePicture: string | null;
+  }) => setItem("user", JSON.stringify(user)),
+  getUser: () =>
+    getItem("user").then((user) => (user ? JSON.parse(user) : null)),
 };
