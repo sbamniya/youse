@@ -13,7 +13,7 @@ const axiosInstance = create({
   baseURL: process.env.EXPO_PUBLIC_API_BASE_URL, // Replace with your API base URL
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
   },
 });
 
@@ -27,7 +27,7 @@ const api = {
       params,
       headers: {
         Authorization: await getAuthToken(),
-      }
+      },
     });
     return response.data;
   },
@@ -37,12 +37,11 @@ const api = {
     Params = Record<string, any>,
   >(
     url: string,
-    config?: {
-      data?: AxiosRequestConfig<Data>["data"];
-      params?: AxiosRequestConfig<Params>["params"];
-    },
+    data?: AxiosRequestConfig<Data>["data"],
+    params?: AxiosRequestConfig<Params>["params"],
   ) {
-    const response = await axiosInstance.post<Response>(url, config, {
+    const response = await axiosInstance.post<Response>(url, data, {
+      params,
       headers: {
         Authorization: await getAuthToken(),
       },
@@ -55,12 +54,11 @@ const api = {
     Params = Record<string, any>,
   >(
     url: string,
-    config?: {
-      data?: AxiosRequestConfig<Data>["data"];
-      params?: AxiosRequestConfig<Params>["params"];
-    },
+    data?: AxiosRequestConfig<Data>["data"],
+    params?: AxiosRequestConfig<Params>["params"],
   ) {
-    const response = await axiosInstance.patch<Response>(url, config, {
+    const response = await axiosInstance.patch<Response>(url, data, {
+      params,
       headers: {
         Authorization: await getAuthToken(),
       },
@@ -69,12 +67,11 @@ const api = {
   },
   async put<Response, Data = Record<string, any>, Params = Record<string, any>>(
     url: string,
-    config?: {
-      data?: AxiosRequestConfig<Data>["data"];
-      params?: AxiosRequestConfig<Params>["params"];
-    },
+    data?: AxiosRequestConfig<Data>["data"],
+    params?: AxiosRequestConfig<Params>["params"],
   ) {
-    const response = await axiosInstance.put<Response>(url, config, {
+    const response = await axiosInstance.put<Response>(url, data, {
+      params,
       headers: {
         Authorization: await getAuthToken(),
       },

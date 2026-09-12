@@ -1,18 +1,16 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import type { TextInput as TextInputInstance } from "react-native";
-import {
-  Pressable,
-  ScrollView,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 
-  import { AppScreen } from "@/components/app/app-screen";
+import { AppScreen } from "@/components/app/app-screen";
 import { BrandMark } from "@/components/app/brand-mark";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import api from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
 
 export default function EmailOtp() {
   const { flow } = useLocalSearchParams<{ flow?: string }>();
@@ -35,15 +33,51 @@ export default function EmailOtp() {
     return () => clearTimeout(timer);
   }, [codeSent, resendSeconds]);
 
-  const handleSendCode = () => {
-    setCodeSent(true);
-    setResendSeconds(30);
-    setInputFocused(false);
-  };
+  const { mutate: sendCode, isPending } = useMutation({
+    mutationFn: async (phone: string) => {
+      return api.post("/auth/otp/request", { phone: `+91${phone}` });
+    },
+    onSuccess: () => {
+      setCodeSent(true);
+      setResendSeconds(30);
+      setInputFocused(false);
+      setOtp(["", "", "", "", "", ""]);
+    },
+    onError: (err: any) => {
+      console.log(
+        "Failed to send code to phone number:",
+        phoneNumber,
+        "Error:",
+        err,
+      );
+      setCodeSent(false);
+      setInputFocused(true);
+    },
+  });
 
-  const handleResendCode = () => {
-    setOtp(["", "", "", "", "", ""]);
-    setResendSeconds(30);
+  const { mutate: verifyCode, isPending: isVerifying } = useMutation({
+    mutationFn: async (otpData: { phone: string; code: string }) => {
+      return api.post("/auth/otp/verify", {
+        phone: `+91${otpData.phone}`,
+        code: otpData.code,
+      });
+    },
+    onSuccess: () => {
+      console.log("OTP verified successfully");
+      router.replace(flow === "invite" ? "/connected" : "/onboarding-details");
+    },
+    onError: (err: any, variables: { phone: string; code: string }) => {
+      console.log(
+        "Failed to verify OTP for phone number:",
+        variables.phone,
+        "Error:",
+        err,
+      );
+    },
+  });
+
+  const handleSendCode = () => {
+    sendCode(phoneNumber);
   };
 
   const handleChangePhoneNumber = () => {
@@ -53,9 +87,10 @@ export default function EmailOtp() {
     setInputFocused(false);
   };
 
-  const formattedPhoneNumber = phoneNumber.length === 10
-    ? `${phoneNumber.slice(0, 5)} ${phoneNumber.slice(5)}`
-    : phoneNumber;
+  const formattedPhoneNumber =
+    phoneNumber.length === 10
+      ? `${phoneNumber.slice(0, 5)} ${phoneNumber.slice(5)}`
+      : phoneNumber;
 
   const updateOtp = (value: string, index: number) => {
     const digits = value.replace(/\D/g, "");
@@ -108,6 +143,10 @@ export default function EmailOtp() {
     setTimeout(() => otpInputs.current[previousIndex]?.focus(), 0);
   };
 
+  const onVerify = () => {
+    verifyCode({ phone: phoneNumber, code: otp.join("") });
+  };
+
   return (
     <AppScreen>
       <ScrollView
@@ -117,143 +156,148 @@ export default function EmailOtp() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-          <BrandMark className="items-start pt-5" />
+        <BrandMark className="items-start pt-5" />
 
-          <View className="mt-2">
-            <Text
-              className="text-[12px] leading-6 text-accent"
-              style={{ letterSpacing: 6 }}
-            >
-              A BRIGHTER
+        <View className="mt-2">
+          <Text
+            className="text-[12px] leading-6 text-accent"
+            style={{ letterSpacing: 6 }}
+          >
+            A BRIGHTER
+          </Text>
+          <Text
+            className="text-[12px] leading-6 text-accent"
+            style={{ letterSpacing: 6 }}
+          >
+            US, DAILY
+          </Text>
+
+          <PageIntro
+            className="mt-4"
+            description={`${codeSent ? "Enter the verification code" : "Enter your phone number"}\nto continue.`}
+            title="Welcome back"
+          />
+        </View>
+
+        {codeSent ? (
+          <View className="mt-4">
+            <Text className="font-serif text-[18px] text-muted-foreground">
+              We sent a code to +91 {formattedPhoneNumber}
             </Text>
-            <Text
-              className="text-[12px] leading-6 text-accent"
-              style={{ letterSpacing: 6 }}
+            <Pressable
+              className="mt-2 self-start"
+              onPress={handleChangePhoneNumber}
             >
-              US, DAILY
-            </Text>
-
-            <PageIntro
-              className="mt-4"
-              description={`${codeSent ? "Enter the verification code" : "Enter your phone number"}\nto continue.`}
-              title="Welcome back"
-            />
-          </View>
-
-          {codeSent ? (
-            <View className="mt-4">
-              <Text className="font-serif text-[18px] text-muted-foreground">
-                We sent a code to +91 {formattedPhoneNumber}
+              <Text className="font-serif text-[17px] text-accent underline">
+                Change phone number
               </Text>
-              <Pressable className="mt-2 self-start" onPress={handleChangePhoneNumber}>
-                <Text className="font-serif text-[17px] text-accent underline">
-                  Change phone number
-                </Text>
-              </Pressable>
-            </View>
-          ) : null}
+            </Pressable>
+          </View>
+        ) : null}
 
-          {!codeSent ? (
-            <>
-              <View className="mt-8 flex-row items-center rounded-[20px] border border-input px-4 py-2">
-                <Text className="text-[16px] font-bold text-foreground">+91</Text>
-                <View className="mx-3 h-9 w-px bg-input" />
+        {!codeSent ? (
+          <>
+            <View className="mt-8 flex-row items-center rounded-[20px] border border-input px-4 py-2">
+              <Text className="text-[16px] font-bold text-foreground">+91</Text>
+              <View className="mx-3 h-9 w-px bg-input" />
+              <Input
+                autoComplete="tel"
+                importantForAutofill="yes"
+                keyboardType="phone-pad"
+                maxLength={10}
+                onChangeText={(value) =>
+                  setPhoneNumber(value.replace(/\D/g, "").slice(0, 10))
+                }
+                onFocus={() => setInputFocused(true)}
+                onBlur={() => setInputFocused(false)}
+                placeholder="98765 43210"
+                textContentType="telephoneNumber"
+                className="flex-1 text-[16px] text-foreground"
+                value={phoneNumber}
+                variant="plain"
+                readOnly={isPending}
+              />
+            </View>
+
+            <PrimaryAction
+              className="mt-7"
+              disabled={phoneNumber.length !== 10 || isPending}
+              label={isPending ? "Sending..." : "Send verification code"}
+              onPress={handleSendCode}
+              showArrow
+            />
+          </>
+        ) : null}
+
+        {codeSent ? (
+          <>
+            <Text
+              className="mt-8 text-[13px] text-accent"
+              style={{ letterSpacing: 5 }}
+            >
+              ENTER VERIFICATION CODE
+            </Text>
+            <View className="mt-1 flex-row justify-between">
+              {otp.map((digit, index) => (
                 <Input
-                  autoComplete="tel"
-                  importantForAutofill="yes"
-                  keyboardType="phone-pad"
-                  maxLength={10}
-                  onChangeText={(value) =>
-                    setPhoneNumber(value.replace(/\D/g, "").slice(0, 10))
-                  }
+                  key={index}
+                  ref={(input) => {
+                    otpInputs.current[index] = input;
+                  }}
+                  autoCapitalize="none"
+                  autoComplete={index === 0 ? "sms-otp" : "off"}
+                  keyboardType="number-pad"
+                  maxLength={1}
+                  onChangeText={(value) => updateOtp(value, index)}
                   onFocus={() => setInputFocused(true)}
                   onBlur={() => setInputFocused(false)}
-                  placeholder="98765 43210"
-                  textContentType="telephoneNumber"
-                  className="flex-1 text-[16px] text-foreground"
-                  value={phoneNumber}
+                  onKeyPress={({ nativeEvent }) =>
+                    handleOtpKeyPress(nativeEvent.key, index)
+                  }
+                  selectionColorClassName="accent-primary"
+                  textContentType={index === 0 ? "oneTimeCode" : "none"}
+                  className="h-14 w-11 border-b border-foreground text-center text-[29px] text-foreground"
+                  value={digit}
                   variant="plain"
+                  readOnly={isVerifying}
                 />
-              </View>
-
-              <PrimaryAction
-                className="mt-7"
-                disabled={phoneNumber.length !== 10}
-                label="Send verification code"
-                onPress={handleSendCode}
-                showArrow
-              />
-            </>
-          ) : null}
-
-          {codeSent ? (
-            <>
-              <Text
-                className="mt-8 text-[13px] text-accent"
-                style={{ letterSpacing: 5 }}
-              >
-                ENTER VERIFICATION CODE
-              </Text>
-              <View className="mt-1 flex-row justify-between">
-                {otp.map((digit, index) => (
-                  <Input
-                    key={index}
-                    ref={(input) => {
-                      otpInputs.current[index] = input;
-                    }}
-                    autoCapitalize="none"
-                    autoComplete={index === 0 ? "sms-otp" : "off"}
-                    keyboardType="number-pad"
-                    maxLength={1}
-                    onChangeText={(value) => updateOtp(value, index)}
-                    onFocus={() => setInputFocused(true)}
-                    onBlur={() => setInputFocused(false)}
-                    onKeyPress={({ nativeEvent }) =>
-                      handleOtpKeyPress(nativeEvent.key, index)
-                    }
-                    selectionColorClassName="accent-primary"
-                    textContentType={index === 0 ? "oneTimeCode" : "none"}
-                    className="h-14 w-11 border-b border-foreground text-center text-[29px] text-foreground"
-                    value={digit}
-                    variant="plain"
-                  />
-                ))}
-              </View>
-
-              {resendSeconds > 0 ? (
-                <Text className="mt-4 self-start font-serif text-[18px] text-muted-foreground">
-                  Resend code in 00:{String(resendSeconds).padStart(2, "0")}
-                </Text>
-              ) : (
-                <Pressable className="mt-4 self-start" onPress={handleResendCode}>
-                  <Text className="font-serif text-[18px] text-muted-foreground underline">
-                    Resend code
-                  </Text>
-                </Pressable>
-              )}
-
-              <PrimaryAction
-                className="mt-5"
-                disabled={otp.join("").length !== 6}
-                label="Verify"
-                onPress={() =>
-                  router.replace(
-                    flow === "invite" ? "/connected" : "/onboarding-details",
-                  )
-                }
-                showArrow
-              />
-            </>
-          ) : null}
-
-          {!inputFocused ? (
-            <View className="mt-auto pb-7">
-              <View className="mb-5 h-px w-8 bg-muted-foreground" />
-              <Text className="font-serif text-[22px] italic leading-8 text-muted-foreground">
-                Same people{"\n"}brighter days.
-              </Text>
+              ))}
             </View>
-          ) : null}
+
+            {resendSeconds > 0 ? (
+              <Text className="mt-4 self-start font-serif text-[18px] text-muted-foreground">
+                Resend code in 00:{String(resendSeconds).padStart(2, "0")}
+              </Text>
+            ) : (
+              <Pressable
+                className="mt-4 self-start"
+                onPress={handleSendCode}
+                disabled={isVerifying}
+              >
+                <Text className="font-serif text-[18px] text-muted-foreground underline">
+                  Resend code
+                </Text>
+              </Pressable>
+            )}
+
+            <PrimaryAction
+              className="mt-5"
+              disabled={otp.join("").length !== 6 || isVerifying}
+              label="Verify"
+              onPress={onVerify}
+              showArrow
+            />
+          </>
+        ) : null}
+
+        {!inputFocused ? (
+          <View className="mt-auto pb-7">
+            <View className="mb-5 h-px w-8 bg-muted-foreground" />
+            <Text className="font-serif text-[22px] italic leading-8 text-muted-foreground">
+              Same people{"\n"}brighter days.
+            </Text>
+          </View>
+        ) : null}
       </ScrollView>
     </AppScreen>
   );

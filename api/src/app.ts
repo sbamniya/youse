@@ -16,9 +16,9 @@ export const createApp = () => {
   app.use(morgan('dev'));
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
-  app.use('/api/auth', authRouter);
-  app.use('/api/admin', adminRouter);
-  app.use('/api', spaceRouter);
+  app.use('/v1/auth', authRouter);
+  app.use('/v1/admin', adminRouter);
+  app.use('/v1', spaceRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
