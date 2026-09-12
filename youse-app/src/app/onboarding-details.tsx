@@ -23,11 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import api from "@/lib/api";
 import { authStorage } from "@/lib/auth-storage";
-import {
-  type AuthUser,
-  getUserDestination,
-  type UserRoutingMode,
-} from "@/lib/auth-user";
+import { type AuthUser } from "@/lib/auth-user";
 import { getImageUrl } from "@/lib/image-url";
 
 const reasons = [
@@ -61,9 +57,21 @@ type FormField =
 
 type FormErrors = Partial<Record<FormField, string>>;
 
+type SaveRelationshipPayload = {
+  relationshipType: string;
+  goal: string;
+  partnerName: string;
+  anniversary: string;
+};
+
+type SaveRelationshipResponse = {
+  user: AuthUser;
+  relationship: unknown;
+  inviteCode: string;
+};
+
 export default function OnboardingDetails() {
-  const { mode, userId } = useLocalSearchParams<{
-    mode?: UserRoutingMode;
+  const { userId } = useLocalSearchParams<{
     userId?: string;
   }>();
   const {
@@ -114,25 +122,13 @@ export default function OnboardingDetails() {
     );
   }
 
-  return (
-    <OnboardingForm
-      initialUser={user}
-      mode={mode === "returning" ? "returning" : "login"}
-    />
-  );
+  return <OnboardingForm initialUser={user} />;
 }
 
-function OnboardingForm({
-  initialUser,
-  mode,
-}: {
-  initialUser: AuthUser;
-  mode: UserRoutingMode;
-}) {
+function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
   const initialBirthday = initialUser.birthday
     ? dayjs(initialUser.birthday)
     : null;
-  const [currentUser, setCurrentUser] = useState(initialUser);
   const [name, setName] = useState(initialUser.name ?? "");
   const [profilePhotoUri, setProfilePhotoUri] = useState(
     getImageUrl(initialUser.profilePicture),
@@ -187,7 +183,6 @@ function OnboardingForm({
       return api.putForm<AuthUser>("/auth/me/profile-picture", formData);
     },
     onSuccess: async (updatedUser) => {
-      setCurrentUser(updatedUser);
       setUploadedProfilePicture(updatedUser.profilePicture);
       clearError("profilePicture");
       await authStorage.setUser(updatedUser);
@@ -201,7 +196,7 @@ function OnboardingForm({
     },
   });
 
-  const { isPending: isSaving, mutate: updateProfile } = useMutation({
+  const { isPending: isSavingProfile, mutate: updateProfile } = useMutation({
     mutationFn: () =>
       api.patch<AuthUser>("/auth/me", {
         birthday: birthday!.format("YYYY-MM-DD"),
@@ -209,7 +204,6 @@ function OnboardingForm({
         name: name.trim(),
       }),
     onSuccess: async (updatedUser) => {
-      setCurrentUser(updatedUser);
       await authStorage.setUser(updatedUser);
       setStep(2);
     },
@@ -217,6 +211,29 @@ function OnboardingForm({
       setErrors((current) => ({
         ...current,
         form: "We couldn't save your details. Please try again.",
+      }));
+    },
+  });
+
+  const {
+    isPending: isSavingRelationship,
+    mutate: saveRelationship,
+  } = useMutation({
+    mutationFn: () =>
+      api.put<SaveRelationshipResponse, SaveRelationshipPayload>("/space", {
+        relationshipType: relationshipType!,
+        goal: reasons[selectedReason!].title,
+        partnerName: partnerName.trim(),
+        anniversary: anniversary!.format("YYYY-MM-DD"),
+      }),
+    onSuccess: async ({ user: updatedUser }) => {
+      await authStorage.setUser(updatedUser);
+      router.replace("/invite-partner");
+    },
+    onError: () => {
+      setErrors((current) => ({
+        ...current,
+        form: "We couldn't save your relationship details. Please try again.",
       }));
     },
   });
@@ -276,7 +293,7 @@ function OnboardingForm({
       return;
     }
 
-    router.replace(getUserDestination(currentUser, mode));
+    saveRelationship();
   };
 
   return (
@@ -502,6 +519,7 @@ function OnboardingForm({
             </Text>
             <Input
               className="mt-2 text-[18px]"
+              maxLength={100}
               onChangeText={(value) => {
                 setPartnerName(value);
                 clearError("partnerName");
@@ -564,8 +582,18 @@ function OnboardingForm({
         <FieldError message={errors.form} />
         <PrimaryAction
           className="mt-8"
-          disabled={isSaving || isUploadingProfilePicture}
-          label={isSaving ? "Saving..." : step === 3 ? "Finish" : "Continue"}
+          disabled={
+            isSavingProfile ||
+            isSavingRelationship ||
+            isUploadingProfilePicture
+          }
+          label={
+            isSavingProfile || isSavingRelationship
+              ? "Saving..."
+              : step === 3
+                ? "Finish"
+                : "Continue"
+          }
           onPress={handleContinue}
         />
       </ScrollView>
