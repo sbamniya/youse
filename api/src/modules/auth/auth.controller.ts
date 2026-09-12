@@ -49,3 +49,34 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
     next(err);
   }
 };
+
+export const updateProfile = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user) {
+      throw new AppError(401, 'Not authenticated');
+    }
+    const profile = await authService.updateUserProfile(req.user.id, req.body);
+    res.status(200).json(profile);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const updateProfilePicture = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.user) {
+      throw new AppError(401, 'Not authenticated');
+    }
+    if (!req.file) {
+      throw new AppError(400, 'profilePicture is required');
+    }
+    const profile = await authService.updateProfilePicture(req.user.id, req.file);
+    res.status(200).json(profile);
+  } catch (err) {
+    next(err);
+  }
+};

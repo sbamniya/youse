@@ -6,11 +6,13 @@ import { ZodError } from 'zod';
 export const validate =
   (schema: AnyZodObject) => (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse({
+      const parsed = schema.parse({
         body: req.body,
         query: req.query,
         params: req.params,
       });
+      // Use the parsed body so Zod's allow-listing and transformations reach handlers.
+      req.body = parsed.body;
       next();
     } catch (err) {
       if (err instanceof ZodError) {

@@ -10,6 +10,10 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   ADMIN_PHONES: z.string().default(''),
+  R2_ACCESS_KEY_ID: z.string().min(1, 'R2_ACCESS_KEY_ID is required'),
+  R2_SECRET_ACCESS_KEY: z.string().min(1, 'R2_SECRET_ACCESS_KEY is required'),
+  R2_BUCKET_NAME: z.string().min(1, 'R2_BUCKET_NAME is required'),
+  R2_UPLOAD_URL: z.string().url('R2_UPLOAD_URL must be a valid URL').min(1, 'R2_UPLOAD_URL is required'),
 });
 
 const parsed = envSchema.safeParse(process.env);

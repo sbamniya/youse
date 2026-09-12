@@ -1,10 +1,16 @@
 import type { NextFunction, Request, Response } from 'express';
+import multer from 'multer';
 import { AppError } from '../utils/app-error';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({ message: err.message });
+  }
+
+  if (err instanceof multer.MulterError) {
+    const statusCode = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+    return res.status(statusCode).json({ message: err.message });
   }
 
   console.error(err);

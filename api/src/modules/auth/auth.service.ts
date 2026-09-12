@@ -1,4 +1,5 @@
 import { IS_PRODUCTION } from "../../config/config";
+import { randomUUID } from "node:crypto";
 import { env } from "../../config/env";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
@@ -9,7 +10,8 @@ import {
   verifyRefreshToken,
 } from "../../utils/jwt";
 import { comparePassword, hashPassword } from "../../utils/password";
-import type { RequestOtpInput, VerifyOtpInput } from "./auth.schema";
+import { uploadToR2 } from "../../lib/r2";
+import type { RequestOtpInput, UpdateProfileInput, VerifyOtpInput } from "./auth.schema";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -200,5 +202,78 @@ export const getUserProfile = async (userId: string) => {
   if (!user) {
     throw new AppError(404, "User not found");
   }
+  return sanitizeUser(user);
+};
+
+const profileRelations = {
+  userPartnersOne: {
+    where: { deletedAt: null },
+    select: { id: true },
+  },
+  userPartnersTwo: {
+    where: { deletedAt: null },
+    select: { id: true },
+  },
+} as const;
+
+export const updateUserProfile = async (
+  userId: string,
+  input: UpdateProfileInput,
+) => {
+  const data = {
+    ...(input.name !== undefined ? { name: input.name } : {}),
+    ...(input.timezone !== undefined ? { timezone: input.timezone } : {}),
+    ...(input.gender !== undefined ? { gender: input.gender } : {}),
+    ...(input.birthday !== undefined
+      ? { birthday: input.birthday === null ? null : new Date(input.birthday) }
+      : {}),
+  };
+
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data,
+    include: profileRelations,
+  });
+  await userByIdCacheable.invalidate(`user_by_id:${userId}`);
+  return sanitizeUser(user);
+};
+
+export const updateProfilePicture = async (
+  userId: string,
+  file: Express.Multer.File,
+) => {
+  const extensionByMimeType: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+  };
+  const extension = extensionByMimeType[file.mimetype];
+  const isExpectedImage =
+    (file.mimetype === 'image/jpeg' &&
+      file.buffer[0] === 0xff &&
+      file.buffer[1] === 0xd8 &&
+      file.buffer[2] === 0xff) ||
+    (file.mimetype === 'image/png' &&
+      file.buffer.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) ||
+    (file.mimetype === 'image/webp' &&
+      file.buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
+      file.buffer.subarray(8, 12).toString('ascii') === 'WEBP');
+
+  if (!extension || !isExpectedImage) {
+    throw new AppError(415, 'Only JPEG, PNG, and WebP images are supported');
+  }
+
+  const key = `profile-pictures/${userId}/${randomUUID()}.${extension}`;
+  const profilePicture = await uploadToR2({
+    key,
+    body: file.buffer,
+    contentType: file.mimetype,
+  });
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { profilePicture },
+    include: profileRelations,
+  });
+  await userByIdCacheable.invalidate(`user_by_id:${userId}`);
   return sanitizeUser(user);
 };
