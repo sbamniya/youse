@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs, { type Dayjs } from "dayjs";
 import type { ImagePickerAsset } from "expo-image-picker";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { CalendarDays, Camera, Check, UserRound } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -24,6 +24,10 @@ import { Text } from "@/components/ui/text";
 import api from "@/lib/api";
 import { authStorage } from "@/lib/auth-storage";
 import { type AuthUser } from "@/lib/auth-user";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+} from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 
 const reasons = [
@@ -71,26 +75,14 @@ type SaveRelationshipResponse = {
 };
 
 export default function OnboardingDetails() {
-  const { userId } = useLocalSearchParams<{
-    userId?: string;
-  }>();
   const {
     data: user,
     isError,
     isPending,
     refetch,
   } = useQuery({
-    queryKey: ["auth", "onboarding-user", userId],
-    queryFn: async () => {
-      const storedUser = await authStorage.getUser();
-      if (storedUser && (!userId || storedUser.id === userId)) {
-        return storedUser;
-      }
-
-      const currentUser = await api.get<AuthUser>("/auth/me");
-      await authStorage.setUser(currentUser);
-      return currentUser;
-    },
+    queryKey: currentUserQueryKey,
+    queryFn: getCurrentUser,
     retry: false,
   });
 

@@ -11,9 +11,12 @@ import { useCSSVariable } from "uniwind";
 import { BrandMark } from "@/components/app/brand-mark";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { Text } from "@/components/ui/text";
-import api from "@/lib/api";
 import { authStorage } from "@/lib/auth-storage";
-import { type AuthUser, getUserDestination } from "@/lib/auth-user";
+import { getUserDestination } from "@/lib/auth-user";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+} from "@/lib/current-user";
 
 const backgroundImage =
   "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
@@ -27,17 +30,15 @@ export default function Index() {
     isPending,
     refetch,
   } = useQuery({
-    queryKey: ["auth", "me"],
-    queryFn: async (): Promise<AuthUser | null> => {
+    queryKey: currentUserQueryKey,
+    queryFn: async () => {
       const accessToken = await authStorage.getAccessToken();
       if (!accessToken) {
         return null;
       }
 
       try {
-        const user = await api.get<AuthUser>("/auth/me");
-        await authStorage.setUser(user);
-        return user;
+        return await getCurrentUser();
       } catch (error) {
         if (isAxiosError(error) && error.response?.status === 401) {
           await authStorage.clear();

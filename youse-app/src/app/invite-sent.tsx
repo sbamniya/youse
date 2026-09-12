@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   CalendarDays,
@@ -6,15 +7,19 @@ import {
   MessageCircle,
   Send,
 } from "lucide-react-native";
-import { Pressable, View } from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
 
-import { AppScrollScreen } from "@/components/app/app-screen";
+import { AppScreen, AppScrollScreen } from "@/components/app/app-screen";
 import { BrandMark } from "@/components/app/brand-mark";
 import { PageIntro } from "@/components/app/page-intro";
+import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
-import { DEMO_INVITE } from "@/lib/invite";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+} from "@/lib/current-user";
 
 const setupItems = [
   { label: "Answer today’s question", icon: MessageCircle },
@@ -24,15 +29,60 @@ const setupItems = [
 ];
 
 export default function InviteSent() {
+  const {
+    data: user,
+    isError,
+    isPending,
+    refetch,
+  } = useQuery({
+    queryKey: currentUserQueryKey,
+    queryFn: getCurrentUser,
+    retry: false,
+  });
+
+  if (isPending) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (isError || !user) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load your invitation. Check your connection and try
+            again.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => void refetch()}
+          />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  const partnerName = user.partnerName?.trim() || "your partner";
+  const invitationCode = user.invitationCode?.trim();
+  const displayCode = invitationCode
+    ? formatInvitationCode(invitationCode)
+    : "Unavailable";
+
   return (
     <AppScrollScreen>
       <BrandMark className="items-start" />
       <PageIntro
         className="mt-4"
-        description={`Your invite code ${DEMO_INVITE.displayCode} is active\nand your 14-day trial has not started.`}
+        description={`Your invite code ${displayCode} is active\nand your 14-day trial has not started.`}
         displayTitle
         eyebrow="INVITE SENT"
-        title={`Waiting for\n${DEMO_INVITE.inviteeName} to join`}
+        title={`Waiting for\n${partnerName} to join`}
       />
 
       <View className="mt-8 flex-row gap-4">
@@ -64,4 +114,11 @@ export default function InviteSent() {
       </View>
     </AppScrollScreen>
   );
+}
+
+function formatInvitationCode(code: string) {
+  const normalizedCode = code.toUpperCase();
+  return normalizedCode.length > 2
+    ? `${normalizedCode.slice(0, 2)} · ${normalizedCode.slice(2)}`
+    : normalizedCode;
 }

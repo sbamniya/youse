@@ -10,6 +10,8 @@ export type AuthUser = {
   birthday: string | null;
   partnerId: string | null;
   partnerSpace: unknown | null;
+  partnerName: string | null;
+  invitationCode: string | null;
 };
 
 export type AuthenticationResponse = {

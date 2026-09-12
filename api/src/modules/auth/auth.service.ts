@@ -1,6 +1,7 @@
 import { IS_PRODUCTION } from "../../config/config";
 import { env } from "../../config/env";
 import { prisma } from "../../lib/prisma";
+import { deleteFromR2 } from "../../lib/r2";
 import { AppError } from "../../utils/app-error";
 import Cacheable from "../../utils/cacheable";
 import {
@@ -9,8 +10,11 @@ import {
   verifyRefreshToken,
 } from "../../utils/jwt";
 import { comparePassword, hashPassword } from "../../utils/password";
-import { deleteFromR2 } from "../../lib/r2";
-import type { RequestOtpInput, UpdateProfileInput, VerifyOtpInput } from "./auth.schema";
+import type {
+  RequestOtpInput,
+  UpdateProfileInput,
+  VerifyOtpInput,
+} from "./auth.schema";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -34,24 +38,37 @@ const sanitizeUser = (user: {
   partnerId: string | null;
   gender: string | null;
   birthday: Date | null;
-  userPartnersOne: { id: string }[];
-  userPartnersTwo: { id: string }[];
-}) => ({
-  id: user.id,
-  phone: user.phone,
-  name: user.name,
-  profilePicture: user.profilePicture,
-  timezone: user.timezone,
-  partnerId: user.partnerId,
-  gender: user.gender,
-  birthday: user.birthday,
-  partnerSpace:
+  userPartnersOne: {
+    id: string;
+    invitationCode: string | null;
+    partnerName: string | null;
+  }[];
+  userPartnersTwo: {
+    id: string;
+    invitationCode: string | null;
+    partnerName: string | null;
+  }[];
+}) => {
+  const space =
     user.userPartnersOne.length > 0
-      ? user.userPartnersOne[0].id
+      ? user.userPartnersOne[0]
       : user.userPartnersTwo.length > 0
-        ? user.userPartnersTwo[0].id
-        : null,
-});
+        ? user.userPartnersTwo[0]
+        : null;
+  return {
+    id: user.id,
+    phone: user.phone,
+    name: user.name,
+    profilePicture: user.profilePicture,
+    timezone: user.timezone,
+    partnerId: user.partnerId,
+    gender: user.gender,
+    birthday: user.birthday,
+    partnerSpace: space?.id ?? null,
+    invitationCode: space?.invitationCode ?? null,
+    partnerName: space?.partnerName ?? null,
+  };
+};
 
 const issueTokens = async (user: { id: string; phone: string }) => {
   const accessToken = signAccessToken({ sub: user.id, phone: user.phone });
@@ -68,15 +85,14 @@ const issueTokens = async (user: { id: string; phone: string }) => {
   return { accessToken, refreshToken };
 };
 
-
 const profileRelations = {
   userPartnersOne: {
     where: { deletedAt: null },
-    select: { id: true },
+    select: { id: true, invitationCode: true, partnerName: true },
   },
   userPartnersTwo: {
     where: { deletedAt: null },
-    select: { id: true },
+    select: { id: true, invitationCode: true, partnerName: true },
   },
 } as const;
 
