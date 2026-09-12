@@ -1,5 +1,23 @@
-import { AxiosRequestConfig, create } from "axios";
+import {
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+  create,
+  isAxiosError,
+} from "axios";
+
 import { authStorage } from "./auth-storage";
+import type { AuthenticationResponse } from "./auth-user";
+
+type RetryableRequestConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean;
+};
+
+class MissingRefreshTokenError extends Error {
+  constructor() {
+    super("A refresh token is required to restore the session.");
+    this.name = "MissingRefreshTokenError";
+  }
+}
 
 const getAuthToken = async () => {
   const token = await authStorage.getAccessToken();
@@ -16,6 +34,87 @@ const axiosInstance = create({
     "Content-Type": "application/json",
   },
 });
+
+let refreshPromise: Promise<AuthenticationResponse> | null = null;
+
+async function refreshSession() {
+  const refreshToken = await authStorage.getRefreshToken();
+  if (!refreshToken) {
+    throw new MissingRefreshTokenError();
+  }
+
+  const response = await axiosInstance.post<AuthenticationResponse>(
+    "/auth/refresh",
+    { refreshToken },
+  );
+
+  await Promise.all([
+    authStorage.setAccessToken(response.data.accessToken),
+    authStorage.setRefreshToken(response.data.refreshToken),
+    authStorage.setUser(response.data.user),
+  ]);
+
+  return response.data;
+}
+
+function getOrCreateRefreshRequest() {
+  if (!refreshPromise) {
+    refreshPromise = refreshSession().finally(() => {
+      refreshPromise = null;
+    });
+  }
+
+  return refreshPromise;
+}
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  async (error: unknown) => {
+    if (!isAxiosError(error) || error.response?.status !== 401 || !error.config) {
+      return Promise.reject(error);
+    }
+
+    const request = error.config as RetryableRequestConfig;
+    const requestAuthorization = request.headers.get("Authorization");
+    const isRefreshRequest = request.url?.endsWith("/auth/refresh");
+
+    if (request._retry || isRefreshRequest || !requestAuthorization) {
+      return Promise.reject(error);
+    }
+
+    request._retry = true;
+
+    try {
+      const storedAccessToken = await authStorage.getAccessToken();
+      const storedAuthorization = storedAccessToken
+        ? `Bearer ${storedAccessToken}`
+        : undefined;
+
+      // A slower request may return 401 after another request has already
+      // refreshed the token. Retry it with the current token without refreshing
+      // for a second time.
+      const accessToken =
+        storedAccessToken && requestAuthorization !== storedAuthorization
+          ? storedAccessToken
+          : (await getOrCreateRefreshRequest()).accessToken;
+
+      request.headers.set("Authorization", `Bearer ${accessToken}`);
+      return axiosInstance(request);
+    } catch (refreshError) {
+      const refreshWasRejected =
+        refreshError instanceof MissingRefreshTokenError ||
+        (isAxiosError(refreshError) &&
+          [400, 401].includes(refreshError.response?.status ?? 0));
+
+      if (refreshWasRejected) {
+        await authStorage.clear();
+        return Promise.reject(error);
+      }
+
+      return Promise.reject(refreshError);
+    }
+  },
+);
 
 const api = {
   getInstance: () => axiosInstance,
