@@ -1,12 +1,14 @@
+import { IS_PRODUCTION } from "../../config/config";
+import { env } from "../../config/env";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
-import { comparePassword, hashPassword } from "../../utils/password";
+import Cacheable from "../../utils/cacheable";
 import {
   signAccessToken,
   signRefreshToken,
   verifyRefreshToken,
 } from "../../utils/jwt";
-import { env } from "../../config/env";
+import { comparePassword, hashPassword } from "../../utils/password";
 import type { RequestOtpInput, VerifyOtpInput } from "./auth.schema";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
@@ -51,6 +53,14 @@ const issueTokens = async (user: { id: string; phone: string }) => {
   return { accessToken, refreshToken };
 };
 
+export const userByIdCacheable = new Cacheable({
+  generateKey: (id: string) => `user_by_id:${id}`,
+  fetchData(id) {
+    return prisma.user.findUnique({ where: { id } });
+  },
+  ttlSeconds: 60, // cache for 60 seconds
+});
+
 export const requestOtp = async (input: RequestOtpInput) => {
   const code = String(Math.floor(100_000 + Math.random() * 900_000));
   await prisma.otpChallenge.updateMany({
@@ -65,7 +75,7 @@ export const requestOtp = async (input: RequestOtpInput) => {
     },
   });
 
-  return env.NODE_ENV === "production"
+  return IS_PRODUCTION
     ? { message: "Verification code sent" }
     : { message: "Verification code sent", developmentCode: code };
 };
@@ -129,7 +139,7 @@ export const refreshTokens = async (refreshToken: string) => {
     throw new AppError(401, "Invalid or expired refresh token");
   }
 
-  const user = await prisma.user.findUnique({ where: { id: payload.sub } });
+  const user = await userByIdCacheable.execute(payload.sub);
   if (!user) {
     throw new AppError(401, "Invalid or expired refresh token");
   }
@@ -152,7 +162,7 @@ export const logoutUser = async (refreshToken: string) => {
 };
 
 export const getUserProfile = async (userId: string) => {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
+  const user = await userByIdCacheable.execute(userId);
   if (!user) {
     throw new AppError(404, "User not found");
   }
