@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import QueryProvider from "@/components/query-provider";
 import "../global.css";
 
 SplashScreen.setOptions({
@@ -25,18 +26,20 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <ThemeProvider value={navigationTheme}>
-          <MemoryProvider>
-            <Stack
-              screenOptions={{
-                animation: "slide_from_right",
-                contentStyle: { backgroundColor: "#160d11" },
-                headerShown: false,
-              }}
-            />
-          </MemoryProvider>
-          <PortalHost />
-        </ThemeProvider>
+        <QueryProvider>
+          <ThemeProvider value={navigationTheme}>
+            <MemoryProvider>
+              <Stack
+                screenOptions={{
+                  animation: "slide_from_right",
+                  contentStyle: { backgroundColor: "#160d11" },
+                  headerShown: false,
+                }}
+              />
+            </MemoryProvider>
+            <PortalHost />
+          </ThemeProvider>
+        </QueryProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
