@@ -1737,6 +1737,8 @@ export const UserScalarFieldEnum = {
   profilePicture: 'profilePicture',
   partnerId: 'partnerId',
   timezone: 'timezone',
+  gender: 'gender',
+  birthday: 'birthday',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
