@@ -30,12 +30,24 @@ const sanitizeUser = (user: {
   name: string | null;
   profilePicture: string | null;
   timezone: string | null;
+  gender: string | null;
+  birthday: Date | null;
+  userPartnersOne: { id: string }[];
+  userPartnersTwo: { id: string }[];
 }) => ({
   id: user.id,
   phone: user.phone,
   name: user.name,
   profilePicture: user.profilePicture,
   timezone: user.timezone,
+  gender: user.gender,
+  birthday: user.birthday,
+  partnerSpace:
+    user.userPartnersOne.length > 0
+      ? user.userPartnersOne[0].id
+      : user.userPartnersTwo.length > 0
+        ? user.userPartnersTwo[0].id
+        : null,
 });
 
 const issueTokens = async (user: { id: string; phone: string }) => {
@@ -56,7 +68,27 @@ const issueTokens = async (user: { id: string; phone: string }) => {
 export const userByIdCacheable = new Cacheable({
   generateKey: (id: string) => `user_by_id:${id}`,
   fetchData(id) {
-    return prisma.user.findUnique({ where: { id } });
+    return prisma.user.findUnique({
+      where: { id },
+      include: {
+        userPartnersOne: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+          },
+        },
+        userPartnersTwo: {
+          where: {
+            deletedAt: null,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
   },
   ttlSeconds: 60, // cache for 60 seconds
 });
