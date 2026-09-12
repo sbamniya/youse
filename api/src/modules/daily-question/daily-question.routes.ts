@@ -6,7 +6,8 @@ import { dailyAnswerSchema, dailyQuestionSchema, reactionSchema } from "./daily-
 
 export const dailyQuestionRouter = Router();
 dailyQuestionRouter.use(requireAuth);
-dailyQuestionRouter.get("/daily-questions/current", controller.getCurrent);
-dailyQuestionRouter.post("/daily-questions", validate(dailyQuestionSchema), controller.create);
-dailyQuestionRouter.put("/daily-questions/:id/answer", validate(dailyAnswerSchema), controller.saveAnswer);
-dailyQuestionRouter.patch("/daily-questions/answers/:id/reaction", validate(reactionSchema), controller.reactToAnswer);
+
+dailyQuestionRouter.get("/current", controller.getCurrent);
+dailyQuestionRouter.post("", validate(dailyQuestionSchema), controller.create);
+dailyQuestionRouter.put("/:id/answer", validate(dailyAnswerSchema), controller.saveAnswer);
+dailyQuestionRouter.patch("/answers/:id/reaction", validate(reactionSchema), controller.reactToAnswer);

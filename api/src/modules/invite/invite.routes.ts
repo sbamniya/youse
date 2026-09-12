@@ -6,5 +6,6 @@ import { invitationCodeSchema } from "./invite.schema";
 
 export const inviteRouter = Router();
 inviteRouter.use(requireAuth);
-inviteRouter.post("/relationships/invitations/:code/accept", validate(invitationCodeSchema), controller.accept);
-inviteRouter.post("/relationships/invitations/resend", controller.resend);
+
+inviteRouter.post("/:code/accept", validate(invitationCodeSchema), controller.accept);
+inviteRouter.post("/resend", controller.resend);

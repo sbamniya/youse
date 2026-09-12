@@ -28,17 +28,17 @@ export const createApp = () => {
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
   app.use('/v1/auth', authRouter);
   app.use('/v1/admin', adminRouter);
-  app.use('/v1', spaceRouter);
-  app.use('/v1', inviteRouter);
-  app.use('/v1', pokeRouter);
-  app.use('/v1', dailyQuestionRouter);
-  app.use('/v1', weeklyCheckInRouter);
-  app.use('/v1', planRouter);
-  app.use('/v1', memoryRouter);
-  app.use('/v1', moodRouter);
-  app.use('/v1', listRouter);
-  app.use('/v1', insightRouter);
-  app.use('/v1', subscriptionRouter);
+  app.use('/v1/space', spaceRouter);
+  app.use('/v1/invitation', inviteRouter);
+  app.use('/v1/pokes', pokeRouter);
+  app.use('/v1/daily-questions', dailyQuestionRouter);
+  app.use('/v1/weekly-check-ins', weeklyCheckInRouter);
+  app.use('/v1/plans', planRouter);
+  app.use('/v1/memories', memoryRouter);
+  app.use('/v1/moods', moodRouter);
+  app.use('/v1/lists', listRouter);
+  app.use('/v1/insights', insightRouter);
+  app.use('/v1/subscriptions', subscriptionRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

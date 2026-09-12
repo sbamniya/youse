@@ -6,4 +6,5 @@ import { pokeSchema } from "./poke.schema";
 
 export const pokeRouter = Router();
 pokeRouter.use(requireAuth);
-pokeRouter.post("/pokes", validate(pokeSchema), pokeController.sendPoke);
+
+pokeRouter.post("/", validate(pokeSchema), pokeController.sendPoke);

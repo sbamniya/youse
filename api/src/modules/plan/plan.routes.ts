@@ -3,9 +3,11 @@ import { requireAuth } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validate";
 import * as controller from "./plan.controller";
 import { createPlanSchema, planIdSchema, updatePlanSchema } from "./plan.schema";
+
 export const planRouter = Router();
 planRouter.use(requireAuth);
-planRouter.get("/plans", controller.list);
-planRouter.post("/plans", validate(createPlanSchema), controller.create);
-planRouter.patch("/plans/:id", validate(updatePlanSchema), controller.update);
-planRouter.delete("/plans/:id", validate(planIdSchema), controller.remove);
+
+planRouter.get("/", controller.list);
+planRouter.post("/", validate(createPlanSchema), controller.create);
+planRouter.patch("/:id", validate(updatePlanSchema), controller.update);
+planRouter.delete("/:id", validate(planIdSchema), controller.remove);

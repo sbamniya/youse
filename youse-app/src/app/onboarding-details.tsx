@@ -38,6 +38,16 @@ const reasons = [
 
 const genders = ["Woman", "Man", "Non-binary", "Prefer not to say"];
 
+const relationshipTypes = [
+  "Dating",
+  "Committed relationship",
+  "Engaged",
+  "Married",
+  "Domestic partnership",
+  "Civil partnership",
+  "Other",
+];
+
 type FormField =
   | "profilePicture"
   | "name"
@@ -45,6 +55,7 @@ type FormField =
   | "gender"
   | "reason"
   | "partnerName"
+  | "relationshipType"
   | "anniversary"
   | "form";
 
@@ -135,6 +146,7 @@ function OnboardingForm({
   const [gender, setGender] = useState<string | null>(initialUser.gender);
   const [selectedReason, setSelectedReason] = useState<number | null>(null);
   const [partnerName, setPartnerName] = useState("");
+  const [relationshipType, setRelationshipType] = useState<string | null>(null);
   const [anniversary, setAnniversary] = useState<Dayjs | null>(null);
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -236,6 +248,9 @@ function OnboardingForm({
     if (step === 3) {
       if (!partnerName.trim()) {
         nextErrors.partnerName = "Enter your partner's name.";
+      }
+      if (!relationshipType) {
+        nextErrors.relationshipType = "Choose your relationship type.";
       }
       if (!anniversary || !anniversary.isValid()) {
         nextErrors.anniversary = "Choose your anniversary date.";
@@ -495,6 +510,37 @@ function OnboardingForm({
               value={partnerName}
             />
             <FieldError message={errors.partnerName} />
+
+            <Text
+              className="mt-8 text-[12px] text-muted-foreground"
+              style={{ letterSpacing: 4 }}
+            >
+              RELATIONSHIP TYPE
+            </Text>
+            <View className="mt-3 flex-row flex-wrap gap-3">
+              {relationshipTypes.map((option) => {
+                const selected = relationshipType === option;
+                return (
+                  <Pressable
+                    key={option}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected }}
+                    className={`rounded-full border px-4 py-2 ${selected ? "border-accent bg-primary" : "border-placeholder"}`}
+                    onPress={() => {
+                      setRelationshipType(option);
+                      clearError("relationshipType");
+                    }}
+                  >
+                    <Text
+                      className={`text-[12px] ${selected ? "font-bold text-primary-foreground" : "text-muted-foreground"}`}
+                    >
+                      {option}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+            <FieldError message={errors.relationshipType} />
 
             <Text
               className="mt-8 text-[12px] text-muted-foreground"
