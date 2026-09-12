@@ -30,6 +30,7 @@ const sanitizeUser = (user: {
   name: string | null;
   profilePicture: string | null;
   timezone: string | null;
+  partnerId: string | null;
   gender: string | null;
   birthday: Date | null;
   userPartnersOne: { id: string }[];
@@ -40,6 +41,7 @@ const sanitizeUser = (user: {
   name: user.name,
   profilePicture: user.profilePicture,
   timezone: user.timezone,
+  partnerId: user.partnerId,
   gender: user.gender,
   birthday: user.birthday,
   partnerSpace:
