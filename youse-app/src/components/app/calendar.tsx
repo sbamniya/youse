@@ -34,6 +34,8 @@ const MONTHS = [
 type CalendarProps = {
   value: Dayjs;
   onValueChange: (date: Dayjs) => void;
+  month?: Dayjs;
+  onMonthChange?: (month: Dayjs) => void;
   getMarkerCount?: (date: Dayjs) => number;
   className?: string;
   // needed so the month/year dropdowns render above a parent AlertDialog/Dialog
@@ -52,8 +54,14 @@ function getCalendarWeeks(month: Dayjs) {
   return Array.from({ length: cells.length / 7 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
 }
 
-function Calendar({ value, onValueChange, getMarkerCount, className, portalHost }: CalendarProps) {
-  const [month, setMonth] = useState(() => value.startOf("month"));
+function Calendar({ value, onValueChange, month: controlledMonth, onMonthChange, getMarkerCount, className, portalHost }: CalendarProps) {
+  const [uncontrolledMonth, setUncontrolledMonth] = useState(() => value.startOf("month"));
+  const month = controlledMonth ?? uncontrolledMonth;
+  const setMonth = (update: (current: Dayjs) => Dayjs) => {
+    const nextMonth = update(month).startOf("month");
+    if (!controlledMonth) setUncontrolledMonth(nextMonth);
+    onMonthChange?.(nextMonth);
+  };
   const weeks = useMemo(() => getCalendarWeeks(month), [month]);
   const years = useMemo(
     () => Array.from({ length: 126 }, (_, index) => dayjs().year() - 100 + index),
@@ -162,4 +170,3 @@ function Calendar({ value, onValueChange, getMarkerCount, className, portalHost 
 
 export { Calendar };
 export type { CalendarProps };
-

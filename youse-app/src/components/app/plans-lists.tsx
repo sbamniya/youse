@@ -142,16 +142,16 @@ function OurLists() {
                 disabled={updateItemMutation.isPending}
                 onPress={() => updateItemMutation.mutate({ itemId: item.id, completed: !item.completed })}
               >
-                <View className={cn("h-8 w-8 items-center justify-center rounded-full border", item.completed ? "border-primary bg-primary" : "border-foreground/30")}>
+                <View className={cn("h-6 w-6 items-center justify-center rounded-full border", item.completed ? "border-primary bg-primary" : "border-foreground/30")}>
                   {item.completed ? <ThemedIcon icon={Check} tone="primaryForeground" size={16} strokeWidth={2.4} /> : null}
                 </View>
-                <Text className={cn("flex-1 text-[18px]", item.completed ? "font-serif italic text-foreground" : "text-foreground")}>
+                <Text className={cn("flex-1 text-[16px]", item.completed ? "font-serif italic text-foreground line-through" : "text-foreground")}>
                   {item.title}
                 </Text>
               </Pressable>
             ))}
           </View>
-          <View className="mt-4 flex-row items-center rounded-full bg-secondary/60 py-1.5 pl-5 pr-1.5">
+          <View className="mt-4 flex-row items-center rounded-full bg-secondary/60 py-1 pl-5 pr-1.5">
             <Input
               className="flex-1 text-[16px] text-foreground"
               editable={!createItemMutation.isPending}
@@ -164,7 +164,7 @@ function OurLists() {
             />
             <Pressable
               accessibilityLabel={`Add item to ${activeList.name}`}
-              className="h-11 w-11 items-center justify-center rounded-full bg-primary active:opacity-80 disabled:opacity-50"
+              className="h-10 w-10 items-center justify-center rounded-full bg-primary active:opacity-80 disabled:opacity-50"
               disabled={!newItemTitle.trim() || createItemMutation.isPending}
               onPress={addItem}
             >

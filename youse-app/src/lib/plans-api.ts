@@ -1,4 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
+import type { Dayjs } from "dayjs";
 
 import api from "./api";
 
@@ -31,14 +32,34 @@ export type UpdatePlanInput = Partial<PlanInput>;
 
 export const plansQueryKey = ["plans"] as const;
 
-export async function getPlans(): Promise<ApiPlan[]> {
-  return api.get<ApiPlan[]>("/plans");
+export const plansForMonthQueryKey = (month: Dayjs) =>
+  [...plansQueryKey, month.format("YYYY-MM")] as const;
+
+export async function getPlans(month: Dayjs): Promise<ApiPlan[]> {
+  return api.get<ApiPlan[]>("/plans", {
+    from: month.startOf("month").toISOString(),
+    to: month.add(1, "month").startOf("month").toISOString(),
+  });
 }
 
-export const plansQueryOptions = queryOptions({
-  queryKey: plansQueryKey,
-  queryFn: getPlans,
-});
+export const plansQueryOptions = (month: Dayjs) =>
+  queryOptions({
+    queryKey: plansForMonthQueryKey(month),
+    queryFn: () => getPlans(month),
+  });
+
+export const planQueryKey = (planId: string) =>
+  [...plansQueryKey, "detail", planId] as const;
+
+export async function getPlan(planId: string): Promise<ApiPlan> {
+  return api.get<ApiPlan>(`/plans/${encodeURIComponent(planId)}`);
+}
+
+export const planQueryOptions = (planId: string) =>
+  queryOptions({
+    queryKey: planQueryKey(planId),
+    queryFn: () => getPlan(planId),
+  });
 
 export async function createPlan(input: PlanInput): Promise<ApiPlan> {
   return api.post<ApiPlan, PlanInput>("/plans", input);

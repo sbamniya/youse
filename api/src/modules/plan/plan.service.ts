@@ -1,11 +1,17 @@
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
 import { spaceFor, writableSpace } from "../space/space.service";
-import type { CreatePlanInput, UpdatePlanInput } from "./plan.schema";
+import type { CreatePlanInput, ListPlansInput, UpdatePlanInput } from "./plan.schema";
 
-export const list = async (userId: string) => {
+export const list = async (userId: string, range: ListPlansInput) => {
   const space = await spaceFor(userId);
-  return prisma.userPartnerPlans.findMany({ where: { userPartnerId: space.id }, orderBy: { dateTime: "asc" } });
+  return prisma.userPartnerPlans.findMany({ where: { userPartnerId: space.id, dateTime: { gte: new Date(range.from), lt: new Date(range.to) } }, orderBy: { dateTime: "asc" } });
+};
+export const get = async (userId: string, planId: string) => {
+  const space = await spaceFor(userId);
+  const plan = await prisma.userPartnerPlans.findFirst({ where: { id: planId, userPartnerId: space.id } });
+  if (!plan) throw new AppError(404, "Plan not found");
+  return plan;
 };
 export const create = async (userId: string, input: CreatePlanInput) => {
   const space = await writableSpace(userId);

@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs, { type Dayjs } from "dayjs";
 import {
   CalendarDays,
   Ellipsis,
@@ -26,6 +26,8 @@ type PlansCalendarProps = {
   plans: ApiPlan[];
   onEditPlan: (plan: ApiPlan) => void;
   onDeletePlan: (plan: ApiPlan) => void;
+  visibleMonth: Dayjs;
+  onMonthChange: (month: Dayjs) => void;
   deletingPlanId?: string;
 };
 
@@ -120,7 +122,7 @@ function PlanRow({
   );
 }
 
-function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId }: PlansCalendarProps) {
+function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId, visibleMonth, onMonthChange }: PlansCalendarProps) {
   const [selectedDay, setSelectedDay] = useState(() => dayjs());
   const selectedPlans = useMemo(
     () => plans.filter((plan) => dayjs(plan.dateTime).isSame(selectedDay, "day")),
@@ -132,6 +134,11 @@ function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId }: Plan
       <Calendar
         className="mt-4"
         getMarkerCount={(date) => Math.min(3, plans.filter((plan) => dayjs(plan.dateTime).isSame(date, "day")).length)}
+        month={visibleMonth}
+        onMonthChange={(month) => {
+          onMonthChange(month);
+          if (!selectedDay.isSame(month, "month")) setSelectedDay(month);
+        }}
         onValueChange={setSelectedDay}
         value={selectedDay}
       />

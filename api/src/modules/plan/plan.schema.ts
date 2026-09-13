@@ -31,5 +31,18 @@ export const updatePlanSchema = requestSchema(z.object({
   remindAt: z.string().datetime().optional().nullable(),
 }), idParams);
 export const planIdSchema = requestSchema(emptyRequestObject, idParams);
+export const listPlansSchema = z.object({
+  body: emptyRequestObject,
+  query: z
+    .object({
+      from: z.string().datetime(),
+      to: z.string().datetime(),
+    })
+    .refine(({ from, to }) => new Date(from) < new Date(to), {
+      message: "The plan range is invalid",
+    }),
+  params: emptyRequestObject,
+});
 export type CreatePlanInput = z.infer<typeof createPlanSchema>["body"];
 export type UpdatePlanInput = z.infer<typeof updatePlanSchema>["body"];
+export type ListPlansInput = z.infer<typeof listPlansSchema>["query"];

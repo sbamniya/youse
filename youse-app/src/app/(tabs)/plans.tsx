@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Plus, RefreshCw } from "lucide-react-native";
 import { useState } from "react";
@@ -21,15 +22,16 @@ import { cn } from "@/lib/utils";
 
 export default function Plans() {
   const [view, setView] = useState<"calendar" | "list">("calendar");
+  const [visibleMonth, setVisibleMonth] = useState(() => dayjs().startOf("month"));
   const [planToDelete, setPlanToDelete] = useState<ApiPlan | null>(null);
   const queryClient = useQueryClient();
-  const { data: plans = [], isError, isPending, isRefetching, refetch } = useQuery(plansQueryOptions);
+  const { data: plans = [], isError, isPending, isRefetching, refetch } = useQuery(
+    plansQueryOptions(visibleMonth),
+  );
   const deletePlanMutation = useMutation({
     mutationFn: deletePlan,
-    onSuccess: (_, planId) => {
-      queryClient.setQueryData<ApiPlan[]>(plansQueryKey, (current) =>
-        current?.filter((plan) => plan.id !== planId),
-      );
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: plansQueryKey });
       setPlanToDelete(null);
     },
     onError: () => {
@@ -125,7 +127,9 @@ export default function Plans() {
               deletingPlanId={deletePlanMutation.variables}
               onDeletePlan={setPlanToDelete}
               onEditPlan={openPlanEditor}
+              onMonthChange={setVisibleMonth}
               plans={plans}
+              visibleMonth={visibleMonth}
             />
           )
         ) : <OurLists />}

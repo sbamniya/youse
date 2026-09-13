@@ -19,10 +19,9 @@ import { Text } from "@/components/ui/text";
 import { getImageUrl } from "@/lib/image-url";
 import { uploadImage } from "@/lib/image-upload";
 import {
-  type ApiPlan,
   createPlan,
+  planQueryOptions,
   plansQueryKey,
-  plansQueryOptions,
   updatePlan,
 } from "@/lib/plans-api";
 import { cn } from "@/lib/utils";
@@ -68,9 +67,8 @@ export default function CreatePlan() {
     isPending: isPlanPending,
     refetch,
   } = useQuery({
-    ...plansQueryOptions,
+    ...planQueryOptions(id ?? ""),
     enabled: isEditing,
-    select: (plans) => plans.find((plan) => plan.id === id),
   });
 
   const displayedTitle = title ?? existingPlan?.title ?? "";
@@ -105,14 +103,7 @@ export default function CreatePlan() {
 
       return createPlan({ ...details, imagePath: imagePath ?? null });
     },
-    onSuccess: (plan) => {
-      queryClient.setQueryData<ApiPlan[]>(plansQueryKey, (current) =>
-        isEditing
-          ? current?.map((item) => (item.id === plan.id ? plan : item))
-          : current
-            ? [...current, plan].sort((left, right) => left.dateTime.localeCompare(right.dateTime))
-            : [plan],
-      );
+    onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: plansQueryKey });
       router.back();
     },
