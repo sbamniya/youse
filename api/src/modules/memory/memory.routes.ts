@@ -8,6 +8,7 @@ import {
   favoriteMemorySchema,
   memoryItemIdSchema,
   memoryIdSchema,
+  updateMemorySchema,
   updateMemoryItemCaptionSchema,
 } from "./memory.schema";
 
@@ -32,6 +33,7 @@ memoryRouter.delete(
   controller.removePhoto,
 );
 memoryRouter.get("/:id", validate(memoryIdSchema), controller.get);
+memoryRouter.patch("/:id", validate(updateMemorySchema), controller.update);
 memoryRouter.patch(
   "/:id/favorite",
   validate(favoriteMemorySchema),

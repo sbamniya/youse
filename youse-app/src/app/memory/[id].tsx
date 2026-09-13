@@ -30,6 +30,7 @@ import { getImageUrl } from "@/lib/image-url";
 import {
   type ApiMemory,
   type MemoryItem,
+  deleteMemory,
   deleteMemoryItem,
   formatMemoryDate,
   getMemoryImageUrl,
@@ -44,6 +45,7 @@ const HERO_HEIGHT = 460;
 export default function MemoryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
   const [scrollY] = useState(() => new Animated.Value(0));
   const {
     data: memory,
@@ -53,6 +55,22 @@ export default function MemoryDetail() {
   } = useQuery({
     ...memoryQueryOptions(id ?? ""),
     enabled: Boolean(id),
+  });
+  const deleteMemoryMutation = useMutation({
+    mutationFn: () => deleteMemory(id),
+    onSuccess: () => {
+      queryClient.setQueryData<ApiMemory[]>(memoriesQueryKey, (current) =>
+        current?.filter((item) => item.id !== id),
+      );
+      queryClient.removeQueries({ queryKey: memoryQueryKey(id) });
+      router.replace("/memories");
+    },
+    onError: () => {
+      Alert.alert(
+        "Couldn't delete memory",
+        "Check your connection and try again.",
+      );
+    },
   });
   const foreground = useCSSVariable("--color-foreground") as string;
   const collapsedHeaderHeight = Math.max(insets.top + 56, 76);
@@ -130,8 +148,29 @@ export default function MemoryDetail() {
 
   const openMemoryMenu = () => {
     Alert.alert(memory.title, "What would you like to do?", [
-      { text: "Share memory" },
-      { text: "Delete memory", style: "destructive" },
+      {
+        text: "Edit memory",
+        onPress: () =>
+          router.push({ pathname: "/create-memory", params: { id: memory.id } }),
+      },
+      {
+        text: "Delete memory",
+        style: "destructive",
+        onPress: () => {
+          Alert.alert(
+            "Delete this memory?",
+            "This removes the memory and its gallery from your shared space.",
+            [
+              { text: "Cancel", style: "cancel" },
+              {
+                text: "Delete memory",
+                style: "destructive",
+                onPress: () => deleteMemoryMutation.mutate(),
+              },
+            ],
+          );
+        },
+      },
       { text: "Cancel", style: "cancel" },
     ]);
   };
@@ -230,8 +269,14 @@ export default function MemoryDetail() {
 
             <Pressable
               accessibilityLabel={`Edit ${memory.title}`}
-              className="flex-row items-center gap-2 rounded-full px-2 py-2 active:bg-secondary/60"
-              onPress={() => router.push("/create-memory")}
+              className="flex-row items-center gap-2 rounded-full px-2 py-2 active:bg-secondary/60 disabled:opacity-50"
+              disabled={deleteMemoryMutation.isPending}
+              onPress={() =>
+                router.push({
+                  pathname: "/create-memory",
+                  params: { id: memory.id },
+                })
+              }
             >
               <ThemedIcon
                 icon={Pencil}
@@ -273,7 +318,8 @@ export default function MemoryDetail() {
 
           <Pressable
             accessibilityLabel="More memory options"
-            className="h-10 w-10 items-center justify-center"
+            className="h-10 w-10 items-center justify-center disabled:opacity-50"
+            disabled={deleteMemoryMutation.isPending}
             hitSlop={8}
             onPress={openMemoryMenu}
           >
@@ -331,15 +377,7 @@ function Gallery({ memory }: { memory: ApiMemory }) {
           (photo) => photo.id !== deletedPhoto.id,
         );
 
-        return {
-          ...current,
-          thumbnail:
-            current.thumbnail === deletedPhoto.imageUrl
-              ? (remainingPhotos.find((photo) => photo.imageUrl)?.imageUrl ??
-                null)
-              : current.thumbnail,
-          partnerMemoryItems: remainingPhotos,
-        };
+        return { ...current, partnerMemoryItems: remainingPhotos };
       });
       if (editingPhotoId === deletedPhoto.id) {
         setEditingPhotoId(null);

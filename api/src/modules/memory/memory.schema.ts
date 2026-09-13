@@ -24,9 +24,21 @@ export const createMemorySchema = requestSchema(
     memoryDate: z.string().datetime().optional().nullable(),
     thumbnailPath: imagePath.optional().nullable(),
     location: optionalText,
-    imagePaths: z.array(imagePath).max(10).default([]),
   }),
   emptyRequestObject,
+);
+export const updateMemorySchema = requestSchema(
+  z
+    .object({
+      title: text.optional(),
+      description: optionalText,
+      memoryDate: z.string().datetime().optional().nullable(),
+      location: optionalText,
+    })
+    .refine((body) => Object.keys(body).length > 0, {
+      message: "Provide at least one memory field",
+    }),
+  idParams,
 );
 export const addMemoryPhotoSchema = requestSchema(
   z.object({
@@ -46,6 +58,7 @@ export const memoryItemIdSchema = requestSchema(
   memoryItemParams,
 );
 export type CreateMemoryInput = z.infer<typeof createMemorySchema>["body"];
+export type UpdateMemoryInput = z.infer<typeof updateMemorySchema>["body"];
 export type AddMemoryPhotoInput = z.infer<typeof addMemoryPhotoSchema>["body"];
 export type FavoriteMemoryInput = z.infer<typeof favoriteMemorySchema>["body"];
 export type UpdateMemoryItemCaptionInput = z.infer<

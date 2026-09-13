@@ -47,8 +47,11 @@ export type CreateMemoryInput = {
   memoryDate: string | null;
   thumbnailPath: string | null;
   location: string | null;
-  imagePaths: string[];
 };
+
+export type UpdateMemoryInput = Partial<
+  Omit<CreateMemoryInput, "thumbnailPath">
+>;
 
 export const memoriesQueryKey = ["memories"] as const;
 
@@ -60,6 +63,20 @@ export async function createMemory(
   input: CreateMemoryInput,
 ): Promise<ApiMemory> {
   return api.post<ApiMemory, CreateMemoryInput>("/memories", input);
+}
+
+export async function updateMemory(
+  memoryId: string,
+  input: UpdateMemoryInput,
+): Promise<ApiMemory> {
+  return api.patch<ApiMemory, UpdateMemoryInput>(
+    `/memories/${encodeURIComponent(memoryId)}`,
+    input,
+  );
+}
+
+export async function deleteMemory(memoryId: string): Promise<void> {
+  await api.delete<void>(`/memories/${encodeURIComponent(memoryId)}`);
 }
 
 export async function addMemoryPhoto(

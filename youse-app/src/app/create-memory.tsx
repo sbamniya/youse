@@ -1,10 +1,16 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import type { ImagePickerAsset } from "expo-image-picker";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { ImagePlus, Pencil } from "lucide-react-native";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
@@ -15,51 +21,87 @@ import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+import { getImageUrl } from "@/lib/image-url";
 import { uploadImage } from "@/lib/image-upload";
 import {
   type ApiMemory,
-  type CreateMemoryInput,
   createMemory,
   memoriesQueryKey,
+  memoryQueryKey,
+  memoryQueryOptions,
+  updateMemory,
 } from "@/lib/memory-api";
 
-type CreateMemoryRequest = Omit<
-  CreateMemoryInput,
-  "imagePaths" | "thumbnailPath"
-> & {
-  image: ImagePickerAsset;
-};
-
 export default function CreateMemory() {
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const isEditing = Boolean(id);
   const queryClient = useQueryClient();
-  const [title, setTitle] = useState("");
-  const [date, setDate] = useState(() => dayjs());
-  const [location, setLocation] = useState("");
-  const [story, setStory] = useState("");
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [title, setTitle] = useState<string | null>(null);
+  const [date, setDate] = useState<dayjs.Dayjs | null>(() =>
+    isEditing ? null : dayjs(),
+  );
+  const [location, setLocation] = useState<string | null>(null);
+  const [story, setStory] = useState<string | null>(null);
+  const [selectedPhotoUri, setSelectedPhotoUri] = useState<string | null>(null);
   const [photoAsset, setPhotoAsset] = useState<ImagePickerAsset | null>(null);
   const [error, setError] = useState("");
-  const canSave = Boolean(title.trim()) && date.isValid() && photoAsset !== null;
+  const {
+    data: existingMemory,
+    isError: isMemoryError,
+    isPending: isMemoryPending,
+    refetch,
+  } = useQuery({
+    ...memoryQueryOptions(id ?? ""),
+    enabled: isEditing,
+  });
+  const displayedTitle = title ?? existingMemory?.title ?? "";
+  const displayedDate =
+    date ??
+    (existingMemory?.memoryDate ? dayjs(existingMemory.memoryDate) : dayjs());
+  const displayedLocation = location ?? existingMemory?.location ?? "";
+  const displayedStory = story ?? existingMemory?.description ?? "";
+  const photoUri =
+    selectedPhotoUri ?? getImageUrl(existingMemory?.thumbnail ?? null);
+  const canSave =
+    Boolean(displayedTitle.trim()) &&
+    displayedDate.isValid() &&
+    (isEditing || photoAsset !== null);
 
   const { isPending, mutate: saveMemory } = useMutation({
-    mutationFn: async ({ image, ...memory }: CreateMemoryRequest) => {
-      const { path } = await uploadImage(image);
-      return createMemory({
-        ...memory,
-        thumbnailPath: path,
-        imagePaths: [path],
-      });
+    mutationFn: async () => {
+      const details = {
+        title: displayedTitle.trim(),
+        description: displayedStory.trim() || null,
+        memoryDate: displayedDate.toISOString(),
+        location: displayedLocation.trim() || null,
+      };
+
+      if (id) {
+        return updateMemory(id, details);
+      }
+
+      if (!photoAsset) {
+        throw new Error("A cover photo is required");
+      }
+
+      const { path: thumbnailPath } = await uploadImage(photoAsset);
+      return createMemory({ ...details, thumbnailPath });
     },
     onSuccess: (memory) => {
       queryClient.setQueryData<ApiMemory[]>(memoriesQueryKey, (current) =>
-        current ? [memory, ...current] : [memory],
+        isEditing
+          ? current?.map((item) => (item.id === memory.id ? memory : item))
+          : current
+            ? [memory, ...current]
+            : [memory],
       );
+      queryClient.setQueryData(memoryQueryKey(memory.id), memory);
       void queryClient.invalidateQueries({ queryKey: memoriesQueryKey });
       router.replace(`/memory/${memory.id}`);
     },
     onError: () => {
       setError(
-        "We couldn't upload and save this memory. Check your connection and try again.",
+        `We couldn't ${isEditing ? "update" : "create"} this memory. Check your connection and try again.`,
       );
     },
   });
@@ -70,14 +112,38 @@ export default function CreateMemory() {
     }
 
     setError("");
-    saveMemory({
-      title: title.trim(),
-      description: story.trim() || null,
-      memoryDate: date.toISOString(),
-      location: location.trim() || null,
-      image: photoAsset!,
-    });
+    saveMemory();
   };
+
+  if (isEditing && isMemoryPending) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (isEditing && (isMemoryError || !existingMemory)) {
+    return (
+      <AppScreen>
+        <View className="flex-row px-4 pt-2">
+          <BackButton />
+        </View>
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load this memory.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => void refetch()}
+          />
+        </View>
+      </AppScreen>
+    );
+  }
 
   return (
     <AppScreen>
@@ -94,16 +160,38 @@ export default function CreateMemory() {
             className="mb-0 text-[12px] text-muted-foreground"
             style={{ letterSpacing: 5 }}
           >
-            NEW MEMORY
+            {isEditing ? "EDIT MEMORY" : "NEW MEMORY"}
           </Text>
         </View>
 
-        <PageIntro displayTitle title="Keep this moment close." />
+        <PageIntro
+          displayTitle
+          title={isEditing ? "Shape this memory." : "Keep this moment close."}
+        />
 
+        {isEditing ? (
+          <View className="relative mt-6 h-60 overflow-hidden rounded-3xl border border-border-subtle bg-card">
+            {photoUri ? (
+              <Image
+                accessibilityLabel={`${displayedTitle || "Memory"} cover photo`}
+                className="h-full w-full"
+                resizeMode="cover"
+                source={{ uri: photoUri }}
+              />
+            ) : (
+              <View className="flex-1 items-center justify-center gap-3 px-8">
+                <ThemedIcon icon={ImagePlus} size={24} strokeWidth={1.8} />
+                <Text className="text-[14px] text-muted-foreground">
+                  No cover photo
+                </Text>
+              </View>
+            )}
+          </View>
+        ) : (
         <ImageSourcePicker
           aspect={[3, 4]}
           onImageSelected={(uri, asset) => {
-            setPhotoUri(uri);
+            setSelectedPhotoUri(uri);
             setPhotoAsset(asset);
             setError("");
           }}
@@ -153,6 +241,7 @@ export default function CreateMemory() {
             </Pressable>
           )}
         </ImageSourcePicker>
+        )}
 
         <FormField
           label="Title"
@@ -161,21 +250,25 @@ export default function CreateMemory() {
             setError("");
           }}
           placeholder="Give this memory a name"
-          value={title}
+          value={displayedTitle}
         />
-        <DatePickerField label="Date" onValueChange={setDate} value={date} />
+        <DatePickerField
+          label="Date"
+          onValueChange={setDate}
+          value={displayedDate}
+        />
         <FormField
           label="Location"
           onChangeText={setLocation}
           placeholder="South Goa"
-          value={location}
+          value={displayedLocation}
         />
         <FormField
           label="Story"
           multiline
           onChangeText={setStory}
           placeholder="What made this moment special?"
-          value={story}
+          value={displayedStory}
         />
 
         <Text className="mt-6 font-serif text-[14px] leading-5 text-muted-foreground">
@@ -192,7 +285,13 @@ export default function CreateMemory() {
       <View className="px-4 pb-3 pt-2">
         <PrimaryAction
           disabled={!canSave || isPending}
-          label={isPending ? "Saving..." : "Save memory"}
+          label={
+            isPending
+              ? "Saving..."
+              : isEditing
+                ? "Update memory"
+                : "Save memory"
+          }
           onPress={handleSave}
         />
       </View>
