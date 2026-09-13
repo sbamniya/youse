@@ -3,7 +3,14 @@ import dayjs from "dayjs";
 import { router } from "expo-router";
 import { Plus, RefreshCw } from "lucide-react-native";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  View,
+} from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { PlansCalendar } from "@/components/app/plans-calendar";
@@ -17,17 +24,28 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
-import { type ApiPlan, deletePlan, plansQueryKey, plansQueryOptions } from "@/lib/plans-api";
+import {
+  type ApiPlan,
+  deletePlan,
+  plansQueryKey,
+  plansQueryOptions,
+} from "@/lib/plans-api";
 import { cn } from "@/lib/utils";
 
 export default function Plans() {
   const [view, setView] = useState<"calendar" | "list">("calendar");
-  const [visibleMonth, setVisibleMonth] = useState(() => dayjs().startOf("month"));
+  const [visibleMonth, setVisibleMonth] = useState(() =>
+    dayjs().startOf("month"),
+  );
   const [planToDelete, setPlanToDelete] = useState<ApiPlan | null>(null);
   const queryClient = useQueryClient();
-  const { data: plans = [], isError, isPending, isRefetching, refetch } = useQuery(
-    plansQueryOptions(visibleMonth),
-  );
+  const {
+    data: plans = [],
+    isError,
+    isPending,
+    isRefetching,
+    refetch,
+  } = useQuery(plansQueryOptions(visibleMonth));
   const deletePlanMutation = useMutation({
     mutationFn: deletePlan,
     onSuccess: () => {
@@ -35,7 +53,10 @@ export default function Plans() {
       setPlanToDelete(null);
     },
     onError: () => {
-      Alert.alert("Couldn't delete plan", "Check your connection and try again.");
+      Alert.alert(
+        "Couldn't delete plan",
+        "Check your connection and try again.",
+      );
     },
   });
 
@@ -71,13 +92,15 @@ export default function Plans() {
             </Text>
             <View className="mt-2 h-px w-6 bg-muted-foreground" />
           </View>
-          <Pressable
-            accessibilityLabel="Add a plan"
-            className="h-9 w-9 items-center justify-center"
-            onPress={() => router.push("/create-plan")}
-          >
-            <ThemedIcon icon={Plus} size={26} strokeWidth={1.8} />
-          </Pressable>
+          {isCalendar && (
+            <Pressable
+              accessibilityLabel="Add a plan"
+              className="h-9 w-9 items-center justify-center"
+              onPress={() => router.push("/create-plan")}
+            >
+              <ThemedIcon icon={Plus} size={26} strokeWidth={1.8} />
+            </Pressable>
+          )}
         </View>
 
         {/* Segmented control */}
@@ -91,12 +114,12 @@ export default function Plans() {
               )}
               onPress={() => setView(tab)}
             >
-            <Text
-              className={cn(
-                "text-[15px] font-semibold capitalize",
-                view === tab ? "text-primary-foreground" : "text-foreground",
-              )}
-            >
+              <Text
+                className={cn(
+                  "text-[15px] font-semibold capitalize",
+                  view === tab ? "text-primary-foreground" : "text-foreground",
+                )}
+              >
                 {tab === "calendar" ? "Plans" : "Lists"}
               </Text>
             </Pressable>
@@ -118,8 +141,15 @@ export default function Plans() {
                 className="mt-5 flex-row items-center gap-2 rounded-full bg-primary px-5 py-3 active:opacity-80"
                 onPress={() => void refetch()}
               >
-                <ThemedIcon icon={RefreshCw} tone="primaryForeground" size={17} strokeWidth={2} />
-                <Text className="text-[14px] font-semibold text-primary-foreground">Try again</Text>
+                <ThemedIcon
+                  icon={RefreshCw}
+                  tone="primaryForeground"
+                  size={17}
+                  strokeWidth={2}
+                />
+                <Text className="text-[14px] font-semibold text-primary-foreground">
+                  Try again
+                </Text>
               </Pressable>
             </View>
           ) : (
@@ -132,7 +162,9 @@ export default function Plans() {
               visibleMonth={visibleMonth}
             />
           )
-        ) : <OurLists />}
+        ) : (
+          <OurLists />
+        )}
       </ScrollView>
 
       <AlertDialog
@@ -156,12 +188,16 @@ export default function Plans() {
               disabled={deletePlanMutation.isPending}
               onPress={() => setPlanToDelete(null)}
             >
-              <Text className="text-[15px] font-semibold text-foreground">Keep plan</Text>
+              <Text className="text-[15px] font-semibold text-foreground">
+                Keep plan
+              </Text>
             </Pressable>
             <Pressable
               className="h-12 flex-1 items-center justify-center rounded-2xl bg-destructive active:opacity-80 disabled:opacity-50"
               disabled={deletePlanMutation.isPending || !planToDelete}
-              onPress={() => planToDelete && deletePlanMutation.mutate(planToDelete.id)}
+              onPress={() =>
+                planToDelete && deletePlanMutation.mutate(planToDelete.id)
+              }
             >
               <Text className="text-[15px] font-semibold text-white">
                 {deletePlanMutation.isPending ? "Deleting..." : "Delete plan"}
