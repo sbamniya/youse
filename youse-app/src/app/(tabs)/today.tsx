@@ -222,19 +222,31 @@ export default function Today() {
               </Text>
             </View>
 
-            {dailyQuestion ? (
+            {currentUserAnswer ? (
+              <View className="mt-5 rounded-2xl border border-foreground/15 bg-black/25 px-4 py-3">
+                <Text
+                  className="text-[10px] font-semibold text-muted-foreground"
+                  style={{ letterSpacing: 1.5 }}
+                >
+                  YOUR ANSWER
+                </Text>
+                <Text
+                  className="mt-1 font-serif text-[16px] italic leading-5 text-foreground"
+                  numberOfLines={2}
+                >
+                  {currentUserAnswer.answer}
+                </Text>
+              </View>
+            ) : dailyQuestion ? (
               <PrimaryAction
                 className="mt-5"
                 icon={Pencil}
-                label={currentUserAnswer ? "Edit my answer" : "Write my answer"}
+                label="Write my answer"
                 onPress={() =>
                   router.push({
                     pathname: "/answer",
                     params: {
                       id: dailyQuestion.id,
-                      question: dailyQuestion.question,
-                      partner: partnerName,
-                      answer: currentUserAnswer?.answer,
                     },
                   })
                 }
@@ -256,9 +268,11 @@ export default function Today() {
                     className="h-12 w-12 border-2 border-foreground/10"
                     iconSize={21}
                   />
-                  <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
-                    <Check color="#1d1115" size={9} strokeWidth={3} />
-                  </View>
+                  {currentUserAnswer ? (
+                    <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
+                      <Check color="#1d1115" size={9} strokeWidth={3} />
+                    </View>
+                  ) : null}
                 </View>
                 <View>
                   <Text className="text-[14px] font-semibold text-foreground">
@@ -279,7 +293,11 @@ export default function Today() {
                     className="h-12 w-12 border-2 border-foreground/10"
                     iconSize={21}
                   />
-                  <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background bg-transparent" />
+                  {dailyQuestion.revealed && partnerAnswer ? (
+                    <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
+                      <Check color="#1d1115" size={9} strokeWidth={3} />
+                    </View>
+                  ) : null}
                 </View>
                 <View>
                   <Text className="text-[14px] font-semibold text-foreground">

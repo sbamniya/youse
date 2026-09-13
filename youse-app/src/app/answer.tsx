@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Camera } from "lucide-react-native";
 import { useState } from "react";
-import { Image, Pressable, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
@@ -14,29 +14,31 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import {
   currentDailyQuestionQueryKey,
+  currentDailyQuestionQueryOptions,
   saveDailyAnswer,
 } from "@/lib/daily-question-api";
 
 const logoFull = require("../../assets/images/logo-full-white.png");
 
 const MAX_LENGTH = 500;
-const DEFAULT_QUESTION = "What’s something you wish we did more often?";
-const DEFAULT_PARTNER = "Arjun";
-
 export default function Answer() {
-  const { id, question, partner, answer: existingAnswer } = useLocalSearchParams<{
+  const { id } = useLocalSearchParams<{
     id?: string;
-    question?: string;
-    partner?: string;
-    answer?: string;
   }>();
   const queryClient = useQueryClient();
-  const [answer, setAnswer] = useState(existingAnswer ?? "");
+  const [answer, setAnswer] = useState("");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [error, setError] = useState("");
-
-  const resolvedQuestion = question ?? DEFAULT_QUESTION;
-  const resolvedPartner = partner ?? DEFAULT_PARTNER;
+  const {
+    data: dailyQuestion,
+    isError: isQuestionError,
+    isPending: isQuestionPending,
+    refetch: refetchQuestion,
+  } = useQuery({
+    ...currentDailyQuestionQueryOptions,
+    enabled: Boolean(id),
+  });
+  const isRequestedQuestion = dailyQuestion?.id === id;
   const saveAnswerMutation = useMutation({
     mutationFn: () => {
       if (!id) throw new Error("Daily question is unavailable");
@@ -53,6 +55,30 @@ export default function Answer() {
     },
   });
 
+  if (isQuestionPending) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (!id || isQuestionError || !isRequestedQuestion || !dailyQuestion) {
+    return (
+      <AppScreen>
+        <View className="flex-row px-4 pt-2"><BackButton /></View>
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            This daily question is no longer available.
+          </Text>
+          <PrimaryAction className="mt-7 w-full" label="Try again" onPress={() => void refetchQuestion()} />
+        </View>
+      </AppScreen>
+    );
+  }
+
   return (
     <AppScreen>
       <View className="flex-1 px-4">
@@ -67,10 +93,10 @@ export default function Answer() {
 
         <PageIntro
           className="mt-4"
-          description={`${resolvedPartner} can’t see this until you both answer.`}
+          description="Your answer stays private until you both answer."
           displayTitle
           eyebrow="TODAY’S QUESTION"
-          title={resolvedQuestion}
+          title={dailyQuestion.question}
         />
 
         <View className="mt-8 flex-1 border-l-2 border-primary/70 pl-4">
