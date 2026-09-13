@@ -119,6 +119,7 @@ export default function Today() {
     partner?.name?.trim() || currentUser.partnerName?.trim() || "Your partner";
   const currentUserImage = getImageUrl(currentUser.profilePicture);
   const partnerImage = getImageUrl(partner?.profilePicture);
+  const canSendPokes = partner?.pokesEnabled === true;
   const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -398,36 +399,52 @@ export default function Today() {
 
         {/* Send a poke */}
         <View className="px-4">
-          <View className="flex-row items-baseline justify-between">
-            <Text
-              className="text-[10px] font-semibold text-muted-foreground"
-              style={{ letterSpacing: 2 }}
-            >
-              SEND A POKE
-            </Text>
-            <Text className="text-[12px] text-muted-foreground">
-              to <Text className="font-medium text-accent">{partnerName}</Text>
-            </Text>
-          </View>
-          <Text className="mt-1.5 text-[12px] text-muted-foreground">
-            A tiny signal, no conversation required.
-          </Text>
-          <View className="mt-2.5 gap-2">
-            {pokeRows.map((row) => (
-              <View key={row.join("-")} className="flex-row gap-2">
-                {row.map((label) => (
-                  <Pressable
-                    key={label}
-                    className="flex-1 items-center rounded-full border border-border-subtle bg-card px-3.5 py-3"
-                  >
-                    <Text className="text-[13px] text-foreground">
-                      {label}
-                    </Text>
-                  </Pressable>
+          {canSendPokes ? (
+            <>
+              <View className="flex-row items-baseline justify-between">
+                <Text
+                  className="text-[10px] font-semibold text-muted-foreground"
+                  style={{ letterSpacing: 2 }}
+                >
+                  SEND A POKE
+                </Text>
+                <Text className="text-[12px] text-muted-foreground">
+                  to <Text className="font-medium text-accent">{partnerName}</Text>
+                </Text>
+              </View>
+              <Text className="mt-1.5 text-[12px] text-muted-foreground">
+                A tiny signal, no conversation required.
+              </Text>
+              <View className="mt-2.5 gap-2">
+                {pokeRows.map((row) => (
+                  <View key={row.join("-")} className="flex-row gap-2">
+                    {row.map((label) => (
+                      <Pressable
+                        key={label}
+                        className="flex-1 items-center rounded-full border border-border-subtle bg-card px-3.5 py-3"
+                      >
+                        <Text className="text-[13px] text-foreground">
+                          {label}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
                 ))}
               </View>
-            ))}
-          </View>
+            </>
+          ) : (
+            <View className="rounded-2xl border border-border-subtle bg-card px-4 py-4">
+              <Text
+                className="text-[10px] font-semibold text-muted-foreground"
+                style={{ letterSpacing: 2 }}
+              >
+                POKES UNAVAILABLE
+              </Text>
+              <Text className="mt-1.5 text-[14px] leading-5 text-muted-foreground">
+                {partnerName} has disabled pokes.
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>

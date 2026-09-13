@@ -14,6 +14,7 @@ export const getCurrentDailyQuestion = async (userId: string) => {
   const bothAnswered = space.partnerId !== null &&
     question.dailyQuestionAnswers.some((answer) => answer.userId === space.userId) &&
     question.dailyQuestionAnswers.some((answer) => answer.userId === space.partnerId);
+
   return {
     ...question,
     revealed: bothAnswered,
