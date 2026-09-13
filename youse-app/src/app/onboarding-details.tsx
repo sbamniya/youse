@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs, { type Dayjs } from "dayjs";
 import type { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
@@ -24,10 +24,7 @@ import { Text } from "@/components/ui/text";
 import api from "@/lib/api";
 import { authStorage } from "@/lib/auth-storage";
 import { type AuthUser } from "@/lib/auth-user";
-import {
-  currentUserQueryKey,
-  getCurrentUser,
-} from "@/lib/current-user";
+import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 
 const reasons = [
@@ -118,9 +115,16 @@ export default function OnboardingDetails() {
 }
 
 function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
+  const queryClient = useQueryClient();
   const initialBirthday = initialUser.birthday
     ? dayjs(initialUser.birthday)
     : null;
+  const initialAnniversary = initialUser.anniversary
+    ? dayjs(initialUser.anniversary.slice(0, 10))
+    : null;
+  const initialReasonIndex = reasons.findIndex(
+    ({ title }) => title === initialUser.relationshipGoal?.trim(),
+  );
   const [name, setName] = useState(initialUser.name ?? "");
   const [profilePhotoUri, setProfilePhotoUri] = useState(
     getImageUrl(initialUser.profilePicture),
@@ -132,61 +136,71 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
     initialBirthday?.isValid() ? initialBirthday : null,
   );
   const [gender, setGender] = useState<string | null>(initialUser.gender);
-  const [selectedReason, setSelectedReason] = useState<number | null>(null);
-  const [partnerName, setPartnerName] = useState("");
-  const [relationshipType, setRelationshipType] = useState<string | null>(null);
-  const [anniversary, setAnniversary] = useState<Dayjs | null>(null);
+  const [selectedReason, setSelectedReason] = useState<number | null>(
+    initialReasonIndex >= 0 ? initialReasonIndex : null,
+  );
+  const [partnerName, setPartnerName] = useState(initialUser.partnerName ?? "");
+  const [relationshipType, setRelationshipType] = useState<string | null>(
+    initialUser.relationshipType,
+  );
+  const [anniversary, setAnniversary] = useState<Dayjs | null>(
+    initialAnniversary?.isValid() ? initialAnniversary : null,
+  );
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState<FormErrors>({});
 
   const clearError = (field: FormField) => {
-    setErrors((current) => ({ ...current, [field]: undefined, form: undefined }));
+    setErrors((current) => ({
+      ...current,
+      [field]: undefined,
+      form: undefined,
+    }));
   };
 
-  const {
-    isPending: isUploadingProfilePicture,
-    mutate: uploadProfilePicture,
-  } = useMutation({
-    mutationFn: async (asset: ImagePickerAsset) => {
-      const formData = new FormData();
+  const persistCurrentUser = async (updatedUser: AuthUser) => {
+    queryClient.setQueryData(currentUserQueryKey, updatedUser);
+    await authStorage.setUser(updatedUser);
+  };
 
-      if (Platform.OS === "web" && asset.file) {
-        formData.append("profilePicture", asset.file);
-      } else {
-        const extension = asset.fileName?.split(".").pop()?.toLowerCase();
-        const mimeType =
-          asset.mimeType ??
-          (extension === "png"
-            ? "image/png"
-            : extension === "webp"
-              ? "image/webp"
-              : "image/jpeg");
+  const { isPending: isUploadingProfilePicture, mutate: uploadProfilePicture } =
+    useMutation({
+      mutationFn: async (asset: ImagePickerAsset) => {
+        const formData = new FormData();
 
-        formData.append(
-          "profilePicture",
-          {
+        if (Platform.OS === "web" && asset.file) {
+          formData.append("profilePicture", asset.file);
+        } else {
+          const extension = asset.fileName?.split(".").pop()?.toLowerCase();
+          const mimeType =
+            asset.mimeType ??
+            (extension === "png"
+              ? "image/png"
+              : extension === "webp"
+                ? "image/webp"
+                : "image/jpeg");
+
+          formData.append("profilePicture", {
             name: asset.fileName ?? `profile-picture.${extension ?? "jpg"}`,
             type: mimeType,
             uri: asset.uri,
-          } as unknown as Blob,
-        );
-      }
+          } as unknown as Blob);
+        }
 
-      return api.putForm<AuthUser>("/auth/me/profile-picture", formData);
-    },
-    onSuccess: async (updatedUser) => {
-      setUploadedProfilePicture(updatedUser.profilePicture);
-      clearError("profilePicture");
-      await authStorage.setUser(updatedUser);
-    },
-    onError: () => {
-      setUploadedProfilePicture(null);
-      setErrors((current) => ({
-        ...current,
-        profilePicture: "The photo could not be uploaded. Please try again.",
-      }));
-    },
-  });
+        return api.putForm<AuthUser>("/auth/me/profile-picture", formData);
+      },
+      onSuccess: async (updatedUser) => {
+        setUploadedProfilePicture(updatedUser.profilePicture);
+        clearError("profilePicture");
+        await persistCurrentUser(updatedUser);
+      },
+      onError: () => {
+        setUploadedProfilePicture(null);
+        setErrors((current) => ({
+          ...current,
+          profilePicture: "The photo could not be uploaded. Please try again.",
+        }));
+      },
+    });
 
   const { isPending: isSavingProfile, mutate: updateProfile } = useMutation({
     mutationFn: () =>
@@ -196,7 +210,7 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
         name: name.trim(),
       }),
     onSuccess: async (updatedUser) => {
-      await authStorage.setUser(updatedUser);
+      await persistCurrentUser(updatedUser);
       setStep(2);
     },
     onError: () => {
@@ -207,28 +221,26 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
     },
   });
 
-  const {
-    isPending: isSavingRelationship,
-    mutate: saveRelationship,
-  } = useMutation({
-    mutationFn: () =>
-      api.put<SaveRelationshipResponse, SaveRelationshipPayload>("/space", {
-        relationshipType: relationshipType!,
-        goal: reasons[selectedReason!].title,
-        partnerName: partnerName.trim(),
-        anniversary: anniversary!.format("YYYY-MM-DD"),
-      }),
-    onSuccess: async ({ user: updatedUser }) => {
-      await authStorage.setUser(updatedUser);
-      router.replace("/invite-partner");
-    },
-    onError: () => {
-      setErrors((current) => ({
-        ...current,
-        form: "We couldn't save your relationship details. Please try again.",
-      }));
-    },
-  });
+  const { isPending: isSavingRelationship, mutate: saveRelationship } =
+    useMutation({
+      mutationFn: () =>
+        api.put<SaveRelationshipResponse, SaveRelationshipPayload>("/space", {
+          relationshipType: relationshipType!,
+          goal: reasons[selectedReason!].title,
+          partnerName: partnerName.trim(),
+          anniversary: anniversary!.format("YYYY-MM-DD"),
+        }),
+      onSuccess: async ({ user: updatedUser }) => {
+        await persistCurrentUser(updatedUser);
+        router.replace("/invite-partner");
+      },
+      onError: () => {
+        setErrors((current) => ({
+          ...current,
+          form: "We couldn't save your relationship details. Please try again.",
+        }));
+      },
+    });
 
   const validateCurrentStep = () => {
     const nextErrors: FormErrors = {};
@@ -242,7 +254,11 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
       if (!name.trim()) {
         nextErrors.name = "Enter your name to continue.";
       }
-      if (!birthday || !birthday.isValid() || birthday.isAfter(dayjs(), "day")) {
+      if (
+        !birthday ||
+        !birthday.isValid() ||
+        birthday.isAfter(dayjs(), "day")
+      ) {
         nextErrors.birthday = "Choose a valid birthday.";
       }
       if (!gender) {
@@ -575,9 +591,7 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
         <PrimaryAction
           className="mt-8"
           disabled={
-            isSavingProfile ||
-            isSavingRelationship ||
-            isUploadingProfilePicture
+            isSavingProfile || isSavingRelationship || isUploadingProfilePicture
           }
           label={
             isSavingProfile || isSavingRelationship
