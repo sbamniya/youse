@@ -1,8 +1,8 @@
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
 import { spaceFor, writableSpace } from "../space/space.service";
-import type { AddMemoryPhotoInput, CreateMemoryInput, FavoriteMemoryInput } from "./memory.schema";
-export const list = async (userId: string) => { const space = await spaceFor(userId); return prisma.partnerMemories.findMany({ where: { userPartnerId: space.id, deletedAt: null }, include: { partnerMemoryItems: true }, orderBy: { memoryDate: "desc" } }); };
+import type { AddMemoryPhotoInput, CreateMemoryInput, FavoriteMemoryInput, UpdateMemoryItemCaptionInput } from "./memory.schema";
+export const list = async (userId: string) => { const space = await spaceFor(userId); return prisma.partnerMemories.findMany({ where: { userPartnerId: space.id, deletedAt: null }, include: { partnerMemoryItems: { where: { deletedAt: null } } }, orderBy: { memoryDate: "desc" } }); };
 export const create = async (userId: string, input: CreateMemoryInput) => {
   const space = await writableSpace(userId);
   const { imagePaths, memoryDate, thumbnailPath, ...memory } = input;
@@ -59,6 +59,84 @@ export const addPhoto = async (userId: string, memoryId: string, input: AddMemor
         uploadedBy: userId,
       },
     });
+  });
+};
+export const updatePhotoCaption = async (
+  userId: string,
+  memoryId: string,
+  itemId: string,
+  input: UpdateMemoryItemCaptionInput,
+) => {
+  const space = await writableSpace(userId);
+  const item = await prisma.partnerMemoryItem.findFirst({
+    where: {
+      id: itemId,
+      partnerMemoryId: memoryId,
+      deletedAt: null,
+      partnerMemory: {
+        userPartnerId: space.id,
+        deletedAt: null,
+      },
+    },
+    select: { id: true },
+  });
+
+  if (!item) {
+    throw new AppError(404, "Memory photo not found");
+  }
+
+  return prisma.partnerMemoryItem.update({
+    where: { id: item.id },
+    data: { caption: input.caption?.trim() || null },
+  });
+};
+export const removePhoto = async (
+  userId: string,
+  memoryId: string,
+  itemId: string,
+) => {
+  const space = await writableSpace(userId);
+
+  await prisma.$transaction(async (transaction) => {
+    const item = await transaction.partnerMemoryItem.findFirst({
+      where: {
+        id: itemId,
+        partnerMemoryId: memoryId,
+        deletedAt: null,
+        partnerMemory: {
+          userPartnerId: space.id,
+          deletedAt: null,
+        },
+      },
+      include: { partnerMemory: { select: { thumbnail: true } } },
+    });
+
+    if (!item) {
+      throw new AppError(404, "Memory photo not found");
+    }
+
+    await transaction.partnerMemoryItem.update({
+      where: { id: item.id },
+      data: { deletedAt: new Date() },
+    });
+
+    if (item.partnerMemory.thumbnail === item.imageUrl) {
+      const replacement = await transaction.partnerMemoryItem.findFirst({
+        where: {
+          partnerMemoryId: memoryId,
+          id: { not: item.id },
+          deletedAt: null,
+          imageUrl: { not: null },
+        },
+        orderBy: { createdAt: "asc" },
+        select: { imageUrl: true },
+      });
+
+      await transaction.partnerMemories.update({
+        where: { id: memoryId },
+        data: { thumbnail: replacement?.imageUrl ?? null },
+      });
+    }
   });
 };
 export const setFavorite = async (userId: string, memoryId: string, input: FavoriteMemoryInput) => { const space = await writableSpace(userId); const result = await prisma.partnerMemories.updateMany({ where: { id: memoryId, userPartnerId: space.id, deletedAt: null }, data: input }); if (!result.count) throw new AppError(404, "Memory not found"); };

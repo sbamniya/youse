@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -25,12 +25,18 @@ import { BackButton } from "@/components/app/back-button";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+import { Input } from "@/components/ui/input";
 import { getImageUrl } from "@/lib/image-url";
 import {
   type ApiMemory,
+  type MemoryItem,
+  deleteMemoryItem,
   formatMemoryDate,
   getMemoryImageUrl,
+  memoriesQueryKey,
+  memoryQueryKey,
   memoryQueryOptions,
+  updateMemoryItemCaption,
 } from "@/lib/memory-api";
 
 const HERO_HEIGHT = 460;
@@ -284,6 +290,106 @@ export default function MemoryDetail() {
 }
 
 function Gallery({ memory }: { memory: ApiMemory }) {
+  const queryClient = useQueryClient();
+  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [captionDraft, setCaptionDraft] = useState("");
+  const [captionError, setCaptionError] = useState("");
+  const updateMemoryCaches = (update: (current: ApiMemory) => ApiMemory) => {
+    queryClient.setQueryData<ApiMemory>(memoryQueryKey(memory.id), (current) =>
+      current ? update(current) : current,
+    );
+    queryClient.setQueryData<ApiMemory[]>(memoriesQueryKey, (current) =>
+      current?.map((item) => (item.id === memory.id ? update(item) : item)),
+    );
+  };
+  const captionMutation = useMutation({
+    mutationFn: ({ itemId, caption }: { itemId: string; caption: string | null }) =>
+      updateMemoryItemCaption(memory.id, itemId, caption),
+    onSuccess: (updatedPhoto) => {
+      updateMemoryCaches((current) => ({
+        ...current,
+        partnerMemoryItems: current.partnerMemoryItems.map((photo) =>
+          photo.id === updatedPhoto.id ? updatedPhoto : photo,
+        ),
+      }));
+      setEditingPhotoId(null);
+      setCaptionDraft("");
+      setCaptionError("");
+    },
+    onError: () => {
+      setCaptionError(
+        "We couldn't save this caption. Check your connection and try again.",
+      );
+    },
+  });
+  const deleteMutation = useMutation({
+    mutationFn: (photo: MemoryItem) =>
+      deleteMemoryItem(memory.id, photo.id).then(() => photo),
+    onSuccess: (deletedPhoto) => {
+      updateMemoryCaches((current) => {
+        const remainingPhotos = current.partnerMemoryItems.filter(
+          (photo) => photo.id !== deletedPhoto.id,
+        );
+
+        return {
+          ...current,
+          thumbnail:
+            current.thumbnail === deletedPhoto.imageUrl
+              ? (remainingPhotos.find((photo) => photo.imageUrl)?.imageUrl ??
+                null)
+              : current.thumbnail,
+          partnerMemoryItems: remainingPhotos,
+        };
+      });
+      if (editingPhotoId === deletedPhoto.id) {
+        setEditingPhotoId(null);
+        setCaptionDraft("");
+      }
+    },
+    onError: () => {
+      Alert.alert(
+        "Couldn't delete photo",
+        "Check your connection and try again.",
+      );
+    },
+  });
+
+  const beginEditingCaption = (photo: MemoryItem) => {
+    setEditingPhotoId(photo.id);
+    setCaptionDraft(photo.caption ?? "");
+    setCaptionError("");
+  };
+
+  const confirmDeletePhoto = (photo: MemoryItem) => {
+    Alert.alert(
+      "Delete this photo?",
+      "This removes the photo from your shared memory.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete photo",
+          style: "destructive",
+          onPress: () => deleteMutation.mutate(photo),
+        },
+      ],
+    );
+  };
+
+  const openPhotoMenu = (photo: MemoryItem) => {
+    Alert.alert("Photo options", undefined, [
+      {
+        text: photo.caption ? "Edit caption" : "Add caption",
+        onPress: () => beginEditingCaption(photo),
+      },
+      {
+        text: "Delete photo",
+        style: "destructive",
+        onPress: () => confirmDeletePhoto(photo),
+      },
+      { text: "Cancel", style: "cancel" },
+    ]);
+  };
+
   return (
     <View className="mt-9">
       <Text
@@ -309,11 +415,14 @@ function Gallery({ memory }: { memory: ApiMemory }) {
         </View>
         {memory.partnerMemoryItems.map((photo) => {
           const imageUrl = getImageUrl(photo.imageUrl);
+          const isEditing = editingPhotoId === photo.id;
+          const isDeleting =
+            deleteMutation.isPending && deleteMutation.variables?.id === photo.id;
 
           return (
             <View key={photo.id} className="w-1/2 p-1.5">
               <View className="overflow-hidden rounded-2xl bg-card">
-                <View className="aspect-[3/4] w-full overflow-hidden">
+                <View className="relative aspect-[3/4] w-full overflow-hidden">
                   {imageUrl ? (
                     <Image
                       accessibilityLabel={`${memory.title} gallery photo`}
@@ -331,8 +440,78 @@ function Gallery({ memory }: { memory: ApiMemory }) {
                       />
                     </View>
                   )}
+                  <Pressable
+                    accessibilityLabel={`Options for ${photo.caption || "memory photo"}`}
+                    className="absolute right-2 top-2 h-9 w-9 items-center justify-center rounded-full bg-black/55 active:bg-black/70 disabled:opacity-60"
+                    disabled={isDeleting}
+                    hitSlop={6}
+                    onPress={() => openPhotoMenu(photo)}
+                  >
+                    {isDeleting ? (
+                      <ActivityIndicator
+                        colorClassName="accent-white"
+                        size="small"
+                      />
+                    ) : (
+                      <Ellipsis color="#fff" size={21} strokeWidth={2.4} />
+                    )}
+                  </Pressable>
                 </View>
-                {photo.caption ? (
+                {isEditing ? (
+                  <View className="gap-2.5 p-3">
+                    <Input
+                      accessibilityLabel="Photo caption"
+                      autoFocus
+                      className="min-h-20 rounded-xl px-3 py-2 text-[13px] leading-5"
+                      editable={!captionMutation.isPending}
+                      maxLength={2000}
+                      multiline
+                      onChangeText={(caption) => {
+                        setCaptionDraft(caption);
+                        setCaptionError("");
+                      }}
+                      placeholder="Add a caption"
+                      textAlignVertical="top"
+                      value={captionDraft}
+                    />
+                    {captionError ? (
+                      <Text className="text-[11px] leading-4 text-destructive">
+                        {captionError}
+                      </Text>
+                    ) : null}
+                    <View className="flex-row justify-end gap-2">
+                      <Pressable
+                        accessibilityLabel="Cancel caption editing"
+                        className="rounded-full px-3 py-2 active:bg-secondary"
+                        disabled={captionMutation.isPending}
+                        onPress={() => {
+                          setEditingPhotoId(null);
+                          setCaptionDraft("");
+                          setCaptionError("");
+                        }}
+                      >
+                        <Text className="text-[12px] font-semibold text-primary">
+                          Cancel
+                        </Text>
+                      </Pressable>
+                      <Pressable
+                        accessibilityLabel="Save photo caption"
+                        className="rounded-full bg-primary px-3 py-2 active:opacity-80 disabled:opacity-50"
+                        disabled={captionMutation.isPending}
+                        onPress={() =>
+                          captionMutation.mutate({
+                            itemId: photo.id,
+                            caption: captionDraft.trim() || null,
+                          })
+                        }
+                      >
+                        <Text className="text-[12px] font-semibold text-primary-foreground">
+                          {captionMutation.isPending ? "Saving..." : "Save"}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  </View>
+                ) : photo.caption ? (
                   <Text className="px-3 py-2.5 font-serif text-[13px] leading-5 text-foreground">
                     {photo.caption}
                   </Text>

@@ -3,6 +3,8 @@ import * as service from "./memory.service";
 export const list = async (req: Request, res: Response, next: NextFunction) => { try { res.json(await service.list(req.user!.id)); } catch (error) { next(error); } };
 export const create = async (req: Request, res: Response, next: NextFunction) => { try { res.status(201).json(await service.create(req.user!.id, req.body)); } catch (error) { next(error); } };
 export const addPhoto = async (req: Request, res: Response, next: NextFunction) => { try { res.status(201).json(await service.addPhoto(req.user!.id, req.params.id, req.body)); } catch (error) { next(error); } };
+export const updatePhotoCaption = async (req: Request, res: Response, next: NextFunction) => { try { res.json(await service.updatePhotoCaption(req.user!.id, req.params.id, req.params.itemId, req.body)); } catch (error) { next(error); } };
+export const removePhoto = async (req: Request, res: Response, next: NextFunction) => { try { await service.removePhoto(req.user!.id, req.params.id, req.params.itemId); res.status(204).send(); } catch (error) { next(error); } };
 export const get = async (req: Request, res: Response, next: NextFunction) => { try { res.json(await service.get(req.user!.id, req.params.id)); } catch (error) { next(error); } };
 export const setFavorite = async (req: Request, res: Response, next: NextFunction) => { try { await service.setFavorite(req.user!.id, req.params.id, req.body); res.status(204).send(); } catch (error) { next(error); } };
 export const remove = async (req: Request, res: Response, next: NextFunction) => { try { await service.remove(req.user!.id, req.params.id); res.status(204).send(); } catch (error) { next(error); } };

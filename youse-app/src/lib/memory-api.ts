@@ -72,6 +72,26 @@ export async function addMemoryPhoto(
   );
 }
 
+export async function updateMemoryItemCaption(
+  memoryId: string,
+  itemId: string,
+  caption: string | null,
+): Promise<MemoryItem> {
+  return api.patch<MemoryItem, { caption: string | null }>(
+    `/memories/${encodeURIComponent(memoryId)}/photos/${encodeURIComponent(itemId)}`,
+    { caption },
+  );
+}
+
+export async function deleteMemoryItem(
+  memoryId: string,
+  itemId: string,
+): Promise<void> {
+  await api.delete<void>(
+    `/memories/${encodeURIComponent(memoryId)}/photos/${encodeURIComponent(itemId)}`,
+  );
+}
+
 export const memoriesQueryOptions = queryOptions({
   queryKey: memoriesQueryKey,
   queryFn: getMemories,

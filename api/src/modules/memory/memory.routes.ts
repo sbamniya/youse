@@ -6,7 +6,9 @@ import {
   addMemoryPhotoSchema,
   createMemorySchema,
   favoriteMemorySchema,
+  memoryItemIdSchema,
   memoryIdSchema,
+  updateMemoryItemCaptionSchema,
 } from "./memory.schema";
 
 export const memoryRouter = Router();
@@ -18,6 +20,16 @@ memoryRouter.post(
   "/:id/photos",
   validate(addMemoryPhotoSchema),
   controller.addPhoto,
+);
+memoryRouter.patch(
+  "/:id/photos/:itemId",
+  validate(updateMemoryItemCaptionSchema),
+  controller.updatePhotoCaption,
+);
+memoryRouter.delete(
+  "/:id/photos/:itemId",
+  validate(memoryItemIdSchema),
+  controller.removePhoto,
 );
 memoryRouter.get("/:id", validate(memoryIdSchema), controller.get);
 memoryRouter.patch(
