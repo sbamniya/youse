@@ -32,6 +32,14 @@ const RESEND_DELAY_SECONDS = 30;
 
 const createEmptyOtp = () => Array<string>(OTP_LENGTH).fill("");
 
+const getDeviceTimezone = () => {
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch {
+    return "UTC";
+  }
+};
+
 type OtpCredentials = {
   phone: string;
   code: string;
@@ -41,12 +49,18 @@ type EmailOtpFlow = "invite";
 
 export default function EmailOtp() {
   const persistCurrentUser = usePersistCurrentUser();
-  const { flow, invitationCode: invitationCodeParam } = useLocalSearchParams<{
+  const {
+    flow,
+    invitationCode: invitationCodeParam,
+    name: inviteeNameParam,
+  } = useLocalSearchParams<{
     flow?: EmailOtpFlow;
     invitationCode?: string;
+    name?: string;
   }>();
   const invitationCode = normalizeInvitationCode(invitationCodeParam ?? "");
   const isInviteFlow = flow === "invite" && Boolean(invitationCode);
+  const inviteeName = inviteeNameParam?.trim();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState(createEmptyOtp);
   const [codeSent, setCodeSent] = useState(false);
@@ -118,6 +132,8 @@ export default function EmailOtp() {
       return api.post<AuthenticationResponse>("/auth/otp/verify", {
         phone: `${COUNTRY_CALLING_CODE}${otpData.phone}`,
         code: otpData.code,
+        timezone: getDeviceTimezone(),
+        ...(isInviteFlow && inviteeName ? { name: inviteeName } : {}),
       });
     },
     onSuccess: async (data) => {

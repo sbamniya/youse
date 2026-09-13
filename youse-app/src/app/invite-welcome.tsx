@@ -133,7 +133,11 @@ export default function InviteWelcome() {
         onPress={() =>
           router.push({
             pathname: "/email-otp",
-            params: { flow: "invite", invitationCode: normalizedCode },
+            params: {
+              flow: "invite",
+              invitationCode: normalizedCode,
+              name: invitation.partnerName,
+            },
           })
         }
         showArrow

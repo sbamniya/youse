@@ -1,20 +1,15 @@
-import { type Dayjs } from "dayjs";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import dayjs, { type Dayjs } from "dayjs";
+import type { ImagePickerAsset } from "expo-image-picker";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import {
-    Bell,
-    CalendarDays,
-    Camera,
-    ChevronDown,
-    Clock,
-    Globe2,
-    Heart,
-    UserRound,
-} from "lucide-react-native";
+import { CalendarDays, Camera, UserRound } from "lucide-react-native";
 import { useState } from "react";
 import {
+    ActivityIndicator,
     Alert,
     Image,
+    Platform,
     Pressable,
     ScrollView,
     View,
@@ -22,6 +17,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
+import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
 import { DatePicker } from "@/components/app/date-picker";
 import { ImageSourcePicker } from "@/components/app/image-source-picker";
@@ -30,31 +26,155 @@ import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
 import { Input, type InputProps } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import api from "@/lib/api";
+import { type AuthUser } from "@/lib/auth-user";
+import {
+  currentSpaceQueryOptions,
+  getTrialDaysRemaining,
+  type CurrentSpace,
+} from "@/lib/current-space";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+  usePersistCurrentUser,
+} from "@/lib/current-user";
+import { getImageUrl } from "@/lib/image-url";
 
 const logo = require("../../assets/images/logo-full-white.png");
 const meeraAvatar = require("../../assets/images/memory-meera-avatar.png");
 
 export default function Profile() {
+  const {
+    data: user,
+    isError: isUserError,
+    isPending: isUserPending,
+    refetch: refetchUser,
+  } = useQuery({
+    queryKey: currentUserQueryKey,
+    queryFn: getCurrentUser,
+  });
+  const {
+    data: space,
+    isError: isSpaceError,
+    isPending: isSpacePending,
+    refetch: refetchSpace,
+  } = useQuery(currentSpaceQueryOptions);
+
+  if (isUserPending || isSpacePending) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (isUserError || isSpaceError || !user || !space) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load your profile. Check your connection and try
+            again.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => {
+              void refetchUser();
+              void refetchSpace();
+            }}
+          />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  return <ProfileForm initialSpace={space} initialUser={user} />;
+}
+
+function ProfileForm({
+  initialSpace,
+  initialUser,
+}: {
+  initialSpace: CurrentSpace;
+  initialUser: AuthUser;
+}) {
   const insets = useSafeAreaInsets();
   const background = useCSSVariable("--color-background") as string;
-  const [name, setName] = useState("Meera Singh");
-  const [profilePhotoUri, setProfilePhotoUri] = useState<string | null>(null);
-  const [birthday, setBirthday] = useState<Dayjs | null>(null);
-  const [timezone, setTimezone] = useState("Select timezone");
-  const [notificationTime, setNotificationTime] = useState("Select time");
-  const [relationshipLength, setRelationshipLength] = useState("Select length");
-  const [anniversary, setAnniversary] = useState<Dayjs | null>(null);
+  const persistCurrentUser = usePersistCurrentUser();
+  const trialDaysRemaining = getTrialDaysRemaining(initialSpace);
+  // Timezone always tracks the device's current setting rather than being user-editable.
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  const choose = (
-    title: string,
-    values: string[],
-    setValue: (value: string) => void,
-  ) => {
-    Alert.alert(title, undefined, [
-      ...values.map((value) => ({ text: value, onPress: () => setValue(value) })),
-      { style: "cancel", text: "Cancel" },
-    ]);
-  };
+  const initialBirthday = initialUser.birthday
+    ? dayjs(initialUser.birthday)
+    : null;
+
+  const [name, setName] = useState(initialUser.name ?? "");
+  const [profilePhotoUri, setProfilePhotoUri] = useState(
+    getImageUrl(initialUser.profilePicture),
+  );
+  const [birthday, setBirthday] = useState<Dayjs | null>(
+    initialBirthday?.isValid() ? initialBirthday : null,
+  );
+
+  const { mutate: uploadProfilePicture } = useMutation({
+    mutationFn: async (asset: ImagePickerAsset) => {
+      const formData = new FormData();
+
+      if (Platform.OS === "web" && asset.file) {
+        formData.append("profilePicture", asset.file);
+      } else {
+        const extension = asset.fileName?.split(".").pop()?.toLowerCase();
+        const mimeType =
+          asset.mimeType ??
+          (extension === "png"
+            ? "image/png"
+            : extension === "webp"
+              ? "image/webp"
+              : "image/jpeg");
+
+        formData.append("profilePicture", {
+          name: asset.fileName ?? `profile-picture.${extension ?? "jpg"}`,
+          type: mimeType,
+          uri: asset.uri,
+        } as unknown as Blob);
+      }
+
+      return api.putForm<AuthUser>("/auth/me/profile-picture", formData);
+    },
+    onSuccess: async (updatedUser) => {
+      setProfilePhotoUri(getImageUrl(updatedUser.profilePicture));
+      await persistCurrentUser(updatedUser);
+    },
+    onError: () => {
+      Alert.alert(
+        "Upload failed",
+        "The photo could not be uploaded. Please try again.",
+      );
+    },
+  });
+
+  const { isPending: isSavingProfile, mutate: saveChanges } = useMutation({
+    mutationFn: () =>
+      api.patch<AuthUser>("/auth/me", {
+        name: name.trim(),
+        timezone,
+        birthday: birthday ? birthday.format("YYYY-MM-DD") : null,
+      }),
+    onSuccess: async (updatedUser) => {
+      await persistCurrentUser(updatedUser);
+      router.back();
+    },
+    onError: () => {
+      Alert.alert(
+        "Couldn't save changes",
+        "Please check your connection and try again.",
+      );
+    },
+  });
 
   return (
     <View className="flex-1 bg-background">
@@ -82,7 +202,9 @@ export default function Profile() {
                 <BackButton />
                 <Image source={logo} resizeMode="contain" className="h-6 w-16" />
               </View>
-              <TrialBadge days={11} />
+              {trialDaysRemaining !== null ? (
+                <TrialBadge days={trialDaysRemaining} />
+              ) : null}
             </View>
 
             <View className="absolute inset-x-0 bottom-0 px-4 pb-5">
@@ -106,7 +228,14 @@ export default function Profile() {
                   resizeMode="cover"
                   className="h-28 w-28 rounded-full border-2 border-primary"
                 />
-                <ImageSourcePicker aspect={[1, 1]} onImageSelected={setProfilePhotoUri} title="Change profile photo">
+                <ImageSourcePicker
+                  aspect={[1, 1]}
+                  onImageSelected={(uri, asset) => {
+                    setProfilePhotoUri(uri);
+                    uploadProfilePicture(asset);
+                  }}
+                  title="Change profile photo"
+                >
                   {({ onPress }) => (
                     <Pressable
                       accessibilityLabel="Change profile photo"
@@ -141,61 +270,12 @@ export default function Profile() {
               placeholder="DD / MM / YYYY"
               value={birthday}
             />
-            <SelectField
-              icon={Globe2}
-              label="YOUR TIMEZONE"
-              onPress={() =>
-                choose(
-                  "Select timezone",
-                  ["Asia/Kolkata", "Europe/London", "America/New_York"],
-                  setTimezone,
-                )
-              }
-              value={timezone}
-            />
-            <SelectField
-              icon={Bell}
-              label="DAILY NOTIFICATION TIME"
-              onPress={() =>
-                choose(
-                  "Select time",
-                  ["8:00 AM", "12:00 PM", "6:00 PM", "8:00 PM"],
-                  setNotificationTime,
-                )
-              }
-              value={notificationTime}
-            />
-
-            <Text className="mt-10 text-[11px] font-medium tracking-[4px] text-primary">
-              A LITTLE CONTEXT
-            </Text>
-            <SelectField
-              icon={Heart}
-              label="RELATIONSHIP LENGTH"
-              onPress={() =>
-                choose(
-                  "Select relationship length",
-                  ["Less than a year", "1–2 years", "3–5 years", "5+ years"],
-                  setRelationshipLength,
-                )
-              }
-              value={relationshipLength}
-            />
-            <ProfileDateField
-              icon={Clock}
-              label="ANNIVERSARY DATE"
-              onValueChange={setAnniversary}
-              placeholder="DD / MM / YYYY"
-              value={anniversary}
-            />
 
             <PrimaryAction
               className="mt-8"
-              label="Save changes"
-              onPress={() => {
-                Alert.alert("Profile updated", "Your changes have been saved.");
-                router.back();
-              }}
+              disabled={isSavingProfile}
+              label={isSavingProfile ? "Saving..." : "Save changes"}
+              onPress={() => saveChanges()}
             />
           </View>
       </ScrollView>
@@ -263,35 +343,5 @@ function ProfileDateField({ icon, label, onValueChange, placeholder, value }: Pr
         </Pressable>
       )}
     </DatePicker>
-  );
-}
-
-type SelectFieldProps = {
-  icon: typeof UserRound;
-  label: string;
-  onPress: () => void;
-  value: string;
-};
-
-function SelectField({ icon, label, onPress, value }: SelectFieldProps) {
-  return (
-    <Pressable
-      accessibilityRole="button"
-      className="min-h-24 flex-row items-center border-b border-primary/75 py-4 active:opacity-70"
-      onPress={onPress}
-    >
-      <View className="w-14 items-center">
-        <ThemedIcon icon={icon} size={27} strokeWidth={1.5} />
-      </View>
-      <View className="ml-3 flex-1">
-        <Text className="text-[10px] font-medium tracking-[3px] text-primary">
-          {label}
-        </Text>
-        <Text className="mt-2 font-serif text-[18px] text-muted-foreground">
-          {value}
-        </Text>
-      </View>
-      <ThemedIcon icon={ChevronDown} size={22} strokeWidth={1.6} />
-    </Pressable>
   );
 }

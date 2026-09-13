@@ -168,10 +168,19 @@ export const verifyOtp = async (input: VerifyOtpInput) => {
   });
   const user = await prisma.user.upsert({
     where: { phone: input.phone },
-    update: { deletedAt: null, ...(input.name ? { name: input.name } : {}) },
-    create: { phone: input.phone, name: input.name },
+    update: {
+      deletedAt: null,
+      timezone: input.timezone,
+      ...(input.name ? { name: input.name } : {}),
+    },
+    create: {
+      phone: input.phone,
+      name: input.name,
+      timezone: input.timezone,
+    },
     include: profileRelations,
   });
+  await userByIdCacheable.refresh(user.id);
   const tokens = await issueTokens(user);
   return { user: sanitizeUser(user), ...tokens };
 };

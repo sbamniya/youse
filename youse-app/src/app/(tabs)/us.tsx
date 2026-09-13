@@ -52,7 +52,7 @@ type SettingsRow = {
 
 const settingsRows: SettingsRow[] = [
   {
-    detail: "8:00 PM",
+    detail: "8:00 AM",
     section: "NOTIFICATIONS",
     title: "Daily question",
   },
@@ -129,13 +129,19 @@ export default function Us() {
   }
 
   const partner = getPartnerFromSpace(currentSpace, currentUser.id);
-  const currentUserName = currentUser.name?.trim() || "Your profile";
+  const currentMember =
+    currentSpace.user.id === currentUser.id
+      ? currentSpace.user
+      : currentSpace.partner?.id === currentUser.id
+        ? currentSpace.partner
+        : currentUser;
+  const currentUserName = currentMember.name?.trim() || "Your profile";
   const partnerName =
     partner?.name?.trim() ||
     currentSpace.partnerName?.trim() ||
     currentUser.partnerName?.trim() ||
     "Your partner";
-  const currentUserImage = getImageUrl(currentUser.profilePicture);
+  const currentUserImage = getImageUrl(currentMember.profilePicture);
   const relationshipDetail = formatRelationshipStatus(
     currentSpace.status,
     currentSpace.joinedAt ?? currentSpace.invitedAt,
@@ -144,7 +150,7 @@ export default function Us() {
     dailyQuestionTime ??
     formatDailyQuestionTime(
       currentSpace.dailyQuestionTime,
-      currentUser.timezone,
+      currentMember.timezone,
     );
   const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
   const subscription = getSubscriptionDisplay(currentSpace.subscription);
@@ -179,7 +185,7 @@ export default function Us() {
                 {currentUserName}
               </Text>
               <Text className="mt-1 font-serif text-[14px] text-primary">
-                {currentUser.phone}
+                {currentMember.phone}
               </Text>
             </View>
             <ThemedIcon icon={ChevronRight} size={28} strokeWidth={1.5} />
@@ -421,10 +427,10 @@ function formatDailyQuestionTime(
   value: string | null,
   timeZone: string | null,
 ) {
-  if (!value) return "Not set";
+  if (!value) return "08:00 AM";
 
   const date = new Date(value);
-  if (!Number.isFinite(date.getTime())) return "Not set";
+  if (!Number.isFinite(date.getTime())) return "08:00 AM";
 
   try {
     return new Intl.DateTimeFormat("en-US", {
@@ -445,7 +451,12 @@ function formatDailyQuestionTime(
 function getSubscriptionDisplay(subscription: {
   activeUntil: string | null;
   plan: string | null;
+  trialEndsAt: string | null;
 } | null) {
+  if (!subscription) {
+    return { title: "Youse access", detail: "Active" };
+  }
+
   const activeUntil = subscription?.activeUntil
     ? new Date(subscription.activeUntil)
     : null;
@@ -470,7 +481,17 @@ function getSubscriptionDisplay(subscription: {
     return { title: `Youse ${subscription.plan}`, detail: "View billing" };
   }
 
-  return { title: "Youse trial", detail: "View billing" };
+  const trialEnd = subscription.trialEndsAt
+    ? new Date(subscription.trialEndsAt).getTime()
+    : null;
+
+  return {
+    title: "Youse trial",
+    detail:
+      trialEnd !== null && Number.isFinite(trialEnd) && trialEnd <= Date.now()
+        ? "Trial ended"
+        : "View billing",
+  };
 }
 
 function SectionLabel({ label }: { label: string }) {
