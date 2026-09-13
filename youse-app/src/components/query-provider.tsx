@@ -10,6 +10,8 @@ import { AppState, AppStateStatus, Platform } from "react-native";
 
 const queryClient = new QueryClient();
 
+// Expo Router renders web routes in Node, where expo-network cannot access
+// `window`. TanStack Query installs its own browser listeners on web.
 if (Platform.OS !== "web") {
   onlineManager.setEventListener((setOnline) => {
     let initialized = false;

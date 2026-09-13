@@ -1,3 +1,4 @@
+import * as Clipboard from "expo-clipboard";
 import { AppScreen, AppScrollScreen } from "@/components/app/app-screen";
 import { BrandMark } from "@/components/app/brand-mark";
 import { PageIntro } from "@/components/app/page-intro";
@@ -6,15 +7,19 @@ import { ThemedIcon } from "@/components/app/themed-icon";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import { getInviteUrl } from "@/lib/invite";
 import { useQuery } from "@tanstack/react-query";
 import {
   CalendarDays,
+  Check,
   ClipboardList,
   Image as ImageIcon,
   MessageCircle,
-  Send
+  Send,
 } from "lucide-react-native";
-import { ActivityIndicator, Pressable, View } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Pressable, Share, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 const setupItems = [
   {
@@ -40,6 +45,7 @@ const setupItems = [
 ];
 
 export default function InviteSent() {
+  const [linkCopied, setLinkCopied] = useState(false);
   const {
     data: user,
     isError,
@@ -84,6 +90,31 @@ export default function InviteSent() {
   const displayCode = invitationCode
     ? formatInvitationCode(invitationCode)
     : "Unavailable";
+  const inviteUrl = invitationCode ? getInviteUrl(invitationCode) : null;
+
+  const shareInvite = async () => {
+    if (!inviteUrl) {
+      return;
+    }
+
+    await Share.share({
+      message: `Join my Youse space with invite code ${invitationCode}: ${inviteUrl}`,
+    });
+  };
+
+  const copyInviteLink = async () => {
+    if (!inviteUrl) {
+      return;
+    }
+
+    await Clipboard.setStringAsync(inviteUrl);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 1800);
+    Toast.show({
+      type: "success",
+      text1: "Invite link copied to clipboard",
+    });
+  };
 
   return (
     <AppScrollScreen>
@@ -97,16 +128,24 @@ export default function InviteSent() {
       />
 
       <View className="mt-8 flex-row gap-4">
-        <Pressable className="h-12 flex-1 flex-row items-center justify-center rounded-full border border-accent">
+        <Pressable
+          className="h-12 flex-1 flex-row items-center justify-center rounded-full border border-accent disabled:opacity-50"
+          disabled={!inviteUrl}
+          onPress={shareInvite}
+        >
           <ThemedIcon icon={Send} size={20} strokeWidth={1.8} />
           <Text className="ml-2 text-[14px] font-bold text-foreground">
             Send reminder
           </Text>
         </Pressable>
-        <Pressable className="h-12 flex-1 flex-row items-center justify-center rounded-full border border-accent">
-          <ThemedIcon icon={ClipboardList} size={20} strokeWidth={1.8} />
+        <Pressable
+          className="h-12 flex-1 flex-row items-center justify-center rounded-full border border-accent disabled:opacity-50"
+          disabled={!inviteUrl}
+          onPress={copyInviteLink}
+        >
+          <ThemedIcon icon={linkCopied ? Check : ClipboardList} size={20} strokeWidth={1.8} />
           <Text className="ml-2 text-[14px] font-bold text-foreground">
-            Copy link
+            {linkCopied ? "Copied" : "Copy link"}
           </Text>
         </Pressable>
       </View>

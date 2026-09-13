@@ -1,7 +1,7 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs, { type Dayjs } from "dayjs";
 import type { ImagePickerAsset } from "expo-image-picker";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { CalendarDays, Camera, Check, UserRound } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -22,9 +22,12 @@ import { ThemedIcon } from "@/components/app/themed-icon";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import api from "@/lib/api";
-import { authStorage } from "@/lib/auth-storage";
 import { type AuthUser } from "@/lib/auth-user";
-import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+  usePersistCurrentUser,
+} from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 
 const reasons = [
@@ -71,7 +74,11 @@ type SaveRelationshipResponse = {
   inviteCode: string;
 };
 
+type OnboardingFlow = "accept";
+
 export default function OnboardingDetails() {
+  const { flow } = useLocalSearchParams<{ flow?: OnboardingFlow }>();
+  const isAcceptFlow = flow === "accept";
   const {
     data: user,
     isError,
@@ -111,11 +118,17 @@ export default function OnboardingDetails() {
     );
   }
 
-  return <OnboardingForm initialUser={user} />;
+  return <OnboardingForm initialUser={user} isAcceptFlow={isAcceptFlow} />;
 }
 
-function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
-  const queryClient = useQueryClient();
+function OnboardingForm({
+  initialUser,
+  isAcceptFlow,
+}: {
+  initialUser: AuthUser;
+  isAcceptFlow: boolean;
+}) {
+  const persistCurrentUser = usePersistCurrentUser();
   const initialBirthday = initialUser.birthday
     ? dayjs(initialUser.birthday)
     : null;
@@ -155,11 +168,6 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
       [field]: undefined,
       form: undefined,
     }));
-  };
-
-  const persistCurrentUser = async (updatedUser: AuthUser) => {
-    queryClient.setQueryData(currentUserQueryKey, updatedUser);
-    await authStorage.setUser(updatedUser);
   };
 
   const { isPending: isUploadingProfilePicture, mutate: uploadProfilePicture } =
@@ -211,6 +219,13 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
       }),
     onSuccess: async (updatedUser) => {
       await persistCurrentUser(updatedUser);
+
+      // Acceptors inherit the relationship details from the invitation, so
+      // onboarding only needs to collect and save their personal profile.
+      if (isAcceptFlow) {
+        router.replace("/(tabs)/today");
+        return;
+      }
       setStep(2);
     },
     onError: () => {
@@ -304,6 +319,8 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
     saveRelationship();
   };
 
+  const totalSteps = isAcceptFlow ? 1 : 3;
+
   return (
     <AppScreen>
       <ScrollView
@@ -318,11 +335,13 @@ function OnboardingForm({ initialUser }: { initialUser: AuthUser }) {
             <View className="h-1 bg-muted">
               <View
                 className="h-1 bg-accent"
-                style={{ width: `${(step / 3) * 100}%` }}
+                style={{ width: `${(step / totalSteps) * 100}%` }}
               />
             </View>
           </View>
-          <Text className="ml-4 text-[14px] text-accent">{step} / 3</Text>
+          <Text className="ml-4 text-[14px] text-accent">
+            {step} / {totalSteps}
+          </Text>
         </View>
 
         <PageIntro

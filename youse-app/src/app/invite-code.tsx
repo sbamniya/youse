@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { KeyRound } from "lucide-react-native";
 import { useState } from "react";
@@ -10,21 +11,40 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
-import { DEMO_INVITE } from "@/lib/invite";
+import {
+  INVITATION_CODE_LENGTH,
+  invitationQueryKey,
+  isCompleteInvitationCode,
+  normalizeInvitationCode,
+  verifyInvitationCode,
+} from "@/lib/invite";
 
 export default function InviteCode() {
+  const queryClient = useQueryClient();
   const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState("");
 
-  const normalizedCode = inviteCode.replace(/[^a-z0-9]/gi, "").toUpperCase();
+  const normalizedCode = normalizeInvitationCode(inviteCode);
+  const canVerifyInvitation = isCompleteInvitationCode(normalizedCode);
+
+  const { isPending, mutate: verifyInvitation } = useMutation({
+    mutationFn: verifyInvitationCode,
+    onSuccess: (response, code) => {
+      queryClient.setQueryData(invitationQueryKey(code), response);
+      router.push({ pathname: "/invite-welcome", params: { code } });
+    },
+    onError: () => {
+      setError("We couldn't find that invite. Check the code and try again.");
+    },
+  });
 
   const handleContinue = () => {
-    if (normalizedCode !== DEMO_INVITE.code) {
-      setError("We couldn't find that invite. Check the code and try again.");
+    if (!canVerifyInvitation || isPending) {
       return;
     }
 
-    router.push({ pathname: "/invite-welcome", params: { code: normalizedCode } });
+    setError("");
+    verifyInvitation(normalizedCode);
   };
 
   return (
@@ -55,24 +75,26 @@ export default function InviteCode() {
             autoCapitalize="characters"
             autoCorrect={false}
             className="mt-10 h-16 rounded-2xl border border-input px-5 text-center text-[23px] font-bold text-foreground"
-            maxLength={8}
+            maxLength={INVITATION_CODE_LENGTH}
             onChangeText={(value) => {
               setInviteCode(value);
               setError("");
             }}
             onSubmitEditing={handleContinue}
-            placeholder={DEMO_INVITE.code}
+            placeholder="ABCD2345"
             returnKeyType="done"
             value={inviteCode}
           />
           {error ? (
-            <Text className="mt-3 font-serif text-[15px] text-destructive">{error}</Text>
+            <Text className="mt-3 font-serif text-[15px] text-destructive">
+              {error}
+            </Text>
           ) : null}
 
           <PrimaryAction
             className="mt-7"
-            disabled={!normalizedCode}
-            label="Continue"
+            disabled={!canVerifyInvitation || isPending}
+            label={isPending ? "Verifying..." : "Continue"}
             onPress={handleContinue}
             showArrow
           />

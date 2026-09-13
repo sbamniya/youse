@@ -4,8 +4,7 @@ import {
   Check,
   Clipboard as ClipboardIcon,
   LockKeyhole,
-  Share2,
-  Smartphone,
+  Share2
 } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, Share, View } from "react-native";
@@ -74,10 +73,10 @@ export default function InvitePartner() {
 
       <PrimaryAction className="mt-8" icon={Share2} label="Share invite" onPress={shareInvite} />
 
-      <Pressable className="mt-8 flex-row items-center justify-center" onPress={shareInvite}>
+      {/* <Pressable className="mt-8 flex-row items-center justify-center" onPress={shareInvite}>
         <ThemedIcon icon={Smartphone} size={28} strokeWidth={1.8} />
         <Text className="ml-3 text-[18px] font-semibold text-accent">Send by WhatsApp</Text>
-      </Pressable>
+      </Pressable> */}
 
       <PrimaryAction
         className="mt-8"
