@@ -28,6 +28,7 @@ export type PartnerMemoryItemMinAggregateOutputType = {
   id: string | null
   partnerMemoryId: string | null
   imageUrl: string | null
+  caption: string | null
   uploadedBy: string | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -38,6 +39,7 @@ export type PartnerMemoryItemMaxAggregateOutputType = {
   id: string | null
   partnerMemoryId: string | null
   imageUrl: string | null
+  caption: string | null
   uploadedBy: string | null
   deletedAt: Date | null
   createdAt: Date | null
@@ -48,6 +50,7 @@ export type PartnerMemoryItemCountAggregateOutputType = {
   id: number
   partnerMemoryId: number
   imageUrl: number
+  caption: number
   uploadedBy: number
   deletedAt: number
   createdAt: number
@@ -60,6 +63,7 @@ export type PartnerMemoryItemMinAggregateInputType = {
   id?: true
   partnerMemoryId?: true
   imageUrl?: true
+  caption?: true
   uploadedBy?: true
   deletedAt?: true
   createdAt?: true
@@ -70,6 +74,7 @@ export type PartnerMemoryItemMaxAggregateInputType = {
   id?: true
   partnerMemoryId?: true
   imageUrl?: true
+  caption?: true
   uploadedBy?: true
   deletedAt?: true
   createdAt?: true
@@ -80,6 +85,7 @@ export type PartnerMemoryItemCountAggregateInputType = {
   id?: true
   partnerMemoryId?: true
   imageUrl?: true
+  caption?: true
   uploadedBy?: true
   deletedAt?: true
   createdAt?: true
@@ -163,6 +169,7 @@ export type PartnerMemoryItemGroupByOutputType = {
   id: string
   partnerMemoryId: string
   imageUrl: string | null
+  caption: string | null
   uploadedBy: string
   deletedAt: Date | null
   createdAt: Date
@@ -194,6 +201,7 @@ export type PartnerMemoryItemWhereInput = {
   id?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   partnerMemoryId?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
+  caption?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
   uploadedBy?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"PartnerMemoryItem"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PartnerMemoryItem"> | Date | string
@@ -206,6 +214,7 @@ export type PartnerMemoryItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   partnerMemoryId?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  caption?: Prisma.SortOrderInput | Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -221,6 +230,7 @@ export type PartnerMemoryItemWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PartnerMemoryItemWhereInput | Prisma.PartnerMemoryItemWhereInput[]
   partnerMemoryId?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
+  caption?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
   uploadedBy?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"PartnerMemoryItem"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PartnerMemoryItem"> | Date | string
@@ -233,6 +243,7 @@ export type PartnerMemoryItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   partnerMemoryId?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  caption?: Prisma.SortOrderInput | Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -249,6 +260,7 @@ export type PartnerMemoryItemScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PartnerMemoryItem"> | string
   partnerMemoryId?: Prisma.StringWithAggregatesFilter<"PartnerMemoryItem"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"PartnerMemoryItem"> | string | null
+  caption?: Prisma.StringNullableWithAggregatesFilter<"PartnerMemoryItem"> | string | null
   uploadedBy?: Prisma.StringWithAggregatesFilter<"PartnerMemoryItem"> | string
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"PartnerMemoryItem"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"PartnerMemoryItem"> | Date | string
@@ -258,6 +270,7 @@ export type PartnerMemoryItemScalarWhereWithAggregatesInput = {
 export type PartnerMemoryItemCreateInput = {
   id?: string
   imageUrl?: string | null
+  caption?: string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -269,6 +282,7 @@ export type PartnerMemoryItemUncheckedCreateInput = {
   id?: string
   partnerMemoryId: string
   imageUrl?: string | null
+  caption?: string | null
   uploadedBy: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -278,6 +292,7 @@ export type PartnerMemoryItemUncheckedCreateInput = {
 export type PartnerMemoryItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -289,6 +304,7 @@ export type PartnerMemoryItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partnerMemoryId?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -299,6 +315,7 @@ export type PartnerMemoryItemCreateManyInput = {
   id?: string
   partnerMemoryId: string
   imageUrl?: string | null
+  caption?: string | null
   uploadedBy: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -308,6 +325,7 @@ export type PartnerMemoryItemCreateManyInput = {
 export type PartnerMemoryItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,6 +335,7 @@ export type PartnerMemoryItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partnerMemoryId?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -337,6 +356,7 @@ export type PartnerMemoryItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partnerMemoryId?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -347,6 +367,7 @@ export type PartnerMemoryItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partnerMemoryId?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -357,6 +378,7 @@ export type PartnerMemoryItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   partnerMemoryId?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -450,6 +472,7 @@ export type PartnerMemoryItemUncheckedUpdateManyWithoutPartnerMemoryNestedInput 
 export type PartnerMemoryItemCreateWithoutUploaderInput = {
   id?: string
   imageUrl?: string | null
+  caption?: string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -460,6 +483,7 @@ export type PartnerMemoryItemUncheckedCreateWithoutUploaderInput = {
   id?: string
   partnerMemoryId: string
   imageUrl?: string | null
+  caption?: string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -498,6 +522,7 @@ export type PartnerMemoryItemScalarWhereInput = {
   id?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   partnerMemoryId?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
+  caption?: Prisma.StringNullableFilter<"PartnerMemoryItem"> | string | null
   uploadedBy?: Prisma.StringFilter<"PartnerMemoryItem"> | string
   deletedAt?: Prisma.DateTimeNullableFilter<"PartnerMemoryItem"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"PartnerMemoryItem"> | Date | string
@@ -507,6 +532,7 @@ export type PartnerMemoryItemScalarWhereInput = {
 export type PartnerMemoryItemCreateWithoutPartnerMemoryInput = {
   id?: string
   imageUrl?: string | null
+  caption?: string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -516,6 +542,7 @@ export type PartnerMemoryItemCreateWithoutPartnerMemoryInput = {
 export type PartnerMemoryItemUncheckedCreateWithoutPartnerMemoryInput = {
   id?: string
   imageUrl?: string | null
+  caption?: string | null
   uploadedBy: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -552,6 +579,7 @@ export type PartnerMemoryItemCreateManyUploaderInput = {
   id?: string
   partnerMemoryId: string
   imageUrl?: string | null
+  caption?: string | null
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -560,6 +588,7 @@ export type PartnerMemoryItemCreateManyUploaderInput = {
 export type PartnerMemoryItemUpdateWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -570,6 +599,7 @@ export type PartnerMemoryItemUncheckedUpdateWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partnerMemoryId?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -579,6 +609,7 @@ export type PartnerMemoryItemUncheckedUpdateManyWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   partnerMemoryId?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -587,6 +618,7 @@ export type PartnerMemoryItemUncheckedUpdateManyWithoutUploaderInput = {
 export type PartnerMemoryItemCreateManyPartnerMemoryInput = {
   id?: string
   imageUrl?: string | null
+  caption?: string | null
   uploadedBy: string
   deletedAt?: Date | string | null
   createdAt?: Date | string
@@ -596,6 +628,7 @@ export type PartnerMemoryItemCreateManyPartnerMemoryInput = {
 export type PartnerMemoryItemUpdateWithoutPartnerMemoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,6 +638,7 @@ export type PartnerMemoryItemUpdateWithoutPartnerMemoryInput = {
 export type PartnerMemoryItemUncheckedUpdateWithoutPartnerMemoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -614,6 +648,7 @@ export type PartnerMemoryItemUncheckedUpdateWithoutPartnerMemoryInput = {
 export type PartnerMemoryItemUncheckedUpdateManyWithoutPartnerMemoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -626,6 +661,7 @@ export type PartnerMemoryItemSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   partnerMemoryId?: boolean
   imageUrl?: boolean
+  caption?: boolean
   uploadedBy?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -638,6 +674,7 @@ export type PartnerMemoryItemSelectCreateManyAndReturn<ExtArgs extends runtime.T
   id?: boolean
   partnerMemoryId?: boolean
   imageUrl?: boolean
+  caption?: boolean
   uploadedBy?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -650,6 +687,7 @@ export type PartnerMemoryItemSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   id?: boolean
   partnerMemoryId?: boolean
   imageUrl?: boolean
+  caption?: boolean
   uploadedBy?: boolean
   deletedAt?: boolean
   createdAt?: boolean
@@ -662,13 +700,14 @@ export type PartnerMemoryItemSelectScalar = {
   id?: boolean
   partnerMemoryId?: boolean
   imageUrl?: boolean
+  caption?: boolean
   uploadedBy?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type PartnerMemoryItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partnerMemoryId" | "imageUrl" | "uploadedBy" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["partnerMemoryItem"]>
+export type PartnerMemoryItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "partnerMemoryId" | "imageUrl" | "caption" | "uploadedBy" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["partnerMemoryItem"]>
 export type PartnerMemoryItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   partnerMemory?: boolean | Prisma.PartnerMemoriesDefaultArgs<ExtArgs>
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -692,6 +731,7 @@ export type $PartnerMemoryItemPayload<ExtArgs extends runtime.Types.Extensions.I
     id: string
     partnerMemoryId: string
     imageUrl: string | null
+    caption: string | null
     uploadedBy: string
     deletedAt: Date | null
     createdAt: Date
@@ -1124,6 +1164,7 @@ export interface PartnerMemoryItemFieldRefs {
   readonly id: Prisma.FieldRef<"PartnerMemoryItem", 'String'>
   readonly partnerMemoryId: Prisma.FieldRef<"PartnerMemoryItem", 'String'>
   readonly imageUrl: Prisma.FieldRef<"PartnerMemoryItem", 'String'>
+  readonly caption: Prisma.FieldRef<"PartnerMemoryItem", 'String'>
   readonly uploadedBy: Prisma.FieldRef<"PartnerMemoryItem", 'String'>
   readonly deletedAt: Prisma.FieldRef<"PartnerMemoryItem", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"PartnerMemoryItem", 'DateTime'>

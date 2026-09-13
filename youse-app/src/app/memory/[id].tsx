@@ -332,6 +332,11 @@ function Gallery({ memory }: { memory: ApiMemory }) {
                     </View>
                   )}
                 </View>
+                {photo.caption ? (
+                  <Text className="px-3 py-2.5 font-serif text-[13px] leading-5 text-foreground">
+                    {photo.caption}
+                  </Text>
+                ) : null}
               </View>
             </View>
           );

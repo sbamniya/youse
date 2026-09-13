@@ -3,6 +3,7 @@ import { requireAuth } from "../../middleware/auth.middleware";
 import { validate } from "../../middleware/validate";
 import * as controller from "./memory.controller";
 import {
+  addMemoryPhotoSchema,
   createMemorySchema,
   favoriteMemorySchema,
   memoryIdSchema,
@@ -13,6 +14,11 @@ memoryRouter.use(requireAuth);
 
 memoryRouter.get("/", controller.list);
 memoryRouter.post("/", validate(createMemorySchema), controller.create);
+memoryRouter.post(
+  "/:id/photos",
+  validate(addMemoryPhotoSchema),
+  controller.addPhoto,
+);
 memoryRouter.get("/:id", validate(memoryIdSchema), controller.get);
 memoryRouter.patch(
   "/:id/favorite",

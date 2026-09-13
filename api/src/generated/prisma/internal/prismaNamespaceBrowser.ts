@@ -195,6 +195,7 @@ export const PartnerMemoryItemScalarFieldEnum = {
   id: 'id',
   partnerMemoryId: 'partnerMemoryId',
   imageUrl: 'imageUrl',
+  caption: 'caption',
   uploadedBy: 'uploadedBy',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',

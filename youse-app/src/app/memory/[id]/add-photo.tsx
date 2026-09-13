@@ -1,3 +1,5 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ImagePickerAsset } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { ImagePlus, Pencil } from "lucide-react-native";
 import { useState } from "react";
@@ -10,19 +12,82 @@ import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
-import { useMemories } from "@/lib/memory-store";
+import { uploadImage } from "@/lib/image-upload";
+import {
+  type ApiMemory,
+  addMemoryPhoto,
+  memoriesQueryKey,
+  memoryQueryKey,
+  memoryQueryOptions,
+} from "@/lib/memory-api";
 
 export default function AddPhoto() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { addPhoto, memories } = useMemories();
-  const memory = memories.find((item) => item.id === id);
+  const queryClient = useQueryClient();
+  const { data: memory } = useQuery({
+    ...memoryQueryOptions(id ?? ""),
+    enabled: Boolean(id),
+  });
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [imageAsset, setImageAsset] = useState<ImagePickerAsset | null>(null);
   const [caption, setCaption] = useState("");
+  const [error, setError] = useState("");
 
-  const savePhoto = () => {
-    if (!id || !imageUri) return;
-    addPhoto(id, imageUri, caption);
-    router.replace(`/memory/${id}`);
+  const { isPending, mutate: savePhoto } = useMutation({
+    mutationFn: async ({
+      asset,
+      photoCaption,
+      memoryId,
+    }: {
+      asset: ImagePickerAsset;
+      photoCaption: string | null;
+      memoryId: string;
+    }) => {
+      const { path } = await uploadImage(asset);
+      return addMemoryPhoto(memoryId, {
+        imagePath: path,
+        caption: photoCaption,
+      });
+    },
+    onSuccess: (photo) => {
+      if (!id) return;
+
+      queryClient.setQueryData<ApiMemory>(memoryQueryKey(id), (current) =>
+        current
+          ? {
+              ...current,
+              partnerMemoryItems: [...current.partnerMemoryItems, photo],
+            }
+          : current,
+      );
+      queryClient.setQueryData<ApiMemory[]>(memoriesQueryKey, (current) =>
+        current?.map((item) =>
+          item.id === id
+            ? {
+                ...item,
+                partnerMemoryItems: [...item.partnerMemoryItems, photo],
+              }
+            : item,
+        ),
+      );
+      void queryClient.invalidateQueries({ queryKey: memoriesQueryKey });
+      router.replace(`/memory/${id}`);
+    },
+    onError: () => {
+      setError(
+        "We couldn't upload this photo. Check your connection and try again.",
+      );
+    },
+  });
+
+  const handleSave = () => {
+    if (!id || !imageAsset || isPending) return;
+    setError("");
+    savePhoto({
+      asset: imageAsset,
+      memoryId: id,
+      photoCaption: caption.trim() || null,
+    });
   };
 
   return (
@@ -48,7 +113,15 @@ export default function AddPhoto() {
           A photo is all that’s needed. A caption can come later—or not at all.
         </Text>
 
-        <ImageSourcePicker aspect={[3, 4]} onImageSelected={setImageUri} title="Add a photo">
+        <ImageSourcePicker
+          aspect={[3, 4]}
+          onImageSelected={(uri, asset) => {
+            setImageUri(uri);
+            setImageAsset(asset);
+            setError("");
+          }}
+          title="Add a photo"
+        >
           {({ onPress }) => (
             <Pressable
               accessibilityLabel={imageUri ? "Change selected photo" : "Choose a photo"}
@@ -79,10 +152,20 @@ export default function AddPhoto() {
           placeholder="A few words, if you want them"
           value={caption}
         />
+
+        {error ? (
+          <Text className="mt-4 font-serif text-[15px] text-destructive">
+            {error}
+          </Text>
+        ) : null}
       </ScrollView>
 
       <View className="px-4 pb-3 pt-2">
-        <PrimaryAction disabled={!imageUri} label="Add to gallery" onPress={savePhoto} />
+        <PrimaryAction
+          disabled={!imageAsset || isPending}
+          label={isPending ? "Adding..." : "Add to gallery"}
+          onPress={handleSave}
+        />
       </View>
     </AppScreen>
   );

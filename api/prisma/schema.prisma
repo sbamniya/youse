@@ -171,6 +171,7 @@ model PartnerMemoryItem {
     id              String    @id @default(uuid())
     partnerMemoryId String
     imageUrl        String?
+    caption         String?
     uploadedBy      String
     deletedAt       DateTime?
     createdAt       DateTime  @default(now())

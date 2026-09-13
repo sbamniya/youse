@@ -8,10 +8,16 @@ export type MemoryItem = {
   id: string;
   partnerMemoryId: string;
   imageUrl: string | null;
+  caption: string | null;
   uploadedBy: string;
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type AddMemoryPhotoInput = {
+  imagePath: string;
+  caption: string | null;
 };
 
 export type ApiMemory = {
@@ -54,6 +60,16 @@ export async function createMemory(
   input: CreateMemoryInput,
 ): Promise<ApiMemory> {
   return api.post<ApiMemory, CreateMemoryInput>("/memories", input);
+}
+
+export async function addMemoryPhoto(
+  memoryId: string,
+  input: AddMemoryPhotoInput,
+): Promise<MemoryItem> {
+  return api.post<MemoryItem, AddMemoryPhotoInput>(
+    `/memories/${encodeURIComponent(memoryId)}/photos`,
+    input,
+  );
 }
 
 export const memoriesQueryOptions = queryOptions({

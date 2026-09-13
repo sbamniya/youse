@@ -23,7 +23,15 @@ export const createMemorySchema = requestSchema(
   }),
   emptyRequestObject,
 );
+export const addMemoryPhotoSchema = requestSchema(
+  z.object({
+    imagePath,
+    caption: optionalText,
+  }),
+  idParams,
+);
 export const favoriteMemorySchema = requestSchema(z.object({ isFavorite: z.boolean() }), idParams);
 export const memoryIdSchema = requestSchema(emptyRequestObject, idParams);
 export type CreateMemoryInput = z.infer<typeof createMemorySchema>["body"];
+export type AddMemoryPhotoInput = z.infer<typeof addMemoryPhotoSchema>["body"];
 export type FavoriteMemoryInput = z.infer<typeof favoriteMemorySchema>["body"];
