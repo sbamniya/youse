@@ -26,12 +26,17 @@ export async function refreshCurrentUser(): Promise<AuthUser> {
 }
 
 export async function getCurrentUser(): Promise<AuthUser> {
-  // Most screens can render immediately from persisted state. Call
-  // refreshCurrentUser explicitly after a mutation that changes server data.
-  const storedUser = await authStorage.getUser();
-  if (storedUser) {
-    return storedUser;
-  }
+  // Always prefer live server data so changes made elsewhere (partner,
+  // other device, admin) are reflected. Only fall back to the persisted
+  // copy if the network request itself fails (e.g. offline).
+  try {
+    return await refreshCurrentUser();
+  } catch (error) {
+    const storedUser = await authStorage.getUser();
+    if (storedUser) {
+      return storedUser;
+    }
 
-  return refreshCurrentUser();
+    throw error;
+  }
 }
