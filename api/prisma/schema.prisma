@@ -272,6 +272,7 @@ model UserPartnerPlans {
     dateTime       DateTime
     location       String?
     note           String?
+    image          String?
     remindAt       DateTime?
     lastReminderAt DateTime?
     createdBy      String

@@ -1,24 +1,58 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { Plus } from "lucide-react-native";
+import { Plus, RefreshCw } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, View } from "react-native";
 
 import { AppScreen } from "@/components/app/app-screen";
 import { PlansCalendar } from "@/components/app/plans-calendar";
 import { OurLists } from "@/components/app/plans-lists";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
+import { type ApiPlan, deletePlan, plansQueryKey, plansQueryOptions } from "@/lib/plans-api";
 import { cn } from "@/lib/utils";
 
 export default function Plans() {
   const [view, setView] = useState<"calendar" | "list">("calendar");
+  const [planToDelete, setPlanToDelete] = useState<ApiPlan | null>(null);
+  const queryClient = useQueryClient();
+  const { data: plans = [], isError, isPending, isRefetching, refetch } = useQuery(plansQueryOptions);
+  const deletePlanMutation = useMutation({
+    mutationFn: deletePlan,
+    onSuccess: (_, planId) => {
+      queryClient.setQueryData<ApiPlan[]>(plansQueryKey, (current) =>
+        current?.filter((plan) => plan.id !== planId),
+      );
+      setPlanToDelete(null);
+    },
+    onError: () => {
+      Alert.alert("Couldn't delete plan", "Check your connection and try again.");
+    },
+  });
 
   const isCalendar = view === "calendar";
+  const openPlanEditor = (plan: ApiPlan) =>
+    router.push({ pathname: "/create-plan", params: { id: plan.id } });
+
   return (
     <AppScreen>
       <ScrollView
         className="flex-1"
         contentContainerClassName="px-4 pb-8 pt-3"
+        refreshControl={
+          <RefreshControl
+            onRefresh={() => void refetch()}
+            refreshing={isRefetching}
+            tintColorClassName="accent-primary"
+          />
+        }
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
@@ -67,9 +101,76 @@ export default function Plans() {
           ))}
         </View>
 
-        {isCalendar ? <PlansCalendar /> : <OurLists />}
+        {isPending ? (
+          <View className="items-center py-20">
+            <ActivityIndicator colorClassName="accent-primary" size="large" />
+          </View>
+        ) : isError ? (
+          <View className="items-center px-7 py-16">
+            <Text className="text-center font-serif text-[18px] text-foreground">
+              We couldn&apos;t load your plans.
+            </Text>
+            <Pressable
+              accessibilityLabel="Retry loading plans"
+              className="mt-5 flex-row items-center gap-2 rounded-full bg-primary px-5 py-3 active:opacity-80"
+              onPress={() => void refetch()}
+            >
+              <ThemedIcon icon={RefreshCw} tone="primaryForeground" size={17} strokeWidth={2} />
+              <Text className="text-[14px] font-semibold text-primary-foreground">Try again</Text>
+            </Pressable>
+          </View>
+        ) : isCalendar ? (
+          <PlansCalendar
+            deletingPlanId={deletePlanMutation.variables}
+            onDeletePlan={setPlanToDelete}
+            onEditPlan={openPlanEditor}
+            plans={plans}
+          />
+        ) : (
+          <OurLists
+            deletingPlanId={deletePlanMutation.variables}
+            onDeletePlan={setPlanToDelete}
+            onEditPlan={openPlanEditor}
+            plans={plans}
+          />
+        )}
       </ScrollView>
+
+      <AlertDialog
+        onOpenChange={(open) => {
+          if (!open && !deletePlanMutation.isPending) setPlanToDelete(null);
+        }}
+        open={planToDelete !== null}
+      >
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              Delete this plan?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-left text-[15px] leading-6 text-muted-foreground">
+              This removes it from both of your shared calendars.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <View className="mt-1 flex-row gap-3">
+            <Pressable
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary"
+              disabled={deletePlanMutation.isPending}
+              onPress={() => setPlanToDelete(null)}
+            >
+              <Text className="text-[15px] font-semibold text-foreground">Keep plan</Text>
+            </Pressable>
+            <Pressable
+              className="h-12 flex-1 items-center justify-center rounded-2xl bg-destructive active:opacity-80 disabled:opacity-50"
+              disabled={deletePlanMutation.isPending || !planToDelete}
+              onPress={() => planToDelete && deletePlanMutation.mutate(planToDelete.id)}
+            >
+              <Text className="text-[15px] font-semibold text-white">
+                {deletePlanMutation.isPending ? "Deleting..." : "Delete plan"}
+              </Text>
+            </Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
     </AppScreen>
   );
 }
-
