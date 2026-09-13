@@ -219,16 +219,20 @@ model Poke {
 }
 
 model DailyQuestion {
-    id            String   @id @default(uuid())
-    question      String
-    userPartnerId String
-    createdAt     DateTime @default(now())
+    id                String   @id @default(uuid())
+    question          String
+    userPartnerId     String
+    questionLibraryId String?
+    questionDate      DateTime @default(now())
+    createdAt         DateTime @default(now())
 
-    userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    userPartner     UserPartner      @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
+    questionLibrary QuestionLibrary? @relation(fields: [questionLibraryId], references: [id])
 
     dailyQuestionAnswers           DailyQuestionAnswer[]
     dailyQuestionReminderHistories DailyQuestionReminderHistory[]
 
+    @@unique([questionDate, userPartnerId])
     @@index([createdAt])
     @@map("daily_questions")
 }
@@ -262,6 +266,41 @@ model DailyQuestionAnswer {
     @@index([dailyQuestionId])
     @@index([userId])
     @@map("daily_question_answers")
+}
+
+model QuestionLibrary {
+    id       String @id @default(uuid())
+    question String
+
+    category QuestionCategory
+    depth    Int              @default(1)
+
+    status QuestionStatus @default(ACTIVE)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    dailyQuestions DailyQuestion[]
+
+    @@index([category])
+    @@index([status])
+    @@map("question_library")
+}
+
+enum QuestionStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum QuestionCategory {
+    FUN
+    APPRECIATION
+    MEMORIES
+    EVERYDAY
+    ROMANCE
+    FUTURE
+    VALUES
+    DEEP
 }
 
 model UserPartnerPlans {
@@ -334,8 +373,8 @@ model SharedList {
     creator     User             @relation(fields: [createdBy], references: [id], onDelete: Cascade)
     items       SharedListItem[]
 
-    @@index([userPartnerId])
     @@unique([userPartnerId, name])
+    @@index([userPartnerId])
     @@map("shared_lists")
 }
 
