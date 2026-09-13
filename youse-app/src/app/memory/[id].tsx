@@ -6,7 +6,9 @@ import {
   ImageIcon,
   ImagePlus,
   Pencil,
+  Trash2,
   UserRound,
+  X,
 } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -24,6 +26,19 @@ import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Text } from "@/components/ui/text";
 import { Input } from "@/components/ui/input";
 import { getImageUrl } from "@/lib/image-url";
@@ -47,6 +62,8 @@ export default function MemoryDetail() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [scrollY] = useState(() => new Animated.Value(0));
+  const [isMemoryDeleteDialogOpen, setIsMemoryDeleteDialogOpen] =
+    useState(false);
   const {
     data: memory,
     isError,
@@ -146,34 +163,8 @@ export default function MemoryDetail() {
     .filter(Boolean)
     .join(" · ");
 
-  const openMemoryMenu = () => {
-    Alert.alert(memory.title, "What would you like to do?", [
-      {
-        text: "Edit memory",
-        onPress: () =>
-          router.push({ pathname: "/create-memory", params: { id: memory.id } }),
-      },
-      {
-        text: "Delete memory",
-        style: "destructive",
-        onPress: () => {
-          Alert.alert(
-            "Delete this memory?",
-            "This removes the memory and its gallery from your shared space.",
-            [
-              { text: "Cancel", style: "cancel" },
-              {
-                text: "Delete memory",
-                style: "destructive",
-                onPress: () => deleteMemoryMutation.mutate(),
-              },
-            ],
-          );
-        },
-      },
-      { text: "Cancel", style: "cancel" },
-    ]);
-  };
+  const editMemory = () =>
+    router.push({ pathname: "/create-memory", params: { id: memory.id } });
 
   const returnToMemories = () => {
     router.replace("/memories");
@@ -266,26 +257,6 @@ export default function MemoryDetail() {
                 </Text>
               </View>
             </View>
-
-            <Pressable
-              accessibilityLabel={`Edit ${memory.title}`}
-              className="flex-row items-center gap-2 rounded-full px-2 py-2 active:bg-secondary/60 disabled:opacity-50"
-              disabled={deleteMemoryMutation.isPending}
-              onPress={() =>
-                router.push({
-                  pathname: "/create-memory",
-                  params: { id: memory.id },
-                })
-              }
-            >
-              <ThemedIcon
-                icon={Pencil}
-                tone="primary"
-                size={22}
-                strokeWidth={1.7}
-              />
-              <Text className="font-serif text-[19px] text-primary">Edit</Text>
-            </Pressable>
           </View>
 
           <Gallery memory={memory} />
@@ -316,30 +287,107 @@ export default function MemoryDetail() {
             {memory.title}
           </Animated.Text>
 
-          <Pressable
-            accessibilityLabel="More memory options"
-            className="h-10 w-10 items-center justify-center disabled:opacity-50"
-            disabled={deleteMemoryMutation.isPending}
-            hitSlop={8}
-            onPress={openMemoryMenu}
-          >
-            <Animated.View
-              className="absolute inset-0 rounded-full bg-black/45"
-              style={{ opacity: controlCircleOpacity }}
-            />
-            <ThemedIcon icon={Ellipsis} tone="foreground" size={26} strokeWidth={2.4} />
-          </Pressable>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Pressable
+                accessibilityLabel="More memory options"
+                className="h-10 w-10 items-center justify-center disabled:opacity-50"
+                disabled={deleteMemoryMutation.isPending}
+                hitSlop={8}
+              >
+                <Animated.View
+                  className="absolute inset-0 rounded-full bg-black/45"
+                  style={{ opacity: controlCircleOpacity }}
+                />
+                <ThemedIcon
+                  icon={Ellipsis}
+                  tone="foreground"
+                  size={26}
+                  strokeWidth={2.4}
+                />
+              </Pressable>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="bottom" sideOffset={8}>
+              <DropdownMenuItem accessibilityLabel="Edit memory" onPress={editMemory}>
+                <ThemedIcon
+                  icon={Pencil}
+                  tone="primary"
+                  size={17}
+                  strokeWidth={1.9}
+                />
+                <Text className="text-[15px] font-medium text-foreground">
+                  Edit memory
+                </Text>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                accessibilityLabel="Delete memory"
+                variant="destructive"
+                onPress={() => setIsMemoryDeleteDialogOpen(true)}
+              >
+                <ThemedIcon
+                  icon={X}
+                  tone="destructive"
+                  size={18}
+                  strokeWidth={2}
+                />
+                <Text className="text-[15px] font-medium text-destructive">
+                  Delete memory
+                </Text>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </View>
       </View>
+
+      <AlertDialog
+        onOpenChange={setIsMemoryDeleteDialogOpen}
+        open={isMemoryDeleteDialogOpen}
+      >
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              Delete this memory?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-left text-[15px] leading-6 text-muted-foreground">
+              This removes the memory and its gallery from your shared space.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <View className="mt-1 flex-row gap-3">
+            <Pressable
+              accessibilityLabel="Keep memory"
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary"
+              onPress={() => setIsMemoryDeleteDialogOpen(false)}
+            >
+              <Text className="text-[15px] font-semibold text-foreground">
+                Keep memory
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityLabel="Delete memory"
+              className="h-12 flex-1 items-center justify-center rounded-2xl bg-destructive active:opacity-80 disabled:opacity-50"
+              disabled={deleteMemoryMutation.isPending}
+              onPress={() => {
+                setIsMemoryDeleteDialogOpen(false);
+                deleteMemoryMutation.mutate();
+              }}
+            >
+              <Text className="text-[15px] font-semibold text-white">
+                Delete memory
+              </Text>
+            </Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
     </View>
   );
 }
 
 function Gallery({ memory }: { memory: ApiMemory }) {
   const queryClient = useQueryClient();
-  const [editingPhotoId, setEditingPhotoId] = useState<string | null>(null);
+  const [photoToEdit, setPhotoToEdit] = useState<MemoryItem | null>(null);
   const [captionDraft, setCaptionDraft] = useState("");
   const [captionError, setCaptionError] = useState("");
+  const [photoToDelete, setPhotoToDelete] = useState<MemoryItem | null>(null);
   const updateMemoryCaches = (update: (current: ApiMemory) => ApiMemory) => {
     queryClient.setQueryData<ApiMemory>(memoryQueryKey(memory.id), (current) =>
       current ? update(current) : current,
@@ -358,7 +406,7 @@ function Gallery({ memory }: { memory: ApiMemory }) {
           photo.id === updatedPhoto.id ? updatedPhoto : photo,
         ),
       }));
-      setEditingPhotoId(null);
+      setPhotoToEdit(null);
       setCaptionDraft("");
       setCaptionError("");
     },
@@ -379,9 +427,10 @@ function Gallery({ memory }: { memory: ApiMemory }) {
 
         return { ...current, partnerMemoryItems: remainingPhotos };
       });
-      if (editingPhotoId === deletedPhoto.id) {
-        setEditingPhotoId(null);
+      if (photoToEdit?.id === deletedPhoto.id) {
+        setPhotoToEdit(null);
         setCaptionDraft("");
+        setCaptionError("");
       }
     },
     onError: () => {
@@ -393,39 +442,9 @@ function Gallery({ memory }: { memory: ApiMemory }) {
   });
 
   const beginEditingCaption = (photo: MemoryItem) => {
-    setEditingPhotoId(photo.id);
+    setPhotoToEdit(photo);
     setCaptionDraft(photo.caption ?? "");
     setCaptionError("");
-  };
-
-  const confirmDeletePhoto = (photo: MemoryItem) => {
-    Alert.alert(
-      "Delete this photo?",
-      "This removes the photo from your shared memory.",
-      [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete photo",
-          style: "destructive",
-          onPress: () => deleteMutation.mutate(photo),
-        },
-      ],
-    );
-  };
-
-  const openPhotoMenu = (photo: MemoryItem) => {
-    Alert.alert("Photo options", undefined, [
-      {
-        text: photo.caption ? "Edit caption" : "Add caption",
-        onPress: () => beginEditingCaption(photo),
-      },
-      {
-        text: "Delete photo",
-        style: "destructive",
-        onPress: () => confirmDeletePhoto(photo),
-      },
-      { text: "Cancel", style: "cancel" },
-    ]);
   };
 
   return (
@@ -453,7 +472,6 @@ function Gallery({ memory }: { memory: ApiMemory }) {
         </View>
         {memory.partnerMemoryItems.map((photo) => {
           const imageUrl = getImageUrl(photo.imageUrl);
-          const isEditing = editingPhotoId === photo.id;
           const isDeleting =
             deleteMutation.isPending && deleteMutation.variables?.id === photo.id;
 
@@ -478,87 +496,198 @@ function Gallery({ memory }: { memory: ApiMemory }) {
                       />
                     </View>
                   )}
-                  <Pressable
-                    accessibilityLabel={`Options for ${photo.caption || "memory photo"}`}
-                    className="absolute right-2 top-2 h-9 w-9 items-center justify-center rounded-full bg-black/55 active:bg-black/70 disabled:opacity-60"
-                    disabled={isDeleting}
-                    hitSlop={6}
-                    onPress={() => openPhotoMenu(photo)}
-                  >
-                    {isDeleting ? (
-                      <ActivityIndicator
-                        colorClassName="accent-white"
-                        size="small"
-                      />
-                    ) : (
-                      <Ellipsis color="#fff" size={21} strokeWidth={2.4} />
-                    )}
-                  </Pressable>
-                </View>
-                {isEditing ? (
-                  <View className="gap-2.5 p-3">
-                    <Input
-                      accessibilityLabel="Photo caption"
-                      autoFocus
-                      className="min-h-20 rounded-xl px-3 py-2 text-[13px] leading-5"
-                      editable={!captionMutation.isPending}
-                      maxLength={2000}
-                      multiline
-                      onChangeText={(caption) => {
-                        setCaptionDraft(caption);
-                        setCaptionError("");
-                      }}
-                      placeholder="Add a caption"
-                      textAlignVertical="top"
-                      value={captionDraft}
-                    />
-                    {captionError ? (
-                      <Text className="text-[11px] leading-4 text-destructive">
-                        {captionError}
+                  {photo.caption ? (
+                    <View
+                      className="absolute inset-x-0 bottom-0 bg-black/60 px-3 pb-3 pt-7"
+                      pointerEvents="none"
+                    >
+                      <Text
+                        className="font-serif text-[13px] leading-5 text-white"
+                        numberOfLines={3}
+                      >
+                        {photo.caption}
                       </Text>
-                    ) : null}
-                    <View className="flex-row justify-end gap-2">
-                      <Pressable
-                        accessibilityLabel="Cancel caption editing"
-                        className="rounded-full px-3 py-2 active:bg-secondary"
-                        disabled={captionMutation.isPending}
-                        onPress={() => {
-                          setEditingPhotoId(null);
-                          setCaptionDraft("");
-                          setCaptionError("");
-                        }}
-                      >
-                        <Text className="text-[12px] font-semibold text-primary">
-                          Cancel
-                        </Text>
-                      </Pressable>
-                      <Pressable
-                        accessibilityLabel="Save photo caption"
-                        className="rounded-full bg-primary px-3 py-2 active:opacity-80 disabled:opacity-50"
-                        disabled={captionMutation.isPending}
-                        onPress={() =>
-                          captionMutation.mutate({
-                            itemId: photo.id,
-                            caption: captionDraft.trim() || null,
-                          })
-                        }
-                      >
-                        <Text className="text-[12px] font-semibold text-primary-foreground">
-                          {captionMutation.isPending ? "Saving..." : "Save"}
-                        </Text>
-                      </Pressable>
                     </View>
+                  ) : null}
+                  <View className="absolute right-2 top-2 z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Pressable
+                          accessibilityLabel={`Options for ${photo.caption || "memory photo"}`}
+                          className="h-6 w-6 items-center justify-center rounded-full bg-black/55 active:bg-black/70 disabled:opacity-60"
+                          disabled={isDeleting}
+                          hitSlop={6}
+                        >
+                          {isDeleting ? (
+                            <ActivityIndicator
+                              colorClassName="accent-white"
+                              size="small"
+                            />
+                          ) : (
+                            <Ellipsis color="#fff" size={16} strokeWidth={2.4} />
+                          )}
+                        </Pressable>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" side="bottom">
+                        <DropdownMenuItem
+                          accessibilityLabel={
+                            photo.caption ? "Edit caption" : "Add caption"
+                          }
+                          onPress={() => beginEditingCaption(photo)}
+                        >
+                          <ThemedIcon
+                            icon={Pencil}
+                            tone="primary"
+                            size={14}
+                            strokeWidth={1.9}
+                          />
+                          <Text className="text-[12px] font-medium text-foreground">
+                            {photo.caption ? "Edit caption" : "Add caption"}
+                          </Text>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          accessibilityLabel="Delete photo"
+                          variant="destructive"
+                          onPress={() => setPhotoToDelete(photo)}
+                        >
+                          <ThemedIcon
+                            icon={Trash2}
+                            tone="destructive"
+                            size={14}
+                            strokeWidth={2}
+                          />
+                          <Text className="text-[12px] font-medium text-destructive">
+                            Delete
+                          </Text>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </View>
-                ) : photo.caption ? (
-                  <Text className="px-3 py-2.5 font-serif text-[13px] leading-5 text-foreground">
-                    {photo.caption}
-                  </Text>
-                ) : null}
+                </View>
               </View>
             </View>
           );
         })}
       </View>
+
+      <AlertDialog
+        onOpenChange={(open) => {
+          if (!open && !captionMutation.isPending) {
+            setPhotoToEdit(null);
+            setCaptionDraft("");
+            setCaptionError("");
+          }
+        }}
+        open={photoToEdit !== null}
+      >
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              {photoToEdit?.caption ? "Edit caption" : "Add a caption"}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-left text-[15px] leading-6 text-muted-foreground">
+              Your caption will appear at the bottom of this photo.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <Input
+            accessibilityLabel="Photo caption"
+            autoFocus
+            className="mt-1 min-h-28 rounded-2xl px-3 py-3 text-[15px] leading-5"
+            editable={!captionMutation.isPending}
+            maxLength={2000}
+            multiline
+            onChangeText={(caption) => {
+              setCaptionDraft(caption);
+              setCaptionError("");
+            }}
+            placeholder="Add a caption"
+            textAlignVertical="top"
+            value={captionDraft}
+          />
+          {captionError ? (
+            <Text className="text-[13px] leading-5 text-destructive">
+              {captionError}
+            </Text>
+          ) : null}
+          <View className="mt-1 flex-row gap-3">
+            <Pressable
+              accessibilityLabel="Cancel caption editing"
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary disabled:opacity-50"
+              disabled={captionMutation.isPending}
+              onPress={() => {
+                setPhotoToEdit(null);
+                setCaptionDraft("");
+                setCaptionError("");
+              }}
+            >
+              <Text className="text-[15px] font-semibold text-foreground">
+                Cancel
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityLabel="Save photo caption"
+              className="h-12 flex-1 items-center justify-center rounded-2xl bg-primary active:opacity-80 disabled:opacity-50"
+              disabled={captionMutation.isPending || !photoToEdit}
+              onPress={() => {
+                if (!photoToEdit) return;
+                captionMutation.mutate({
+                  itemId: photoToEdit.id,
+                  caption: captionDraft.trim() || null,
+                });
+              }}
+            >
+              <Text className="text-[15px] font-semibold text-primary-foreground">
+                {captionMutation.isPending ? "Saving..." : "Save"}
+              </Text>
+            </Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        onOpenChange={(open) => {
+          if (!open) {
+            setPhotoToDelete(null);
+          }
+        }}
+        open={photoToDelete !== null}
+      >
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              Delete this photo?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-left text-[15px] leading-6 text-muted-foreground">
+              This removes the photo from your shared memory.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <View className="mt-1 flex-row gap-3">
+            <Pressable
+              accessibilityLabel="Keep photo"
+              className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary"
+              onPress={() => setPhotoToDelete(null)}
+            >
+              <Text className="text-[15px] font-semibold text-foreground">
+                Keep photo
+              </Text>
+            </Pressable>
+            <Pressable
+              accessibilityLabel="Delete photo"
+              className="h-12 flex-1 items-center justify-center rounded-2xl bg-destructive active:opacity-80 disabled:opacity-50"
+              disabled={deleteMutation.isPending || !photoToDelete}
+              onPress={() => {
+                if (!photoToDelete) return;
+                deleteMutation.mutate(photoToDelete);
+                setPhotoToDelete(null);
+              }}
+            >
+              <Text className="text-[15px] font-semibold text-white">
+                Delete photo
+              </Text>
+            </Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
     </View>
   );
 }
