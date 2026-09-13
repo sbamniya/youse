@@ -1,8 +1,18 @@
-import { ChevronRight, X } from "lucide-react-native";
+import { useQuery } from "@tanstack/react-query";
+import { router, type Href } from "expo-router";
+import { ChevronRight, UserRound, X } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Image, Pressable, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
 import {
@@ -13,10 +23,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
+import {
+  currentSpaceQueryOptions,
+  getPartnerFromSpace,
+  getTrialDaysRemaining,
+} from "@/lib/current-space";
+import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import { getImageUrl } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
-import { router, type Href } from "expo-router";
-
-const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
 
 const dailyQuestionTimes = Array.from({ length: 46 }, (_, index) => {
   const totalMinutes = 60 + index * 30;
@@ -66,9 +80,74 @@ const settingsRows: SettingsRow[] = [
 
 export default function Us() {
   const insets = useSafeAreaInsets();
-  const [dailyQuestionTime, setDailyQuestionTime] = useState("08:00 PM");
+  const [dailyQuestionTime, setDailyQuestionTime] = useState<string | null>(
+    null,
+  );
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [pokesEnabled, setPokesEnabled] = useState(true);
+  const {
+    data: currentUser,
+    isError: isUserError,
+    isPending: isUserPending,
+    refetch: refetchCurrentUser,
+  } = useQuery({
+    queryKey: currentUserQueryKey,
+    queryFn: getCurrentUser,
+  });
+  const {
+    data: currentSpace,
+    isError: isSpaceError,
+    isPending: isSpacePending,
+    refetch: refetchCurrentSpace,
+  } = useQuery(currentSpaceQueryOptions);
+
+  if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
+    if (isUserError || isSpaceError) {
+      return (
+        <View className="flex-1 items-center justify-center bg-background px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load your shared space. Check your connection and try
+            again.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => {
+              void refetchCurrentUser();
+              void refetchCurrentSpace();
+            }}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator colorClassName="accent-primary" size="large" />
+      </View>
+    );
+  }
+
+  const partner = getPartnerFromSpace(currentSpace, currentUser.id);
+  const currentUserName = currentUser.name?.trim() || "Your profile";
+  const partnerName =
+    partner?.name?.trim() ||
+    currentSpace.partnerName?.trim() ||
+    currentUser.partnerName?.trim() ||
+    "Your partner";
+  const currentUserImage = getImageUrl(currentUser.profilePicture);
+  const relationshipDetail = formatRelationshipStatus(
+    currentSpace.status,
+    currentSpace.joinedAt ?? currentSpace.invitedAt,
+  );
+  const displayedDailyQuestionTime =
+    dailyQuestionTime ??
+    formatDailyQuestionTime(
+      currentSpace.dailyQuestionTime,
+      currentUser.timezone,
+    );
+  const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
+  const subscription = getSubscriptionDisplay(currentSpace.subscription);
 
   return (
     <View className="flex-1 bg-background">
@@ -90,21 +169,17 @@ export default function Us() {
           <View className="mt-2 h-px w-6 bg-muted-foreground" />
 
           <Pressable
-            accessibilityLabel="Edit Meera Singh profile"
+            accessibilityLabel={`Edit ${currentUserName} profile`}
             className="mt-6 flex-row items-center active:opacity-70"
             onPress={() => router.push("/profile")}
           >
-            <Image
-              source={meeraAvatar}
-              resizeMode="cover"
-              className="h-14 w-14 rounded-full border border-primary"
-            />
+            <ProfileAvatar imageUrl={currentUserImage} />
             <View className="ml-5 flex-1">
               <Text className="text-[16px] font-bold leading-8 text-foreground">
-                Meera Singh
+                {currentUserName}
               </Text>
               <Text className="mt-1 font-serif text-[14px] text-primary">
-                meera.singh@gmail.com
+                {currentUser.phone}
               </Text>
             </View>
             <ThemedIcon icon={ChevronRight} size={28} strokeWidth={1.5} />
@@ -120,22 +195,28 @@ export default function Us() {
             >
               <View className="flex-1">
                 <Text className="font-serif text-[16px] text-foreground">
-                  Meera + Arjun
+                  {currentUserName} + {partnerName}
                 </Text>
                 <Text className="mt-1 font-serif text-[12px] text-primary">
-                  Connected 3 Sep 2026
+                  {relationshipDetail}
                 </Text>
               </View>
               <View className="h-21 w-px bg-border-subtle" />
               <View className="ml-6 flex-1">
                 <Text className="font-serif text-[16px] text-foreground">
-                  Youse trial
+                  {subscription.title}
                 </Text>
-                <TrialBadge
-                  className="mt-1 self-start"
-                  days={11}
-                  interactive={false}
-                />
+                {trialDaysRemaining !== null ? (
+                  <TrialBadge
+                    className="mt-1 self-start"
+                    days={trialDaysRemaining}
+                    interactive={false}
+                  />
+                ) : (
+                  <Text className="mt-1 font-serif text-[12px] text-primary">
+                    {subscription.detail}
+                  </Text>
+                )}
               </View>
               <ThemedIcon icon={ChevronRight} size={24} strokeWidth={1.5} />
             </Pressable>
@@ -165,8 +246,9 @@ export default function Us() {
           {settingsRows.map(({ detail, section, title, comingSoon, route }) => {
             const isDailyQuestion = title === "Daily question";
             const isPokes = title === "Pokes from Arjun";
+            const rowTitle = isPokes ? `Pokes from ${partnerName}` : title;
             const rowDetail = isDailyQuestion
-              ? dailyQuestionTime
+              ? displayedDailyQuestionTime
               : isPokes
                 ? pokesEnabled ? "On" : "Off"
                 : detail;
@@ -178,7 +260,7 @@ export default function Us() {
             >
               {section ? <SectionLabel label={section} /> : null}
               <Pressable
-                accessibilityLabel={title}
+                accessibilityLabel={rowTitle}
                 className={cn(
                   section
                     ? "mt-5 flex-row items-center active:opacity-70"
@@ -202,12 +284,12 @@ export default function Us() {
                     router.push(route);
                     return;
                   }
-                  Alert.alert(title, rowDetail);
+                  Alert.alert(rowTitle, rowDetail);
                 }}
               >
                 <View className="flex-1">
                   <Text className="font-serif text-[16px] text-foreground">
-                    {title}
+                    {rowTitle}
                     {comingSoon ? " (Coming Soon)" : ""}
                   </Text>
                   <Text className="mt-1 font-serif text-[14px] text-primary">
@@ -255,7 +337,7 @@ export default function Us() {
           <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
             <View className="-mx-1 flex-row flex-wrap">
               {dailyQuestionTimes.map((time) => {
-                const isSelected = time === dailyQuestionTime;
+                const isSelected = time === displayedDailyQuestionTime;
 
                 return (
                   <View key={time} className="w-1/2 p-1">
@@ -291,6 +373,104 @@ export default function Us() {
       </AlertDialog>
     </View>
   );
+}
+
+function ProfileAvatar({ imageUrl }: { imageUrl: string | null }) {
+  if (imageUrl) {
+    return (
+      <Image
+        accessibilityLabel="Your profile photo"
+        className="h-14 w-14 rounded-full border border-primary"
+        resizeMode="cover"
+        source={{ uri: imageUrl }}
+      />
+    );
+  }
+
+  return (
+    <View className="h-14 w-14 items-center justify-center rounded-full border border-primary bg-card">
+      <ThemedIcon icon={UserRound} size={24} strokeWidth={1.6} />
+    </View>
+  );
+}
+
+function formatRelationshipStatus(
+  status: "invited" | "accepted" | "rejected",
+  dateValue: string | null,
+) {
+  const label =
+    status === "accepted"
+      ? "Connected"
+      : status === "invited"
+        ? "Invited"
+        : "Invitation declined";
+
+  if (!dateValue) return label;
+
+  const date = new Date(dateValue);
+  if (!Number.isFinite(date.getTime())) return label;
+
+  return `${label} ${new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date)}`;
+}
+
+function formatDailyQuestionTime(
+  value: string | null,
+  timeZone: string | null,
+) {
+  if (!value) return "Not set";
+
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return "Not set";
+
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      hour12: true,
+      minute: "2-digit",
+      ...(timeZone ? { timeZone } : {}),
+    }).format(date);
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      hour12: true,
+      minute: "2-digit",
+    }).format(date);
+  }
+}
+
+function getSubscriptionDisplay(subscription: {
+  activeUntil: string | null;
+  plan: string | null;
+} | null) {
+  const activeUntil = subscription?.activeUntil
+    ? new Date(subscription.activeUntil)
+    : null;
+  const hasActivePlan =
+    activeUntil !== null &&
+    Number.isFinite(activeUntil.getTime()) &&
+    activeUntil.getTime() > Date.now();
+
+  if (hasActivePlan) {
+    const planName = subscription?.plan?.trim();
+    return {
+      title: planName ? `Youse ${planName}` : "Youse membership",
+      detail: `Active until ${new Intl.DateTimeFormat("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(activeUntil)}`,
+    };
+  }
+
+  if (subscription?.plan) {
+    return { title: `Youse ${subscription.plan}`, detail: "View billing" };
+  }
+
+  return { title: "Youse trial", detail: "View billing" };
 }
 
 function SectionLabel({ label }: { label: string }) {

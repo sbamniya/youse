@@ -80,10 +80,10 @@ export function getTrialDaysRemaining(space: CurrentSpace): number | null {
   }
 
   const trialEnd = new Date(space.subscription.trialEndsAt).getTime();
-  if (!Number.isFinite(trialEnd)) {
+  if (!Number.isFinite(trialEnd) || trialEnd <= Date.now()) {
     return null;
   }
 
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  return Math.max(0, Math.ceil((trialEnd - Date.now()) / millisecondsPerDay));
+  return Math.ceil((trialEnd - Date.now()) / millisecondsPerDay);
 }
