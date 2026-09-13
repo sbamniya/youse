@@ -129,8 +129,17 @@ export const saveDailyAnswer = async (
   if (existing) {
     throw new AppError(409, "You've already answered today's question");
   }
+  if (input.imagePath && !input.imagePath.startsWith(`images/${userId}/`)) {
+    throw new AppError(400, "Answer images must belong to the current user");
+  }
+  const { imagePath, ...answer } = input;
   return prisma.dailyQuestionAnswer.create({
-    data: { ...input, dailyQuestionId: question.id, userId },
+    data: {
+      ...answer,
+      imageUrl: imagePath ?? null,
+      dailyQuestionId: question.id,
+      userId,
+    },
   });
 };
 

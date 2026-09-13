@@ -7,6 +7,7 @@ export type DailyQuestionAnswer = {
   dailyQuestionId: string;
   userId: string;
   answer: string;
+  imageUrl: string | null;
   reaction: string | null;
   deletedAt: string | null;
   createdAt: string;
@@ -40,10 +41,10 @@ export const currentDailyQuestionQueryOptions = queryOptions({
 
 export async function saveDailyAnswer(
   questionId: string,
-  answer: string,
+  input: { answer: string; imagePath: string | null },
 ): Promise<DailyQuestionAnswer> {
-  return api.put<DailyQuestionAnswer, { answer: string }>(
+  return api.put<DailyQuestionAnswer, { answer: string; imagePath: string | null }>(
     `/daily-questions/${encodeURIComponent(questionId)}/answer`,
-    { answer },
+    input,
   );
 }

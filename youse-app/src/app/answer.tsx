@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ImagePickerAsset } from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { Camera } from "lucide-react-native";
 import { useState } from "react";
@@ -17,6 +18,7 @@ import {
   currentDailyQuestionQueryOptions,
   saveDailyAnswer,
 } from "@/lib/daily-question-api";
+import { uploadImage } from "@/lib/image-upload";
 
 const logoFull = require("../../assets/images/logo-full-white.png");
 
@@ -28,6 +30,7 @@ export default function Answer() {
   const queryClient = useQueryClient();
   const [answer, setAnswer] = useState("");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePickerAsset | null>(null);
   const [error, setError] = useState("");
   const {
     data: dailyQuestion,
@@ -40,9 +43,10 @@ export default function Answer() {
   });
   const isRequestedQuestion = dailyQuestion?.id === id;
   const saveAnswerMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       if (!id) throw new Error("Daily question is unavailable");
-      return saveDailyAnswer(id, answer.trim());
+      const imagePath = photoAsset ? (await uploadImage(photoAsset)).path : null;
+      return saveDailyAnswer(id, { answer: answer.trim(), imagePath });
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({
@@ -120,7 +124,14 @@ export default function Answer() {
           {answer.length} / {MAX_LENGTH}
         </Text>
 
-        <ImageSourcePicker aspect={[4, 3]} onImageSelected={setPhotoUri}>
+        <ImageSourcePicker
+          aspect={[4, 3]}
+          onImageSelected={(uri, asset) => {
+            setPhotoUri(uri);
+            setPhotoAsset(asset);
+            setError("");
+          }}
+        >
           {({ onPress }) => (
             <Pressable className="mt-4 flex-row items-center gap-3" onPress={onPress}>
               {photoUri ? (
