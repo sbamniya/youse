@@ -101,6 +101,13 @@ export const saveRelationship = async (
     const relationship = await transaction.userPartner.create({
       data: { userId, ...relationshipData, invitedAt: new Date() },
     });
+    await transaction.sharedList.createMany({
+      data: ["Date ideas", "Bucket list", "Gifts"].map((name) => ({
+        name,
+        userPartnerId: relationship.id,
+        createdBy: userId,
+      })),
+    });
     return { relationship, inviteCode: invitationCode, created: true };
   });
   await userByIdCacheable.invalidate(`user_by_id:${userId}`);

@@ -335,6 +335,7 @@ model SharedList {
     items       SharedListItem[]
 
     @@index([userPartnerId])
+    @@unique([userPartnerId, name])
     @@map("shared_lists")
 }
 

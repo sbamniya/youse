@@ -89,51 +89,46 @@ export default function Plans() {
               )}
               onPress={() => setView(tab)}
             >
-              <Text
-                className={cn(
-                  "text-[15px] font-semibold capitalize",
-                  view === tab ? "text-primary-foreground" : "text-foreground",
-                )}
-              >
-                {tab}
+            <Text
+              className={cn(
+                "text-[15px] font-semibold capitalize",
+                view === tab ? "text-primary-foreground" : "text-foreground",
+              )}
+            >
+                {tab === "calendar" ? "Plans" : "Lists"}
               </Text>
             </Pressable>
           ))}
         </View>
 
-        {isPending ? (
-          <View className="items-center py-20">
-            <ActivityIndicator colorClassName="accent-primary" size="large" />
-          </View>
-        ) : isError ? (
-          <View className="items-center px-7 py-16">
-            <Text className="text-center font-serif text-[18px] text-foreground">
-              We couldn&apos;t load your plans.
-            </Text>
-            <Pressable
-              accessibilityLabel="Retry loading plans"
-              className="mt-5 flex-row items-center gap-2 rounded-full bg-primary px-5 py-3 active:opacity-80"
-              onPress={() => void refetch()}
-            >
-              <ThemedIcon icon={RefreshCw} tone="primaryForeground" size={17} strokeWidth={2} />
-              <Text className="text-[14px] font-semibold text-primary-foreground">Try again</Text>
-            </Pressable>
-          </View>
-        ) : isCalendar ? (
-          <PlansCalendar
-            deletingPlanId={deletePlanMutation.variables}
-            onDeletePlan={setPlanToDelete}
-            onEditPlan={openPlanEditor}
-            plans={plans}
-          />
-        ) : (
-          <OurLists
-            deletingPlanId={deletePlanMutation.variables}
-            onDeletePlan={setPlanToDelete}
-            onEditPlan={openPlanEditor}
-            plans={plans}
-          />
-        )}
+        {isCalendar ? (
+          isPending ? (
+            <View className="items-center py-20">
+              <ActivityIndicator colorClassName="accent-primary" size="large" />
+            </View>
+          ) : isError ? (
+            <View className="items-center px-7 py-16">
+              <Text className="text-center font-serif text-[18px] text-foreground">
+                We couldn&apos;t load your plans.
+              </Text>
+              <Pressable
+                accessibilityLabel="Retry loading plans"
+                className="mt-5 flex-row items-center gap-2 rounded-full bg-primary px-5 py-3 active:opacity-80"
+                onPress={() => void refetch()}
+              >
+                <ThemedIcon icon={RefreshCw} tone="primaryForeground" size={17} strokeWidth={2} />
+                <Text className="text-[14px] font-semibold text-primary-foreground">Try again</Text>
+              </Pressable>
+            </View>
+          ) : (
+            <PlansCalendar
+              deletingPlanId={deletePlanMutation.variables}
+              onDeletePlan={setPlanToDelete}
+              onEditPlan={openPlanEditor}
+              plans={plans}
+            />
+          )
+        ) : <OurLists />}
       </ScrollView>
 
       <AlertDialog
