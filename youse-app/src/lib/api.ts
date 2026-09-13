@@ -186,6 +186,15 @@ const api = {
     });
     return response.data;
   },
+  async postForm<Response>(url: string, data: FormData) {
+    const response = await axiosInstance.post<Response>(url, data, {
+      headers: {
+        Authorization: await getAuthToken(),
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
   async delete<
     Response,
     Data = Record<string, any>,

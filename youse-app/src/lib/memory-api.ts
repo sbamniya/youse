@@ -35,10 +35,25 @@ export type ApiMemory = {
   };
 };
 
+export type CreateMemoryInput = {
+  title: string;
+  description: string | null;
+  memoryDate: string | null;
+  thumbnailPath: string | null;
+  location: string | null;
+  imagePaths: string[];
+};
+
 export const memoriesQueryKey = ["memories"] as const;
 
 export async function getMemories(): Promise<ApiMemory[]> {
   return api.get<ApiMemory[]>("/memories");
+}
+
+export async function createMemory(
+  input: CreateMemoryInput,
+): Promise<ApiMemory> {
+  return api.post<ApiMemory, CreateMemoryInput>("/memories", input);
 }
 
 export const memoriesQueryOptions = queryOptions({
@@ -91,4 +106,3 @@ export function getOnThisDayMemory(
     );
   });
 }
-

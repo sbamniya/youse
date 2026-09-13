@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import type { ImagePickerAsset } from "expo-image-picker";
 import { router } from "expo-router";
-import { Pencil } from "lucide-react-native";
+import { ImagePlus, Pencil } from "lucide-react-native";
 import { useState } from "react";
 import { Image, Pressable, ScrollView, View } from "react-native";
 
@@ -12,21 +14,70 @@ import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
-import { ToggleRow } from "@/components/app/toggle-row";
 import { Text } from "@/components/ui/text";
+import { uploadImage } from "@/lib/image-upload";
+import {
+  type ApiMemory,
+  type CreateMemoryInput,
+  createMemory,
+  memoriesQueryKey,
+} from "@/lib/memory-api";
 
-const photo =
-  "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop";
+type CreateMemoryRequest = Omit<
+  CreateMemoryInput,
+  "imagePaths" | "thumbnailPath"
+> & {
+  image: ImagePickerAsset;
+};
 
 export default function CreateMemory() {
-  const [title, setTitle] = useState("Goa");
-  const [photoUri, setPhotoUri] = useState(photo);
-  const [date, setDate] = useState(() => dayjs("2026-02-03"));
-  const [location, setLocation] = useState("South Goa");
-  const [story, setStory] = useState(
-    "No itinerary. We stayed on the beach until it got dark.",
-  );
-  const [shareWithPartner, setShareWithPartner] = useState(true);
+  const queryClient = useQueryClient();
+  const [title, setTitle] = useState("");
+  const [date, setDate] = useState(() => dayjs());
+  const [location, setLocation] = useState("");
+  const [story, setStory] = useState("");
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [photoAsset, setPhotoAsset] = useState<ImagePickerAsset | null>(null);
+  const [error, setError] = useState("");
+  const canSave = Boolean(title.trim()) && date.isValid() && photoAsset !== null;
+
+  const { isPending, mutate: saveMemory } = useMutation({
+    mutationFn: async ({ image, ...memory }: CreateMemoryRequest) => {
+      const { path } = await uploadImage(image);
+      return createMemory({
+        ...memory,
+        thumbnailPath: path,
+        imagePaths: [path],
+      });
+    },
+    onSuccess: (memory) => {
+      queryClient.setQueryData<ApiMemory[]>(memoriesQueryKey, (current) =>
+        current ? [memory, ...current] : [memory],
+      );
+      void queryClient.invalidateQueries({ queryKey: memoriesQueryKey });
+      router.replace(`/memory/${memory.id}`);
+    },
+    onError: () => {
+      setError(
+        "We couldn't upload and save this memory. Check your connection and try again.",
+      );
+    },
+  });
+
+  const handleSave = () => {
+    if (!canSave || isPending) {
+      return;
+    }
+
+    setError("");
+    saveMemory({
+      title: title.trim(),
+      description: story.trim() || null,
+      memoryDate: date.toISOString(),
+      location: location.trim() || null,
+      image: photoAsset!,
+    });
+  };
 
   return (
     <AppScreen>
@@ -37,28 +88,67 @@ export default function CreateMemory() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex gap-1 flex-row items-center pt-2">
+        <View className="flex-row items-center gap-1 pt-2">
           <BackButton />
           <Text
-            className="text-[12px] text-muted-foreground mb-0"
+            className="mb-0 text-[12px] text-muted-foreground"
             style={{ letterSpacing: 5 }}
           >
             NEW MEMORY
           </Text>
         </View>
 
-        <PageIntro
-          displayTitle
-          title="Keep this moment close."
-        />
+        <PageIntro displayTitle title="Keep this moment close." />
 
-        <ImageSourcePicker aspect={[3, 4]} onImageSelected={setPhotoUri} title="Change memory photo">
+        <ImageSourcePicker
+          aspect={[3, 4]}
+          onImageSelected={(uri, asset) => {
+            setPhotoUri(uri);
+            setPhotoAsset(asset);
+            setError("");
+          }}
+          title={photoUri ? "Change memory photo" : "Add a memory photo"}
+        >
           {({ onPress }) => (
-            <Pressable className="relative mt-6" onPress={onPress}>
-              <Image source={{ uri: photoUri }} resizeMode="cover" className="h-60 w-full rounded-3xl" />
+            <Pressable
+              accessibilityLabel={
+                photoUri ? "Change memory photo" : "Choose a memory photo"
+              }
+              className="relative mt-6 h-60 overflow-hidden rounded-3xl border border-border-subtle bg-card active:opacity-80"
+              onPress={onPress}
+            >
+              {photoUri ? (
+                <Image
+                  source={{ uri: photoUri }}
+                  resizeMode="cover"
+                  className="h-full w-full"
+                />
+              ) : (
+                <View className="flex-1 items-center justify-center gap-3 px-8">
+                  <View className="h-12 w-12 items-center justify-center rounded-full bg-secondary">
+                    <ThemedIcon
+                      icon={ImagePlus}
+                      size={24}
+                      strokeWidth={1.8}
+                    />
+                  </View>
+                  <Text className="text-[17px] font-semibold text-foreground">
+                    Choose a photo
+                  </Text>
+                  <Text className="text-center text-[12px] text-muted-foreground">
+                    JPEG, PNG, or WebP · up to 10 MB
+                  </Text>
+                </View>
+              )}
               <View className="absolute bottom-3 right-3 flex-row items-center gap-1.5 rounded-full bg-black/50 px-3 py-1.5">
-                <ThemedIcon icon={Pencil} size={14} strokeWidth={1.8} />
-                <Text className="text-[13px] text-foreground">Change photo</Text>
+                <ThemedIcon
+                  icon={photoUri ? Pencil : ImagePlus}
+                  size={14}
+                  strokeWidth={1.8}
+                />
+                <Text className="text-[13px] text-foreground">
+                  {photoUri ? "Change photo" : "Choose photo"}
+                </Text>
               </View>
             </Pressable>
           )}
@@ -66,8 +156,11 @@ export default function CreateMemory() {
 
         <FormField
           label="Title"
-          onChangeText={setTitle}
-          placeholder="Goa"
+          onChangeText={(value) => {
+            setTitle(value);
+            setError("");
+          }}
+          placeholder="Give this memory a name"
           value={title}
         />
         <DatePickerField label="Date" onValueChange={setDate} value={date} />
@@ -85,15 +178,23 @@ export default function CreateMemory() {
           value={story}
         />
 
-        <ToggleRow
-          label="Share with Arjun"
-          onValueChange={setShareWithPartner}
-          value={shareWithPartner}
-        />
+        <Text className="mt-6 font-serif text-[14px] leading-5 text-muted-foreground">
+          Memories are shared with your partner automatically.
+        </Text>
+
+        {error ? (
+          <Text className="mt-4 font-serif text-[15px] text-destructive">
+            {error}
+          </Text>
+        ) : null}
       </ScrollView>
 
       <View className="px-4 pb-3 pt-2">
-        <PrimaryAction label="Save memory" onPress={() => router.back()} />
+        <PrimaryAction
+          disabled={!canSave || isPending}
+          label={isPending ? "Saving..." : "Save memory"}
+          onPress={handleSave}
+        />
       </View>
     </AppScreen>
   );

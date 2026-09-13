@@ -14,6 +14,7 @@ import { planRouter } from './modules/plan/plan.routes';
 import { pokeRouter } from './modules/poke/poke.routes';
 import { spaceRouter } from './modules/space/space.routes';
 import { subscriptionRouter } from './modules/subscription/subscription.routes';
+import { uploadRouter } from './modules/upload/upload.routes';
 import { weeklyCheckInRouter } from './modules/weekly-check-in/weekly-check-in.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { rateLimit, userOrIpRateLimitKey } from './middleware/rate-limit.middleware';
@@ -48,6 +49,7 @@ export const createApp = () => {
   app.use('/v1/lists', listRouter);
   app.use('/v1/insights', insightRouter);
   app.use('/v1/subscriptions', subscriptionRouter);
+  app.use('/v1/uploads', uploadRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

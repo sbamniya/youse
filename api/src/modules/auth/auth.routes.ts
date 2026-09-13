@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { validate } from '../../middleware/validate';
 import { requireAuth } from '../../middleware/auth.middleware';
-import { uploadProfilePicture } from '../../middleware/profile-picture-upload.middleware';
+import { uploadProfilePicture } from '../../middleware/image-upload.middleware';
 import { rateLimit } from '../../middleware/rate-limit.middleware';
 import { refreshSchema, requestOtpSchema, updateProfileSchema, verifyOtpSchema } from './auth.schema';
 import * as authController from './auth.controller';
