@@ -2,7 +2,7 @@ import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
 import { spaceFor } from "../space/space.service";
 
-const getActiveInvitation = async (userId: string, code: string) => {
+const getActiveInvitation = async (code: string) => {
   const relationship = await prisma.userPartner.findUnique({
     where: { invitationCode: code },
     include: {
@@ -14,12 +14,11 @@ const getActiveInvitation = async (userId: string, code: string) => {
   if (!relationship || relationship.status !== "invited" || relationship.deletedAt) {
     throw new AppError(404, "Invite not found or no longer active");
   }
-  if (relationship.userId === userId) throw new AppError(400, "You cannot accept your own invite");
   return relationship;
 };
 
-export const verifyInvitation = async (userId: string, code: string) => {
-  const relationship = await getActiveInvitation(userId, code);
+export const verifyInvitation = async (code: string) => {
+  const relationship = await getActiveInvitation(code);
   return {
     valid: true,
     invitation: {
@@ -34,7 +33,11 @@ export const verifyInvitation = async (userId: string, code: string) => {
 };
 
 export const acceptInvitation = async (userId: string, code: string) => {
-  const relationship = await getActiveInvitation(userId, code);
+  const relationship = await getActiveInvitation(code);
+  if (relationship.userId === userId) {
+    throw new AppError(400, "You cannot accept your own invite");
+  }
+
   return prisma.$transaction(async (transaction) => {
     await transaction.user.update({ where: { id: relationship.userId }, data: { partnerId: userId } });
     await transaction.user.update({ where: { id: userId }, data: { partnerId: relationship.userId } });

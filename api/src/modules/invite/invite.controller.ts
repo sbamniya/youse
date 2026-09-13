@@ -7,7 +7,7 @@ export const verify = async (
   next: NextFunction,
 ) => {
   try {
-    const data = await service.verifyInvitation(req.user!.id, req.params.code);
+    const data = await service.verifyInvitation(req.params.code);
     res.json(data);
   } catch (error) {
     next(error);

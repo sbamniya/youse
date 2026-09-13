@@ -129,7 +129,7 @@ export default function InviteWelcome() {
 
       <PrimaryAction
         className="mt-8"
-        label="Confirm and continue"
+        label="Continue"
         onPress={() =>
           router.push({
             pathname: "/email-otp",

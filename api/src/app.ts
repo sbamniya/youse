@@ -16,12 +16,21 @@ import { spaceRouter } from './modules/space/space.routes';
 import { subscriptionRouter } from './modules/subscription/subscription.routes';
 import { weeklyCheckInRouter } from './modules/weekly-check-in/weekly-check-in.routes';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
+import { rateLimit, userOrIpRateLimitKey } from './middleware/rate-limit.middleware';
+
+const globalRateLimit = rateLimit({
+  keyPrefix: 'global',
+  points: 500,
+  durationSeconds: 60,
+  keyGenerator: userOrIpRateLimitKey,
+});
 
 export const createApp = () => {
   const app = express();
 
   app.use(helmet());
   app.use(cors());
+  app.use(globalRateLimit);
   app.use(express.json());
   app.use(morgan('dev'));
 
