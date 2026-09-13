@@ -47,22 +47,23 @@ model User {
 }
 
 model UserPartner {
-    id                String             @id @default(uuid())
-    userId            String
-    partnerId         String?
-    relationshipType  String
-    locationType      String?
-    goal              String?
-    partnerName       String?
-    dailyQuestionTime DateTime?
-    status            RelationshipStatus @default(invited)
-    anniversary       DateTime?
-    invitationCode    String?            @unique
-    invitedAt         DateTime?
-    joinedAt          DateTime?
-    deletedAt         DateTime?
-    brokenAt          DateTime?
-    restoredAt        DateTime?
+    id                          String             @id @default(uuid())
+    userId                      String
+    partnerId                   String?
+    relationshipType            String
+    locationType                String?
+    goal                        String?
+    partnerName                 String?
+    dailyQuestionTime           DateTime?
+    status                      RelationshipStatus @default(invited)
+    anniversary                 DateTime?
+    invitationCode              String?            @unique
+    invitedAt                   DateTime?
+    joinedAt                    DateTime?
+    deletedAt                   DateTime?
+    brokenAt                    DateTime?
+    restoredAt                  DateTime?
+    nextDailyQuestionReminderAt DateTime?
 
     user    User  @relation("PartnerOne", fields: [userId], references: [id], onDelete: Cascade)
     partner User? @relation("PartnerTwo", fields: [partnerId], references: [id], onDelete: Cascade)
