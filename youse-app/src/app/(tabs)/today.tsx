@@ -31,6 +31,7 @@ import {
   getTrialDaysRemaining,
 } from "@/lib/current-space";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import { currentDailyQuestionQueryOptions } from "@/lib/daily-question-api";
 import { getImageUrl } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
 
@@ -65,8 +66,6 @@ const pokeRows = [
   ["Miss you", "Call me"],
 ];
 
-const todayQuestion = "What’s something you wish we did more often?";
-
 export default function Today() {
   const insets = useSafeAreaInsets();
   const [background] = useCSSVariable(["--color-background"]) as [string];
@@ -86,6 +85,11 @@ export default function Today() {
     isPending: isSpacePending,
     refetch: refetchCurrentSpace,
   } = useQuery(currentSpaceQueryOptions);
+  const {
+    data: dailyQuestion,
+    isError: isDailyQuestionError,
+    isPending: isDailyQuestionPending,
+  } = useQuery(currentDailyQuestionQueryOptions);
 
   if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
     if (isUserError || isSpaceError) {
@@ -120,6 +124,12 @@ export default function Today() {
   const currentUserImage = getImageUrl(currentUser.profilePicture);
   const partnerImage = getImageUrl(partner?.profilePicture);
   const canSendPokes = partner?.pokesEnabled === true;
+  const currentUserAnswer = dailyQuestion?.dailyQuestionAnswers.find(
+    (answer) => answer.userId === currentUser.id,
+  );
+  const partnerAnswer = dailyQuestion?.dailyQuestionAnswers.find(
+    (answer) => answer.userId === partner?.id,
+  );
   const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
@@ -196,7 +206,11 @@ export default function Today() {
               {formattedDate}
             </Text>
             <Text className="mt-3 font-serif text-[34px] font-semibold leading-9 text-foreground">
-              {todayQuestion}
+              {dailyQuestion?.question ?? (
+                isDailyQuestionPending
+                  ? "Getting today’s question…"
+                  : "Today’s question isn’t ready yet."
+              )}
             </Text>
 
             <View className="mt-3 flex-row items-end justify-between">
@@ -208,19 +222,33 @@ export default function Today() {
               </Text>
             </View>
 
-            <PrimaryAction
-              className="mt-5"
-              icon={Pencil}
-              label="Write my answer"
-              onPress={() =>
-                router.push({
-                  pathname: "/answer",
-                  params: { question: todayQuestion, partner: partnerName },
-                })
-              }
-            />
+            {dailyQuestion ? (
+              <PrimaryAction
+                className="mt-5"
+                icon={Pencil}
+                label={currentUserAnswer ? "Edit my answer" : "Write my answer"}
+                onPress={() =>
+                  router.push({
+                    pathname: "/answer",
+                    params: {
+                      id: dailyQuestion.id,
+                      question: dailyQuestion.question,
+                      partner: partnerName,
+                      answer: currentUserAnswer?.answer,
+                    },
+                  })
+                }
+              />
+            ) : (
+              <Text className="mt-5 text-[14px] leading-5 text-muted-foreground">
+                {isDailyQuestionError
+                  ? "We’ll share a question here as soon as it’s ready."
+                  : "One thoughtful prompt is on its way."}
+              </Text>
+            )}
 
-            <View className="mt-5 flex-row items-center">
+            {dailyQuestion ? (
+              <View className="mt-5 flex-row items-center">
               <View className="flex-1 flex-row items-center gap-2.5">
                 <View className="relative h-12 w-12">
                   <ProfileAvatar
@@ -237,7 +265,7 @@ export default function Today() {
                     You
                   </Text>
                   <Text className="text-[12px] text-muted-foreground">
-                    Answered Today
+                    {currentUserAnswer ? "Answered today" : "Hasn’t answered yet"}
                   </Text>
                 </View>
               </View>
@@ -258,11 +286,14 @@ export default function Today() {
                     {partnerName}
                   </Text>
                   <Text className="text-[12px] text-muted-foreground">
-                    Hasn’t answered yet
+                    {dailyQuestion.revealed && partnerAnswer
+                      ? "Answered today"
+                      : "Answer to reveal"}
                   </Text>
                 </View>
               </View>
-            </View>
+              </View>
+            ) : null}
           </View>
         </View>
 

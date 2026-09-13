@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { Camera } from "lucide-react-native";
 import { useState } from "react";
@@ -11,6 +12,10 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import {
+  currentDailyQuestionQueryKey,
+  saveDailyAnswer,
+} from "@/lib/daily-question-api";
 
 const logoFull = require("../../assets/images/logo-full-white.png");
 
@@ -19,15 +24,34 @@ const DEFAULT_QUESTION = "What’s something you wish we did more often?";
 const DEFAULT_PARTNER = "Arjun";
 
 export default function Answer() {
-  const { question, partner } = useLocalSearchParams<{
+  const { id, question, partner, answer: existingAnswer } = useLocalSearchParams<{
+    id?: string;
     question?: string;
     partner?: string;
+    answer?: string;
   }>();
-  const [answer, setAnswer] = useState("");
+  const queryClient = useQueryClient();
+  const [answer, setAnswer] = useState(existingAnswer ?? "");
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   const resolvedQuestion = question ?? DEFAULT_QUESTION;
   const resolvedPartner = partner ?? DEFAULT_PARTNER;
+  const saveAnswerMutation = useMutation({
+    mutationFn: () => {
+      if (!id) throw new Error("Daily question is unavailable");
+      return saveDailyAnswer(id, answer.trim());
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: currentDailyQuestionQueryKey,
+      });
+      router.replace("/(tabs)/today");
+    },
+    onError: () => {
+      setError("We couldn't save your answer. Check your connection and try again.");
+    },
+  });
 
   return (
     <AppScreen>
@@ -55,7 +79,10 @@ export default function Answer() {
             className="flex-1 font-serif text-[20px] text-foreground"
             maxLength={MAX_LENGTH}
             multiline
-            onChangeText={setAnswer}
+            onChangeText={(value) => {
+              setAnswer(value);
+              setError("");
+            }}
             placeholder="Write what comes to mind…"
             style={{ textAlignVertical: "top" }}
             value={answer}
@@ -83,17 +110,18 @@ export default function Answer() {
             </Pressable>
           )}
         </ImageSourcePicker>
+        {error ? (
+          <Text className="mt-4 font-serif text-[15px] text-destructive">
+            {error}
+          </Text>
+        ) : null}
       </View>
 
       <View className="px-4 pb-3 pt-2">
         <PrimaryAction
-          label="Save my answer"
-          onPress={() =>
-            router.replace({
-              pathname: "/answer-results",
-              params: { question: resolvedQuestion, myAnswer: answer },
-            })
-          }
+          disabled={!id || !answer.trim() || saveAnswerMutation.isPending}
+          label={saveAnswerMutation.isPending ? "Saving..." : "Save my answer"}
+          onPress={() => saveAnswerMutation.mutate()}
         />
       </View>
     </AppScreen>
