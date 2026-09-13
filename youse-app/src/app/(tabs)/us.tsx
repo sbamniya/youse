@@ -338,7 +338,7 @@ export default function Us() {
             </AlertDialogCancel>
           </AlertDialogHeader>
           <Text className="-mt-2 font-serif text-[14px] text-muted-foreground">
-            Choose when you’d like your daily question.
+            Choose when both of you’d like your daily question.
           </Text>
           <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
             <View className="-mx-1 flex-row flex-wrap">

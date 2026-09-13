@@ -1739,6 +1739,7 @@ export const UserScalarFieldEnum = {
   timezone: 'timezone',
   gender: 'gender',
   birthday: 'birthday',
+  pokesEnabled: 'pokesEnabled',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2023,6 +2024,13 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
  * Reference to a field of type 'RelationshipStatus'
  */
 export type EnumRelationshipStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RelationshipStatus'>
@@ -2033,13 +2041,6 @@ export type EnumRelationshipStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'RelationshipStatus[]'
  */
 export type ListEnumRelationshipStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RelationshipStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

@@ -23,9 +23,19 @@ export const unlinkRelationshipSchema = requestSchema(
   emptyRequestObject,
 );
 
+export const saveQuestionTimeSchema = requestSchema(
+  z.object({ dailyQuestionTime: z.string().datetime({ offset: true }) }),
+  emptyRequestObject,
+);
+
 export type SaveRelationshipInput = z.infer<
   typeof saveRelationshipSchema
 >["body"];
+
+export type SaveQuestionTimeInput = z.infer<
+  typeof saveQuestionTimeSchema
+>["body"];
+
 export type UnlinkRelationshipInput = z.infer<
   typeof unlinkRelationshipSchema
 >["body"];

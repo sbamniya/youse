@@ -95,6 +95,7 @@ export const UserScalarFieldEnum = {
   timezone: 'timezone',
   gender: 'gender',
   birthday: 'birthday',
+  pokesEnabled: 'pokesEnabled',
   deletedAt: 'deletedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

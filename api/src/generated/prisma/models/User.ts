@@ -33,6 +33,7 @@ export type UserMinAggregateOutputType = {
   timezone: string | null
   gender: string | null
   birthday: Date | null
+  pokesEnabled: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -47,6 +48,7 @@ export type UserMaxAggregateOutputType = {
   timezone: string | null
   gender: string | null
   birthday: Date | null
+  pokesEnabled: boolean | null
   deletedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,6 +63,7 @@ export type UserCountAggregateOutputType = {
   timezone: number
   gender: number
   birthday: number
+  pokesEnabled: number
   deletedAt: number
   createdAt: number
   updatedAt: number
@@ -77,6 +80,7 @@ export type UserMinAggregateInputType = {
   timezone?: true
   gender?: true
   birthday?: true
+  pokesEnabled?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -91,6 +95,7 @@ export type UserMaxAggregateInputType = {
   timezone?: true
   gender?: true
   birthday?: true
+  pokesEnabled?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -105,6 +110,7 @@ export type UserCountAggregateInputType = {
   timezone?: true
   gender?: true
   birthday?: true
+  pokesEnabled?: true
   deletedAt?: true
   createdAt?: true
   updatedAt?: true
@@ -192,6 +198,7 @@ export type UserGroupByOutputType = {
   timezone: string | null
   gender: string | null
   birthday: Date | null
+  pokesEnabled: boolean
   deletedAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -227,6 +234,7 @@ export type UserWhereInput = {
   timezone?: Prisma.StringNullableFilter<"User"> | string | null
   gender?: Prisma.StringNullableFilter<"User"> | string | null
   birthday?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  pokesEnabled?: Prisma.BoolFilter<"User"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -256,6 +264,7 @@ export type UserOrderByWithRelationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   birthday?: Prisma.SortOrderInput | Prisma.SortOrder
+  pokesEnabled?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -288,6 +297,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   timezone?: Prisma.StringNullableFilter<"User"> | string | null
   gender?: Prisma.StringNullableFilter<"User"> | string | null
   birthday?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  pokesEnabled?: Prisma.BoolFilter<"User"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -317,6 +327,7 @@ export type UserOrderByWithAggregationInput = {
   timezone?: Prisma.SortOrderInput | Prisma.SortOrder
   gender?: Prisma.SortOrderInput | Prisma.SortOrder
   birthday?: Prisma.SortOrderInput | Prisma.SortOrder
+  pokesEnabled?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -337,6 +348,7 @@ export type UserScalarWhereWithAggregatesInput = {
   timezone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   gender?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   birthday?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  pokesEnabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -350,6 +362,7 @@ export type UserCreateInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -379,6 +392,7 @@ export type UserUncheckedCreateInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -406,6 +420,7 @@ export type UserUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +450,7 @@ export type UserUncheckedUpdateInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -463,6 +479,7 @@ export type UserCreateManyInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -476,6 +493,7 @@ export type UserUpdateManyMutationInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,6 +508,7 @@ export type UserUncheckedUpdateManyInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -519,6 +538,7 @@ export type UserCountOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  pokesEnabled?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -533,6 +553,7 @@ export type UserMaxOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  pokesEnabled?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -547,6 +568,7 @@ export type UserMinOrderByAggregateInput = {
   timezone?: Prisma.SortOrder
   gender?: Prisma.SortOrder
   birthday?: Prisma.SortOrder
+  pokesEnabled?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -587,6 +609,10 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -823,6 +849,7 @@ export type UserCreateWithoutPartnersInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -851,6 +878,7 @@ export type UserUncheckedCreateWithoutPartnersInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -882,6 +910,7 @@ export type UserCreateWithoutPartnerInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -909,6 +938,7 @@ export type UserUncheckedCreateWithoutPartnerInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -957,6 +987,7 @@ export type UserUpdateWithoutPartnersInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -985,6 +1016,7 @@ export type UserUncheckedUpdateWithoutPartnersInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1031,6 +1063,7 @@ export type UserScalarWhereInput = {
   timezone?: Prisma.StringNullableFilter<"User"> | string | null
   gender?: Prisma.StringNullableFilter<"User"> | string | null
   birthday?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  pokesEnabled?: Prisma.BoolFilter<"User"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -1044,6 +1077,7 @@ export type UserCreateWithoutUserPartnersOneInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1072,6 +1106,7 @@ export type UserUncheckedCreateWithoutUserPartnersOneInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1103,6 +1138,7 @@ export type UserCreateWithoutUserPartnersTwoInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1131,6 +1167,7 @@ export type UserUncheckedCreateWithoutUserPartnersTwoInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1173,6 +1210,7 @@ export type UserUpdateWithoutUserPartnersOneInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1201,6 +1239,7 @@ export type UserUncheckedUpdateWithoutUserPartnersOneInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1238,6 +1277,7 @@ export type UserUpdateWithoutUserPartnersTwoInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1266,6 +1306,7 @@ export type UserUncheckedUpdateWithoutUserPartnersTwoInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1292,6 +1333,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1320,6 +1362,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1362,6 +1405,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1390,6 +1434,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1416,6 +1461,7 @@ export type UserCreateWithoutReconnectRequestsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1444,6 +1490,7 @@ export type UserUncheckedCreateWithoutReconnectRequestsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1486,6 +1533,7 @@ export type UserUpdateWithoutReconnectRequestsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1514,6 +1562,7 @@ export type UserUncheckedUpdateWithoutReconnectRequestsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1540,6 +1589,7 @@ export type UserCreateWithoutPartnerMemoriesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1568,6 +1618,7 @@ export type UserUncheckedCreateWithoutPartnerMemoriesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1610,6 +1661,7 @@ export type UserUpdateWithoutPartnerMemoriesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1638,6 +1690,7 @@ export type UserUncheckedUpdateWithoutPartnerMemoriesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1664,6 +1717,7 @@ export type UserCreateWithoutPartnerMemoryItemsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1692,6 +1746,7 @@ export type UserUncheckedCreateWithoutPartnerMemoryItemsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1734,6 +1789,7 @@ export type UserUpdateWithoutPartnerMemoryItemsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1762,6 +1818,7 @@ export type UserUncheckedUpdateWithoutPartnerMemoryItemsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1788,6 +1845,7 @@ export type UserCreateWithoutUserMoodsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1816,6 +1874,7 @@ export type UserUncheckedCreateWithoutUserMoodsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1858,6 +1917,7 @@ export type UserUpdateWithoutUserMoodsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1886,6 +1946,7 @@ export type UserUncheckedUpdateWithoutUserMoodsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1912,6 +1973,7 @@ export type UserCreateWithoutSentPokesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1940,6 +2002,7 @@ export type UserUncheckedCreateWithoutSentPokesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1971,6 +2034,7 @@ export type UserCreateWithoutReceivedPokesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1999,6 +2063,7 @@ export type UserUncheckedCreateWithoutReceivedPokesInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2041,6 +2106,7 @@ export type UserUpdateWithoutSentPokesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2069,6 +2135,7 @@ export type UserUncheckedUpdateWithoutSentPokesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2106,6 +2173,7 @@ export type UserUpdateWithoutReceivedPokesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2134,6 +2202,7 @@ export type UserUncheckedUpdateWithoutReceivedPokesInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2160,6 +2229,7 @@ export type UserCreateWithoutDailyQuestionAnswersInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2188,6 +2258,7 @@ export type UserUncheckedCreateWithoutDailyQuestionAnswersInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2230,6 +2301,7 @@ export type UserUpdateWithoutDailyQuestionAnswersInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2258,6 +2330,7 @@ export type UserUncheckedUpdateWithoutDailyQuestionAnswersInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2284,6 +2357,7 @@ export type UserCreateWithoutUserPartnerPlansInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2312,6 +2386,7 @@ export type UserUncheckedCreateWithoutUserPartnerPlansInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2354,6 +2429,7 @@ export type UserUpdateWithoutUserPartnerPlansInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2382,6 +2458,7 @@ export type UserUncheckedUpdateWithoutUserPartnerPlansInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2408,6 +2485,7 @@ export type UserCreateWithoutWeeklyCheckInQnAsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2436,6 +2514,7 @@ export type UserUncheckedCreateWithoutWeeklyCheckInQnAsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2478,6 +2557,7 @@ export type UserUpdateWithoutWeeklyCheckInQnAsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2506,6 +2586,7 @@ export type UserUncheckedUpdateWithoutWeeklyCheckInQnAsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2532,6 +2613,7 @@ export type UserCreateWithoutCreatedSharedListsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2560,6 +2642,7 @@ export type UserUncheckedCreateWithoutCreatedSharedListsInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2602,6 +2685,7 @@ export type UserUpdateWithoutCreatedSharedListsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2630,6 +2714,7 @@ export type UserUncheckedUpdateWithoutCreatedSharedListsInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2656,6 +2741,7 @@ export type UserCreateManyPartnerInput = {
   timezone?: string | null
   gender?: string | null
   birthday?: Date | string | null
+  pokesEnabled?: boolean
   deletedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2669,6 +2755,7 @@ export type UserUpdateWithoutPartnerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2696,6 +2783,7 @@ export type UserUncheckedUpdateWithoutPartnerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2723,6 +2811,7 @@ export type UserUncheckedUpdateManyWithoutPartnerInput = {
   timezone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   gender?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   birthday?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  pokesEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2885,6 +2974,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   timezone?: boolean
   gender?: boolean
   birthday?: boolean
+  pokesEnabled?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2915,6 +3005,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   timezone?: boolean
   gender?: boolean
   birthday?: boolean
+  pokesEnabled?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2930,6 +3021,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   timezone?: boolean
   gender?: boolean
   birthday?: boolean
+  pokesEnabled?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2945,12 +3037,13 @@ export type UserSelectScalar = {
   timezone?: boolean
   gender?: boolean
   birthday?: boolean
+  pokesEnabled?: boolean
   deletedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone" | "name" | "profilePicture" | "partnerId" | "timezone" | "gender" | "birthday" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "phone" | "name" | "profilePicture" | "partnerId" | "timezone" | "gender" | "birthday" | "pokesEnabled" | "deletedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   partner?: boolean | Prisma.User$partnerArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -3004,6 +3097,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     timezone: string | null
     gender: string | null
     birthday: Date | null
+    pokesEnabled: boolean
     deletedAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -3453,6 +3547,7 @@ export interface UserFieldRefs {
   readonly timezone: Prisma.FieldRef<"User", 'String'>
   readonly gender: Prisma.FieldRef<"User", 'String'>
   readonly birthday: Prisma.FieldRef<"User", 'DateTime'>
+  readonly pokesEnabled: Prisma.FieldRef<"User", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>

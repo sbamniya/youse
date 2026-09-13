@@ -229,3 +229,15 @@ export const reconnectRelationship = async (userId: string) => {
     body: { mutual: true, message: "You are reconnected." },
   };
 };
+
+export const saveQuestionTime = async (
+  userId: string,
+  input: { dailyQuestionTime: string },
+) => {
+  const space = await spaceFor(userId);
+  const updatedSpace = await prisma.userPartner.update({
+    where: { id: space.id },
+    data: { dailyQuestionTime: new Date(input.dailyQuestionTime) },
+  });
+  return updatedSpace;
+};

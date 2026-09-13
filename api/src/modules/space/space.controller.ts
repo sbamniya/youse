@@ -68,3 +68,15 @@ export const reconnectRelationship = async (
     next(error);
   }
 };
+
+export const saveQuestionTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    res.json(await service.saveQuestionTime(req.user!.id, req.body));
+  } catch (error) {
+    next(error);
+  }
+};
