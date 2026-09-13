@@ -42,11 +42,17 @@ const sanitizeUser = (user: {
     id: string;
     invitationCode: string | null;
     partnerName: string | null;
+    anniversary: Date | null;
+    goal: string | null;
+    relationshipType: string | null;
   }[];
   userPartnersTwo: {
     id: string;
     invitationCode: string | null;
     partnerName: string | null;
+    anniversary: Date | null;
+    goal: string | null;
+    relationshipType: string | null;
   }[];
 }) => {
   const space =
@@ -67,6 +73,9 @@ const sanitizeUser = (user: {
     partnerSpace: space?.id ?? null,
     invitationCode: space?.invitationCode ?? null,
     partnerName: space?.partnerName ?? null,
+    anniversary: space?.anniversary ?? null,
+    relationshipGoal: space?.goal ?? null,
+    relationshipType: space?.relationshipType ?? null,
   };
 };
 
@@ -88,11 +97,25 @@ const issueTokens = async (user: { id: string; phone: string }) => {
 const profileRelations = {
   userPartnersOne: {
     where: { deletedAt: null },
-    select: { id: true, invitationCode: true, partnerName: true },
+    select: {
+      id: true,
+      invitationCode: true,
+      partnerName: true,
+      anniversary: true,
+      goal: true,
+      relationshipType: true
+    },
   },
   userPartnersTwo: {
     where: { deletedAt: null },
-    select: { id: true, invitationCode: true, partnerName: true },
+    select: {
+      id: true,
+      invitationCode: true,
+      partnerName: true,
+      anniversary: true,
+      goal: true,
+      relationshipType: true,
+    },
   },
 } as const;
 
