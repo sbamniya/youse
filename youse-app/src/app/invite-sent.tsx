@@ -113,10 +113,10 @@ export default function InviteSent() {
 
       <Separator className="mt-7" />
       <Text className="mt-7 font-serif text-[24px] text-foreground">
-        Set up your space while you wait
+        Once your partner joins, you can.
       </Text>
 
-      <View className="mt-6">
+      <View className="mt-4">
         {setupItems.map(({ label: title, icon, description }, index) => (
           <View
             key={title}
