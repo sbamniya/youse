@@ -9,6 +9,7 @@ import {
   Smile,
   UtensilsCrossed,
   UserRound,
+  Eye,
 } from "lucide-react-native";
 import { useState } from "react";
 import {
@@ -96,8 +97,8 @@ export default function Today() {
       return (
         <View className="flex-1 items-center justify-center bg-background px-6">
           <Text className="text-center font-serif text-[18px] text-muted-foreground">
-            We couldn&apos;t load your shared space. Check your connection and try
-            again.
+            We couldn&apos;t load your shared space. Check your connection and
+            try again.
           </Text>
           <PrimaryAction
             className="mt-7 w-full"
@@ -205,12 +206,11 @@ export default function Today() {
             >
               {formattedDate}
             </Text>
-            <Text className="mt-3 font-serif text-[34px] font-semibold leading-9 text-foreground">
-              {dailyQuestion?.question ?? (
-                isDailyQuestionPending
+            <Text className="mt-3 font-serif text-[28px] font-semibold leading-9 text-foreground">
+              {dailyQuestion?.question ??
+                (isDailyQuestionPending
                   ? "Getting today’s question…"
-                  : "Today’s question isn’t ready yet."
-              )}
+                  : "Today’s question isn’t ready yet.")}
             </Text>
 
             <View className="mt-3 flex-row items-end justify-between">
@@ -223,20 +223,17 @@ export default function Today() {
             </View>
 
             {currentUserAnswer ? (
-              <View className="mt-5 rounded-2xl border border-foreground/15 bg-black/25 px-4 py-3">
-                <Text
-                  className="text-[10px] font-semibold text-muted-foreground"
-                  style={{ letterSpacing: 1.5 }}
-                >
-                  YOUR ANSWER
-                </Text>
-                <Text
-                  className="mt-1 font-serif text-[16px] italic leading-5 text-foreground"
-                  numberOfLines={2}
-                >
-                  {currentUserAnswer.answer}
-                </Text>
-              </View>
+              <PrimaryAction
+                className="mt-5"
+                icon={Eye}
+                label="View answers"
+                onPress={() =>
+                  router.push({
+                    pathname: "/answer-results",
+                    params: { id: dailyQuestion?.id },
+                  })
+                }
+              />
             ) : dailyQuestion ? (
               <PrimaryAction
                 className="mt-5"
@@ -261,55 +258,57 @@ export default function Today() {
 
             {dailyQuestion ? (
               <View className="mt-5 flex-row items-center">
-              <View className="flex-1 flex-row items-center gap-2.5">
-                <View className="relative h-12 w-12">
-                  <ProfileAvatar
-                    imageUrl={currentUserImage}
-                    className="h-12 w-12 border-2 border-foreground/10"
-                    iconSize={21}
-                  />
-                  {currentUserAnswer ? (
-                    <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
-                      <Check color="#1d1115" size={9} strokeWidth={3} />
-                    </View>
-                  ) : null}
+                <View className="flex-1 flex-row items-center gap-2.5">
+                  <View className="relative h-12 w-12">
+                    <ProfileAvatar
+                      imageUrl={currentUserImage}
+                      className="h-12 w-12 border-2 border-foreground/10"
+                      iconSize={21}
+                    />
+                    {currentUserAnswer ? (
+                      <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
+                        <Check color="#1d1115" size={9} strokeWidth={3} />
+                      </View>
+                    ) : null}
+                  </View>
+                  <View>
+                    <Text className="text-[14px] font-semibold text-foreground">
+                      You
+                    </Text>
+                    <Text className="text-[12px] text-muted-foreground">
+                      {currentUserAnswer
+                        ? "Answered today"
+                        : "Hasn’t answered yet"}
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text className="text-[14px] font-semibold text-foreground">
-                    You
-                  </Text>
-                  <Text className="text-[12px] text-muted-foreground">
-                    {currentUserAnswer ? "Answered today" : "Hasn’t answered yet"}
-                  </Text>
-                </View>
-              </View>
 
-              <View className="mx-1 h-9 w-px bg-foreground/10" />
+                <View className="mx-1 h-9 w-px bg-foreground/10" />
 
-              <View className="flex-1 flex-row items-center gap-2.5 pl-1">
-                <View className="relative h-12 w-12">
-                  <ProfileAvatar
-                    imageUrl={partnerImage}
-                    className="h-12 w-12 border-2 border-foreground/10"
-                    iconSize={21}
-                  />
-                  {dailyQuestion.revealed && partnerAnswer ? (
-                    <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
-                      <Check color="#1d1115" size={9} strokeWidth={3} />
-                    </View>
-                  ) : null}
+                <View className="flex-1 flex-row items-center gap-2.5 pl-1">
+                  <View className="relative h-12 w-12">
+                    <ProfileAvatar
+                      imageUrl={partnerImage}
+                      className="h-12 w-12 border-2 border-foreground/10"
+                      iconSize={21}
+                    />
+                    {dailyQuestion.revealed && partnerAnswer ? (
+                      <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
+                        <Check color="#1d1115" size={9} strokeWidth={3} />
+                      </View>
+                    ) : null}
+                  </View>
+                  <View>
+                    <Text className="text-[14px] font-semibold text-foreground">
+                      {partnerName}
+                    </Text>
+                    <Text className="text-[12px] text-muted-foreground">
+                      {dailyQuestion.revealed && partnerAnswer
+                        ? "Answered today"
+                        : "Answer to reveal"}
+                    </Text>
+                  </View>
                 </View>
-                <View>
-                  <Text className="text-[14px] font-semibold text-foreground">
-                    {partnerName}
-                  </Text>
-                  <Text className="text-[12px] text-muted-foreground">
-                    {dailyQuestion.revealed && partnerAnswer
-                      ? "Answered today"
-                      : "Answer to reveal"}
-                  </Text>
-                </View>
-              </View>
               </View>
             ) : null}
           </View>
@@ -458,7 +457,8 @@ export default function Today() {
                   SEND A POKE
                 </Text>
                 <Text className="text-[12px] text-muted-foreground">
-                  to <Text className="font-medium text-accent">{partnerName}</Text>
+                  to{" "}
+                  <Text className="font-medium text-accent">{partnerName}</Text>
                 </Text>
               </View>
               <Text className="mt-1.5 text-[12px] text-muted-foreground">

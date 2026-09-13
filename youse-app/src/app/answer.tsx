@@ -48,11 +48,11 @@ export default function Answer() {
       const imagePath = photoAsset ? (await uploadImage(photoAsset)).path : null;
       return saveDailyAnswer(id, { answer: answer.trim(), imagePath });
     },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: currentDailyQuestionQueryKey,
       });
-      router.replace("/(tabs)/today");
+      router.replace({ pathname: "/answer-results", params: { id } });
     },
     onError: () => {
       setError("We couldn't save your answer. Check your connection and try again.");

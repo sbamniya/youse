@@ -16,7 +16,7 @@ function BackButton({ className, onPress = () => router.back() }: BackButtonProp
       accessibilityLabel="Go back"
       accessibilityRole="button"
       className={cn(
-        "h-11 w-11 items-center justify-center rounded-full border border-primary/35 bg-background/60 active:opacity-70",
+        "h-8 w-8 items-center justify-center rounded-full border border-primary/35 bg-background/60 active:opacity-70",
         className,
       )}
       hitSlop={8}
