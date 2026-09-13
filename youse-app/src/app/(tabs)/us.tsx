@@ -35,7 +35,12 @@ import {
   getTrialDaysRemaining,
   updateDailyQuestionTime,
 } from "@/lib/current-space";
-import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import {
+  currentUserQueryKey,
+  getCurrentUser,
+  updatePokesEnabled,
+  usePersistCurrentUser,
+} from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
 
@@ -88,12 +93,15 @@ const settingsRows: SettingsRow[] = [
 export default function Us() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
+  const persistCurrentUser = usePersistCurrentUser();
   const [dailyQuestionTime, setDailyQuestionTime] = useState<string | null>(
     null,
   );
   const [questionTimeError, setQuestionTimeError] = useState("");
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
-  const [pokesEnabled, setPokesEnabled] = useState(true);
+  const [pokesEnabledOverride, setPokesEnabledOverride] = useState<
+    boolean | null
+  >(null);
   const {
     data: currentUser,
     isError: isUserError,
@@ -134,6 +142,43 @@ export default function Us() {
         );
       },
     });
+  const { isPending: isSavingPokes, mutate: savePokesEnabled } = useMutation({
+    mutationFn: updatePokesEnabled,
+    onSuccess: async (updatedUser) => {
+      await persistCurrentUser(updatedUser);
+      queryClient.setQueryData<CurrentSpace>(
+        currentSpaceQueryKey,
+        (current) =>
+          current
+            ? {
+                ...current,
+                user:
+                  current.user.id === updatedUser.id
+                    ? {
+                        ...current.user,
+                        pokesEnabled: updatedUser.pokesEnabled,
+                      }
+                    : current.user,
+                partner:
+                  current.partner?.id === updatedUser.id
+                    ? {
+                        ...current.partner,
+                        pokesEnabled: updatedUser.pokesEnabled,
+                      }
+                    : current.partner,
+              }
+            : current,
+      );
+      setPokesEnabledOverride(null);
+    },
+    onError: () => {
+      setPokesEnabledOverride(null);
+      Alert.alert(
+        "Couldn't update pokes",
+        "Check your connection and try again.",
+      );
+    },
+  });
 
   if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
     if (isUserError || isSpaceError) {
@@ -163,6 +208,8 @@ export default function Us() {
   }
 
   const partner = getPartnerFromSpace(currentSpace, currentUser.id);
+  const pokesEnabled =
+    pokesEnabledOverride ?? currentUser.pokesEnabled ?? true;
   const currentMember =
     currentSpace.user.id === currentUser.id
       ? currentSpace.user
@@ -301,15 +348,21 @@ export default function Us() {
               {section ? <SectionLabel label={section} /> : null}
               <Pressable
                 accessibilityLabel={rowTitle}
+                accessibilityRole={isPokes ? "switch" : "button"}
+                accessibilityState={{
+                  checked: isPokes ? pokesEnabled : undefined,
+                  disabled: comingSoon || (isPokes && isSavingPokes),
+                }}
                 className={cn(
                   section
                     ? "mt-5 flex-row items-center active:opacity-70"
                     : "flex-row items-center active:opacity-70",
                   {
-                    "opacity-50": comingSoon,
+                    "opacity-50":
+                      comingSoon || (isPokes && isSavingPokes),
                   },
                 )}
-                disabled={comingSoon}
+                disabled={comingSoon || (isPokes && isSavingPokes)}
                 onPress={() => {
                   if (comingSoon) return;
                   if (isDailyQuestion) {
@@ -317,7 +370,9 @@ export default function Us() {
                     return;
                   }
                   if (isPokes) {
-                    setPokesEnabled((current) => !current);
+                    const nextPokesEnabled = !pokesEnabled;
+                    setPokesEnabledOverride(nextPokesEnabled);
+                    savePokesEnabled(nextPokesEnabled);
                     return;
                   }
                   if (route) {

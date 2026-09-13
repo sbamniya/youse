@@ -25,6 +25,12 @@ authRouter.post('/otp/verify', validate(verifyOtpSchema), authController.verifyO
 authRouter.post('/refresh', validate(refreshSchema), authController.refresh);
 authRouter.post('/logout', validate(refreshSchema), authController.logout);
 authRouter.get('/me', requireAuth, authController.me);
+authRouter.put(
+  '/me',
+  requireAuth,
+  validate(updateProfileSchema),
+  authController.updateProfile,
+);
 authRouter.patch('/me', requireAuth, validate(updateProfileSchema), authController.updateProfile);
 authRouter.put(
   '/me/profile-picture',

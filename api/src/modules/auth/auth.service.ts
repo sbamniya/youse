@@ -38,6 +38,7 @@ const sanitizeUser = (user: {
   partnerId: string | null;
   gender: string | null;
   birthday: Date | null;
+  pokesEnabled: boolean;
   userPartnersOne: {
     id: string;
     invitationCode: string | null;
@@ -65,6 +66,7 @@ const sanitizeUser = (user: {
     id: user.id,
     phone: user.phone,
     name: user.name,
+    pokesEnabled: user.pokesEnabled,
     profilePicture: user.profilePicture,
     timezone: user.timezone,
     partnerId: user.partnerId,
@@ -238,6 +240,9 @@ export const updateUserProfile = async (
     ...(input.name !== undefined ? { name: input.name } : {}),
     ...(input.timezone !== undefined ? { timezone: input.timezone } : {}),
     ...(input.gender !== undefined ? { gender: input.gender } : {}),
+    ...(input.pokesEnabled !== undefined
+      ? { pokesEnabled: input.pokesEnabled }
+      : {}),
     ...(input.birthday !== undefined
       ? { birthday: input.birthday === null ? null : new Date(input.birthday) }
       : {}),

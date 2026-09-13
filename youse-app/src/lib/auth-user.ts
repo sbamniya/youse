@@ -8,6 +8,7 @@ export type AuthUser = {
   timezone: string | null;
   gender: string | null;
   birthday: string | null;
+  pokesEnabled: boolean;
   partnerId: string | null;
   partnerSpace: unknown | null;
   partnerName: string | null;

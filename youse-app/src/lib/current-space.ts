@@ -11,6 +11,7 @@ export type SpaceMember = {
   timezone: string | null;
   gender: string | null;
   birthday: string | null;
+  pokesEnabled: boolean;
   deletedAt: string | null;
   createdAt: string;
   updatedAt: string;

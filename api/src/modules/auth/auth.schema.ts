@@ -48,6 +48,7 @@ export const updateProfileSchema = z.object({
       name: z.string().trim().min(1).max(100).nullable().optional(),
       timezone: timezoneSchema.nullable().optional(),
       gender: z.string().trim().min(1).max(50).nullable().optional(),
+      pokesEnabled: z.boolean().optional(),
       birthday: z
         .union([z.string().date(), z.string().datetime({ offset: true })])
         .nullable()

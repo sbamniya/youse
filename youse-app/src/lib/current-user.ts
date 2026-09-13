@@ -40,3 +40,11 @@ export async function getCurrentUser(): Promise<AuthUser> {
     throw error;
   }
 }
+
+export async function updatePokesEnabled(
+  pokesEnabled: boolean,
+): Promise<AuthUser> {
+  return api.put<AuthUser, { pokesEnabled: boolean }>("/auth/me", {
+    pokesEnabled,
+  });
+}
