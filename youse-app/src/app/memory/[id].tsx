@@ -1,33 +1,53 @@
+import { useQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Ellipsis, ImagePlus, Pencil } from "lucide-react-native";
+import {
+  Ellipsis,
+  ImageIcon,
+  ImagePlus,
+  Pencil,
+  UserRound,
+} from "lucide-react-native";
 import { useState } from "react";
 import {
-    Alert,
-    Animated,
-    Image,
-    ImageBackground,
-    Pressable,
-    View,
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Image,
+  Pressable,
+  View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
+import { AppScreen } from "@/components/app/app-screen";
 import { BackButton } from "@/components/app/back-button";
+import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
-import { featuredMemory } from "@/lib/memories";
-import { useMemories } from "@/lib/memory-store";
+import { getImageUrl } from "@/lib/image-url";
+import {
+  type ApiMemory,
+  formatMemoryDate,
+  getMemoryImageUrl,
+  memoryQueryOptions,
+} from "@/lib/memory-api";
 
-const meeraAvatar = require("../../../assets/images/memory-meera-avatar.png");
 const HERO_HEIGHT = 460;
 
 export default function MemoryDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
   const [scrollY] = useState(() => new Animated.Value(0));
-  const { memories } = useMemories();
-  const memory = memories.find((item) => item.id === id) ?? featuredMemory;
+  const {
+    data: memory,
+    isError,
+    isPending,
+    refetch,
+  } = useQuery({
+    ...memoryQueryOptions(id ?? ""),
+    enabled: Boolean(id),
+  });
   const foreground = useCSSVariable("--color-foreground") as string;
   const collapsedHeaderHeight = Math.max(insets.top + 56, 76);
   const collapseDistance = HERO_HEIGHT - collapsedHeaderHeight;
@@ -62,6 +82,46 @@ export default function MemoryDetail() {
     extrapolate: "clamp",
   });
 
+  if (id && isPending) {
+    return (
+      <AppScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  if (!id || isError || !memory) {
+    return (
+      <AppScreen>
+        <View className="flex-row px-4 pt-2">
+          <BackButton onPress={() => router.replace("/memories")} />
+        </View>
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load this memory.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => void refetch()}
+          />
+        </View>
+      </AppScreen>
+    );
+  }
+
+  const heroImageUrl = getMemoryImageUrl(memory);
+  const creatorName = memory.creator?.name?.trim() || "Someone special";
+  const creatorImageUrl = getImageUrl(memory.creator?.profilePicture);
+  const memoryDetails = [
+    formatMemoryDate(memory.memoryDate, "D MMMM YYYY"),
+    memory.location?.trim(),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   const openMemoryMenu = () => {
     Alert.alert(memory.title, "What would you like to do?", [
       { text: "Share memory" },
@@ -92,12 +152,23 @@ export default function MemoryDetail() {
             className="h-[460px] w-full"
             style={{ transform: [{ translateY: heroTranslateY }, { scale: heroScale }] }}
           >
-            <ImageBackground
-              accessibilityLabel={`${memory.title} memory photo`}
-              className="h-full w-full"
-              resizeMode="cover"
-              source={memory.image}
-            />
+            {heroImageUrl ? (
+              <Image
+                accessibilityLabel={`${memory.title} memory photo`}
+                className="h-full w-full"
+                resizeMode="cover"
+                source={{ uri: heroImageUrl }}
+              />
+            ) : (
+              <View className="h-full w-full items-center justify-center bg-card">
+                <ThemedIcon
+                  icon={ImageIcon}
+                  tone="muted"
+                  size={48}
+                  strokeWidth={1.3}
+                />
+              </View>
+            )}
           </Animated.View>
         </Animated.View>
         <View
@@ -108,7 +179,7 @@ export default function MemoryDetail() {
             className="text-[11px] font-medium uppercase text-primary"
             style={{ letterSpacing: 3.2 }}
           >
-            {memory.date} · {memory.location}
+            {memoryDetails}
           </Text>
 
           <Text className="mt-3.5 text-[50px] font-bold leading-[54px] text-foreground">
@@ -116,17 +187,28 @@ export default function MemoryDetail() {
           </Text>
 
           <Text className="mt-3 font-serif text-[23px] leading-[30px] text-primary/90">
-            {memory.story}
+            {memory.description?.trim() || "A moment worth keeping."}
           </Text>
 
           <View className="mt-9 flex-row items-center justify-between">
             <View className="flex-row items-center gap-4">
-              <Image
-                accessibilityLabel={`${memory.author}'s profile photo`}
-                className="h-[58px] w-[58px] rounded-full border border-primary/80"
-                resizeMode="cover"
-                source={meeraAvatar}
-              />
+              {creatorImageUrl ? (
+                <Image
+                  accessibilityLabel={`${creatorName}'s profile photo`}
+                  className="h-[58px] w-[58px] rounded-full border border-primary/80"
+                  resizeMode="cover"
+                  source={{ uri: creatorImageUrl }}
+                />
+              ) : (
+                <View className="h-[58px] w-[58px] items-center justify-center rounded-full border border-primary/80 bg-card">
+                  <ThemedIcon
+                    icon={UserRound}
+                    tone="muted"
+                    size={25}
+                    strokeWidth={1.5}
+                  />
+                </View>
+              )}
               <View>
                 <Text
                   className="text-[10px] font-medium uppercase text-primary"
@@ -135,7 +217,7 @@ export default function MemoryDetail() {
                   Added by
                 </Text>
                 <Text className="mt-0.5 font-serif text-[22px] text-foreground">
-                  {memory.author}
+                  {creatorName}
                 </Text>
               </View>
             </View>
@@ -201,14 +283,15 @@ export default function MemoryDetail() {
   );
 }
 
-function Gallery({ memory }: { memory: ReturnType<typeof useMemories>["memories"][number] }) {
+function Gallery({ memory }: { memory: ApiMemory }) {
   return (
     <View className="mt-9">
       <Text
         className="text-[10px] font-medium uppercase text-primary"
         style={{ letterSpacing: 2.4 }}
       >
-        Gallery · {memory.photos.length} {memory.photos.length === 1 ? "photo" : "photos"}
+        Gallery · {memory.partnerMemoryItems.length}{" "}
+        {memory.partnerMemoryItems.length === 1 ? "photo" : "photos"}
       </Text>
       <View className="-mx-1.5 mt-3 flex-row flex-wrap">
         <View className="w-1/2 p-1.5">
@@ -224,25 +307,35 @@ function Gallery({ memory }: { memory: ReturnType<typeof useMemories>["memories"
             <Text className="mt-1 text-center text-[11px] text-muted-foreground">Caption optional</Text>
           </Pressable>
         </View>
-        {memory.photos.map((photo) => (
-          <View key={photo.id} className="w-1/2 p-1.5">
-            <View className="overflow-hidden rounded-2xl bg-card">
-              <View className="aspect-[3/4] w-full overflow-hidden">
-                <Image
-                  accessibilityLabel={photo.caption ?? `${memory.title} gallery photo`}
-                  className="h-full w-full"
-                  resizeMode="cover"
-                  source={photo.image}
-                />
+        {memory.partnerMemoryItems.map((photo) => {
+          const imageUrl = getImageUrl(photo.imageUrl);
+
+          return (
+            <View key={photo.id} className="w-1/2 p-1.5">
+              <View className="overflow-hidden rounded-2xl bg-card">
+                <View className="aspect-[3/4] w-full overflow-hidden">
+                  {imageUrl ? (
+                    <Image
+                      accessibilityLabel={`${memory.title} gallery photo`}
+                      className="h-full w-full"
+                      resizeMode="cover"
+                      source={{ uri: imageUrl }}
+                    />
+                  ) : (
+                    <View className="h-full w-full items-center justify-center">
+                      <ThemedIcon
+                        icon={ImageIcon}
+                        tone="muted"
+                        size={26}
+                        strokeWidth={1.5}
+                      />
+                    </View>
+                  )}
+                </View>
               </View>
-              {photo.caption ? (
-                <Text className="px-3 py-2 font-serif text-[14px] leading-5 text-primary">
-                  {photo.caption}
-                </Text>
-              ) : null}
             </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     </View>
   );
