@@ -62,6 +62,7 @@ export const ModelName = {
   UserMood: 'UserMood',
   Poke: 'Poke',
   DailyQuestion: 'DailyQuestion',
+  DailyQuestionReminderHistory: 'DailyQuestionReminderHistory',
   DailyQuestionAnswer: 'DailyQuestionAnswer',
   UserPartnerPlans: 'UserPartnerPlans',
   WeeklyCheckIn: 'WeeklyCheckIn',
@@ -236,6 +237,15 @@ export const DailyQuestionScalarFieldEnum = {
 } as const
 
 export type DailyQuestionScalarFieldEnum = (typeof DailyQuestionScalarFieldEnum)[keyof typeof DailyQuestionScalarFieldEnum]
+
+
+export const DailyQuestionReminderHistoryScalarFieldEnum = {
+  dailyQuestionId: 'dailyQuestionId',
+  userId: 'userId',
+  remindedAt: 'remindedAt'
+} as const
+
+export type DailyQuestionReminderHistoryScalarFieldEnum = (typeof DailyQuestionReminderHistoryScalarFieldEnum)[keyof typeof DailyQuestionReminderHistoryScalarFieldEnum]
 
 
 export const DailyQuestionAnswerScalarFieldEnum = {

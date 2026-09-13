@@ -408,6 +408,7 @@ export const ModelName = {
   UserMood: 'UserMood',
   Poke: 'Poke',
   DailyQuestion: 'DailyQuestion',
+  DailyQuestionReminderHistory: 'DailyQuestionReminderHistory',
   DailyQuestionAnswer: 'DailyQuestionAnswer',
   UserPartnerPlans: 'UserPartnerPlans',
   WeeklyCheckIn: 'WeeklyCheckIn',
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userPartner" | "refreshToken" | "otpChallenge" | "subscription" | "reconnectRequest" | "partnerMemories" | "partnerMemoryItem" | "userMood" | "poke" | "dailyQuestion" | "dailyQuestionAnswer" | "userPartnerPlans" | "weeklyCheckIn" | "weeklyCheckInQnA" | "sharedList" | "sharedListItem"
+    modelProps: "user" | "userPartner" | "refreshToken" | "otpChallenge" | "subscription" | "reconnectRequest" | "partnerMemories" | "partnerMemoryItem" | "userMood" | "poke" | "dailyQuestion" | "dailyQuestionReminderHistory" | "dailyQuestionAnswer" | "userPartnerPlans" | "weeklyCheckIn" | "weeklyCheckInQnA" | "sharedList" | "sharedListItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1247,6 +1248,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DailyQuestionReminderHistory: {
+      payload: Prisma.$DailyQuestionReminderHistoryPayload<ExtArgs>
+      fields: Prisma.DailyQuestionReminderHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DailyQuestionReminderHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DailyQuestionReminderHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.DailyQuestionReminderHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DailyQuestionReminderHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.DailyQuestionReminderHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.DailyQuestionReminderHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.DailyQuestionReminderHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DailyQuestionReminderHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.DailyQuestionReminderHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        update: {
+          args: Prisma.DailyQuestionReminderHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.DailyQuestionReminderHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DailyQuestionReminderHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DailyQuestionReminderHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.DailyQuestionReminderHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DailyQuestionReminderHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.DailyQuestionReminderHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDailyQuestionReminderHistory>
+        }
+        groupBy: {
+          args: Prisma.DailyQuestionReminderHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyQuestionReminderHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DailyQuestionReminderHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DailyQuestionReminderHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
     DailyQuestionAnswer: {
       payload: Prisma.$DailyQuestionAnswerPayload<ExtArgs>
       fields: Prisma.DailyQuestionAnswerFieldRefs
@@ -1882,6 +1957,15 @@ export const DailyQuestionScalarFieldEnum = {
 export type DailyQuestionScalarFieldEnum = (typeof DailyQuestionScalarFieldEnum)[keyof typeof DailyQuestionScalarFieldEnum]
 
 
+export const DailyQuestionReminderHistoryScalarFieldEnum = {
+  dailyQuestionId: 'dailyQuestionId',
+  userId: 'userId',
+  remindedAt: 'remindedAt'
+} as const
+
+export type DailyQuestionReminderHistoryScalarFieldEnum = (typeof DailyQuestionReminderHistoryScalarFieldEnum)[keyof typeof DailyQuestionReminderHistoryScalarFieldEnum]
+
+
 export const DailyQuestionAnswerScalarFieldEnum = {
   id: 'id',
   dailyQuestionId: 'dailyQuestionId',
@@ -2219,6 +2303,7 @@ export type GlobalOmitConfig = {
   userMood?: Prisma.UserMoodOmit
   poke?: Prisma.PokeOmit
   dailyQuestion?: Prisma.DailyQuestionOmit
+  dailyQuestionReminderHistory?: Prisma.DailyQuestionReminderHistoryOmit
   dailyQuestionAnswer?: Prisma.DailyQuestionAnswerOmit
   userPartnerPlans?: Prisma.UserPartnerPlansOmit
   weeklyCheckIn?: Prisma.WeeklyCheckInOmit

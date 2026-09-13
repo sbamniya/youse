@@ -176,6 +176,7 @@ export type DailyQuestionWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"DailyQuestion"> | Date | string
   userPartner?: Prisma.XOR<Prisma.UserPartnerScalarRelationFilter, Prisma.UserPartnerWhereInput>
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerListRelationFilter
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryListRelationFilter
 }
 
 export type DailyQuestionOrderByWithRelationInput = {
@@ -185,6 +186,7 @@ export type DailyQuestionOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   userPartner?: Prisma.UserPartnerOrderByWithRelationInput
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerOrderByRelationAggregateInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryOrderByRelationAggregateInput
 }
 
 export type DailyQuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -197,6 +199,7 @@ export type DailyQuestionWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"DailyQuestion"> | Date | string
   userPartner?: Prisma.XOR<Prisma.UserPartnerScalarRelationFilter, Prisma.UserPartnerWhereInput>
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerListRelationFilter
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryListRelationFilter
 }, "id">
 
 export type DailyQuestionOrderByWithAggregationInput = {
@@ -225,6 +228,7 @@ export type DailyQuestionCreateInput = {
   createdAt?: Date | string
   userPartner: Prisma.UserPartnerCreateNestedOneWithoutDailyQuestionsInput
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutDailyQuestionInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionUncheckedCreateInput = {
@@ -233,6 +237,7 @@ export type DailyQuestionUncheckedCreateInput = {
   userPartnerId: string
   createdAt?: Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutDailyQuestionInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionUpdateInput = {
@@ -241,6 +246,7 @@ export type DailyQuestionUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPartner?: Prisma.UserPartnerUpdateOneRequiredWithoutDailyQuestionsNestedInput
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutDailyQuestionNestedInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionUncheckedUpdateInput = {
@@ -249,6 +255,7 @@ export type DailyQuestionUncheckedUpdateInput = {
   userPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutDailyQuestionNestedInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionCreateManyInput = {
@@ -349,6 +356,20 @@ export type DailyQuestionUncheckedUpdateManyWithoutUserPartnerNestedInput = {
   deleteMany?: Prisma.DailyQuestionScalarWhereInput | Prisma.DailyQuestionScalarWhereInput[]
 }
 
+export type DailyQuestionCreateNestedOneWithoutDailyQuestionReminderHistoriesInput = {
+  create?: Prisma.XOR<Prisma.DailyQuestionCreateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedCreateWithoutDailyQuestionReminderHistoriesInput>
+  connectOrCreate?: Prisma.DailyQuestionCreateOrConnectWithoutDailyQuestionReminderHistoriesInput
+  connect?: Prisma.DailyQuestionWhereUniqueInput
+}
+
+export type DailyQuestionUpdateOneRequiredWithoutDailyQuestionReminderHistoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.DailyQuestionCreateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedCreateWithoutDailyQuestionReminderHistoriesInput>
+  connectOrCreate?: Prisma.DailyQuestionCreateOrConnectWithoutDailyQuestionReminderHistoriesInput
+  upsert?: Prisma.DailyQuestionUpsertWithoutDailyQuestionReminderHistoriesInput
+  connect?: Prisma.DailyQuestionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DailyQuestionUpdateToOneWithWhereWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUpdateWithoutDailyQuestionReminderHistoriesInput>, Prisma.DailyQuestionUncheckedUpdateWithoutDailyQuestionReminderHistoriesInput>
+}
+
 export type DailyQuestionCreateNestedOneWithoutDailyQuestionAnswersInput = {
   create?: Prisma.XOR<Prisma.DailyQuestionCreateWithoutDailyQuestionAnswersInput, Prisma.DailyQuestionUncheckedCreateWithoutDailyQuestionAnswersInput>
   connectOrCreate?: Prisma.DailyQuestionCreateOrConnectWithoutDailyQuestionAnswersInput
@@ -368,6 +389,7 @@ export type DailyQuestionCreateWithoutUserPartnerInput = {
   question: string
   createdAt?: Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutDailyQuestionInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionUncheckedCreateWithoutUserPartnerInput = {
@@ -375,6 +397,7 @@ export type DailyQuestionUncheckedCreateWithoutUserPartnerInput = {
   question: string
   createdAt?: Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutDailyQuestionInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionCreateOrConnectWithoutUserPartnerInput = {
@@ -413,11 +436,60 @@ export type DailyQuestionScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"DailyQuestion"> | Date | string
 }
 
+export type DailyQuestionCreateWithoutDailyQuestionReminderHistoriesInput = {
+  id?: string
+  question: string
+  createdAt?: Date | string
+  userPartner: Prisma.UserPartnerCreateNestedOneWithoutDailyQuestionsInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerCreateNestedManyWithoutDailyQuestionInput
+}
+
+export type DailyQuestionUncheckedCreateWithoutDailyQuestionReminderHistoriesInput = {
+  id?: string
+  question: string
+  userPartnerId: string
+  createdAt?: Date | string
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedCreateNestedManyWithoutDailyQuestionInput
+}
+
+export type DailyQuestionCreateOrConnectWithoutDailyQuestionReminderHistoriesInput = {
+  where: Prisma.DailyQuestionWhereUniqueInput
+  create: Prisma.XOR<Prisma.DailyQuestionCreateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedCreateWithoutDailyQuestionReminderHistoriesInput>
+}
+
+export type DailyQuestionUpsertWithoutDailyQuestionReminderHistoriesInput = {
+  update: Prisma.XOR<Prisma.DailyQuestionUpdateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedUpdateWithoutDailyQuestionReminderHistoriesInput>
+  create: Prisma.XOR<Prisma.DailyQuestionCreateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedCreateWithoutDailyQuestionReminderHistoriesInput>
+  where?: Prisma.DailyQuestionWhereInput
+}
+
+export type DailyQuestionUpdateToOneWithWhereWithoutDailyQuestionReminderHistoriesInput = {
+  where?: Prisma.DailyQuestionWhereInput
+  data: Prisma.XOR<Prisma.DailyQuestionUpdateWithoutDailyQuestionReminderHistoriesInput, Prisma.DailyQuestionUncheckedUpdateWithoutDailyQuestionReminderHistoriesInput>
+}
+
+export type DailyQuestionUpdateWithoutDailyQuestionReminderHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userPartner?: Prisma.UserPartnerUpdateOneRequiredWithoutDailyQuestionsNestedInput
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutDailyQuestionNestedInput
+}
+
+export type DailyQuestionUncheckedUpdateWithoutDailyQuestionReminderHistoriesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  userPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutDailyQuestionNestedInput
+}
+
 export type DailyQuestionCreateWithoutDailyQuestionAnswersInput = {
   id?: string
   question: string
   createdAt?: Date | string
   userPartner: Prisma.UserPartnerCreateNestedOneWithoutDailyQuestionsInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionUncheckedCreateWithoutDailyQuestionAnswersInput = {
@@ -425,6 +497,7 @@ export type DailyQuestionUncheckedCreateWithoutDailyQuestionAnswersInput = {
   question: string
   userPartnerId: string
   createdAt?: Date | string
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedCreateNestedManyWithoutDailyQuestionInput
 }
 
 export type DailyQuestionCreateOrConnectWithoutDailyQuestionAnswersInput = {
@@ -448,6 +521,7 @@ export type DailyQuestionUpdateWithoutDailyQuestionAnswersInput = {
   question?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userPartner?: Prisma.UserPartnerUpdateOneRequiredWithoutDailyQuestionsNestedInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionUncheckedUpdateWithoutDailyQuestionAnswersInput = {
@@ -455,6 +529,7 @@ export type DailyQuestionUncheckedUpdateWithoutDailyQuestionAnswersInput = {
   question?: Prisma.StringFieldUpdateOperationsInput | string
   userPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionCreateManyUserPartnerInput = {
@@ -468,6 +543,7 @@ export type DailyQuestionUpdateWithoutUserPartnerInput = {
   question?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUpdateManyWithoutDailyQuestionNestedInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionUncheckedUpdateWithoutUserPartnerInput = {
@@ -475,6 +551,7 @@ export type DailyQuestionUncheckedUpdateWithoutUserPartnerInput = {
   question?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   dailyQuestionAnswers?: Prisma.DailyQuestionAnswerUncheckedUpdateManyWithoutDailyQuestionNestedInput
+  dailyQuestionReminderHistories?: Prisma.DailyQuestionReminderHistoryUncheckedUpdateManyWithoutDailyQuestionNestedInput
 }
 
 export type DailyQuestionUncheckedUpdateManyWithoutUserPartnerInput = {
@@ -490,10 +567,12 @@ export type DailyQuestionUncheckedUpdateManyWithoutUserPartnerInput = {
 
 export type DailyQuestionCountOutputType = {
   dailyQuestionAnswers: number
+  dailyQuestionReminderHistories: number
 }
 
 export type DailyQuestionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   dailyQuestionAnswers?: boolean | DailyQuestionCountOutputTypeCountDailyQuestionAnswersArgs
+  dailyQuestionReminderHistories?: boolean | DailyQuestionCountOutputTypeCountDailyQuestionReminderHistoriesArgs
 }
 
 /**
@@ -513,6 +592,13 @@ export type DailyQuestionCountOutputTypeCountDailyQuestionAnswersArgs<ExtArgs ex
   where?: Prisma.DailyQuestionAnswerWhereInput
 }
 
+/**
+ * DailyQuestionCountOutputType without action
+ */
+export type DailyQuestionCountOutputTypeCountDailyQuestionReminderHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DailyQuestionReminderHistoryWhereInput
+}
+
 
 export type DailyQuestionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -521,6 +607,7 @@ export type DailyQuestionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   createdAt?: boolean
   userPartner?: boolean | Prisma.UserPartnerDefaultArgs<ExtArgs>
   dailyQuestionAnswers?: boolean | Prisma.DailyQuestion$dailyQuestionAnswersArgs<ExtArgs>
+  dailyQuestionReminderHistories?: boolean | Prisma.DailyQuestion$dailyQuestionReminderHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.DailyQuestionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dailyQuestion"]>
 
@@ -551,6 +638,7 @@ export type DailyQuestionOmit<ExtArgs extends runtime.Types.Extensions.InternalA
 export type DailyQuestionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userPartner?: boolean | Prisma.UserPartnerDefaultArgs<ExtArgs>
   dailyQuestionAnswers?: boolean | Prisma.DailyQuestion$dailyQuestionAnswersArgs<ExtArgs>
+  dailyQuestionReminderHistories?: boolean | Prisma.DailyQuestion$dailyQuestionReminderHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.DailyQuestionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DailyQuestionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -565,6 +653,7 @@ export type $DailyQuestionPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     userPartner: Prisma.$UserPartnerPayload<ExtArgs>
     dailyQuestionAnswers: Prisma.$DailyQuestionAnswerPayload<ExtArgs>[]
+    dailyQuestionReminderHistories: Prisma.$DailyQuestionReminderHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -967,6 +1056,7 @@ export interface Prisma__DailyQuestionClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   userPartner<T extends Prisma.UserPartnerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserPartnerDefaultArgs<ExtArgs>>): Prisma.Prisma__UserPartnerClient<runtime.Types.Result.GetResult<Prisma.$UserPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   dailyQuestionAnswers<T extends Prisma.DailyQuestion$dailyQuestionAnswersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DailyQuestion$dailyQuestionAnswersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyQuestionAnswerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dailyQuestionReminderHistories<T extends Prisma.DailyQuestion$dailyQuestionReminderHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DailyQuestion$dailyQuestionReminderHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DailyQuestionReminderHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1422,6 +1512,30 @@ export type DailyQuestion$dailyQuestionAnswersArgs<ExtArgs extends runtime.Types
   take?: number
   skip?: number
   distinct?: Prisma.DailyQuestionAnswerScalarFieldEnum | Prisma.DailyQuestionAnswerScalarFieldEnum[]
+}
+
+/**
+ * DailyQuestion.dailyQuestionReminderHistories
+ */
+export type DailyQuestion$dailyQuestionReminderHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DailyQuestionReminderHistory
+   */
+  select?: Prisma.DailyQuestionReminderHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DailyQuestionReminderHistory
+   */
+  omit?: Prisma.DailyQuestionReminderHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DailyQuestionReminderHistoryInclude<ExtArgs> | null
+  where?: Prisma.DailyQuestionReminderHistoryWhereInput
+  orderBy?: Prisma.DailyQuestionReminderHistoryOrderByWithRelationInput | Prisma.DailyQuestionReminderHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.DailyQuestionReminderHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DailyQuestionReminderHistoryScalarFieldEnum | Prisma.DailyQuestionReminderHistoryScalarFieldEnum[]
 }
 
 /**

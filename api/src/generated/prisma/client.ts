@@ -95,6 +95,11 @@ export type Poke = Prisma.PokeModel
  */
 export type DailyQuestion = Prisma.DailyQuestionModel
 /**
+ * Model DailyQuestionReminderHistory
+ * 
+ */
+export type DailyQuestionReminderHistory = Prisma.DailyQuestionReminderHistoryModel
+/**
  * Model DailyQuestionAnswer
  * 
  */

@@ -23,20 +23,21 @@ model User {
 
     partner User? @relation("Partner", fields: [partnerId], references: [id], onDelete: Cascade)
 
-    refreshTokens        RefreshToken[]
-    partners             User[]                @relation("Partner")
-    userPartnersOne      UserPartner[]         @relation("PartnerOne")
-    userPartnersTwo      UserPartner[]         @relation("PartnerTwo")
-    partnerMemories      PartnerMemories[]
-    partnerMemoryItems   PartnerMemoryItem[]
-    userMoods            UserMood[]
-    dailyQuestionAnswers DailyQuestionAnswer[]
-    userPartnerPlans     UserPartnerPlans[]
-    weeklyCheckInQnAs    WeeklyCheckInQnA[]
-    sentPokes            Poke[]                @relation("PokeSender")
-    receivedPokes        Poke[]                @relation("PokeRecipient")
-    createdSharedLists   SharedList[]
-    reconnectRequests    ReconnectRequest[]
+    refreshTokens                  RefreshToken[]
+    partners                       User[]                         @relation("Partner")
+    userPartnersOne                UserPartner[]                  @relation("PartnerOne")
+    userPartnersTwo                UserPartner[]                  @relation("PartnerTwo")
+    partnerMemories                PartnerMemories[]
+    partnerMemoryItems             PartnerMemoryItem[]
+    userMoods                      UserMood[]
+    dailyQuestionAnswers           DailyQuestionAnswer[]
+    userPartnerPlans               UserPartnerPlans[]
+    weeklyCheckInQnAs              WeeklyCheckInQnA[]
+    sentPokes                      Poke[]                         @relation("PokeSender")
+    receivedPokes                  Poke[]                         @relation("PokeRecipient")
+    createdSharedLists             SharedList[]
+    reconnectRequests              ReconnectRequest[]
+    dailyQuestionReminderHistories DailyQuestionReminderHistory[]
 
     @@index([phone])
     @@index([partnerId])
@@ -224,10 +225,25 @@ model DailyQuestion {
 
     userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
 
-    dailyQuestionAnswers DailyQuestionAnswer[]
+    dailyQuestionAnswers           DailyQuestionAnswer[]
+    dailyQuestionReminderHistories DailyQuestionReminderHistory[]
 
     @@index([createdAt])
     @@map("daily_questions")
+}
+
+model DailyQuestionReminderHistory {
+    dailyQuestionId String
+    userId          String
+    remindedAt      DateTime @default(now())
+
+    dailyQuestion DailyQuestion @relation(fields: [dailyQuestionId], references: [id], onDelete: Cascade)
+    user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([dailyQuestionId, userId])
+    @@index([dailyQuestionId])
+    @@index([userId])
+    @@map("daily_question_reminder_histories")
 }
 
 model DailyQuestionAnswer {

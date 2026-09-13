@@ -53,6 +53,15 @@ export async function getCurrentSpace(): Promise<CurrentSpace> {
   return api.get<CurrentSpace>("/space/current");
 }
 
+export async function updateDailyQuestionTime(
+  dailyQuestionTime: string,
+): Promise<{ dailyQuestionTime: string }> {
+  return api.put<{ dailyQuestionTime: string }, { dailyQuestionTime: string }>(
+    "/space/question-time",
+    { dailyQuestionTime },
+  );
+}
+
 export const currentSpaceQueryOptions = queryOptions({
   queryKey: currentSpaceQueryKey,
   queryFn: getCurrentSpace,

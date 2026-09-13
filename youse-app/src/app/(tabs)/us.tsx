@@ -1,4 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { router, type Href } from "expo-router";
 import { ChevronRight, UserRound, X } from "lucide-react-native";
 import { useState } from "react";
@@ -24,9 +28,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
 import {
+  type CurrentSpace,
+  currentSpaceQueryKey,
   currentSpaceQueryOptions,
   getPartnerFromSpace,
   getTrialDaysRemaining,
+  updateDailyQuestionTime,
 } from "@/lib/current-space";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
@@ -80,9 +87,11 @@ const settingsRows: SettingsRow[] = [
 
 export default function Us() {
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
   const [dailyQuestionTime, setDailyQuestionTime] = useState<string | null>(
     null,
   );
+  const [questionTimeError, setQuestionTimeError] = useState("");
   const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [pokesEnabled, setPokesEnabled] = useState(true);
   const {
@@ -100,6 +109,31 @@ export default function Us() {
     isPending: isSpacePending,
     refetch: refetchCurrentSpace,
   } = useQuery(currentSpaceQueryOptions);
+  const { isPending: isSavingQuestionTime, mutate: saveQuestionTime } =
+    useMutation({
+      mutationFn: (time: string) =>
+        updateDailyQuestionTime(toDailyQuestionTimeIso(time)),
+      onSuccess: (updatedSpace) => {
+        queryClient.setQueryData<CurrentSpace>(
+          currentSpaceQueryKey,
+          (current) =>
+            current
+              ? {
+                  ...current,
+                  dailyQuestionTime: updatedSpace.dailyQuestionTime,
+                }
+              : current,
+        );
+        setDailyQuestionTime(null);
+        setQuestionTimeError("");
+        setIsTimePickerOpen(false);
+      },
+      onError: () => {
+        setQuestionTimeError(
+          "We couldn't save this time. Check your connection and try again.",
+        );
+      },
+    });
 
   if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
     if (isUserError || isSpaceError) {
@@ -324,7 +358,17 @@ export default function Us() {
           </View>
         </View>
       </ScrollView>
-      <AlertDialog onOpenChange={setIsTimePickerOpen} open={isTimePickerOpen}>
+      <AlertDialog
+        onOpenChange={(open) => {
+          if (isSavingQuestionTime) return;
+          setIsTimePickerOpen(open);
+          if (!open) {
+            setDailyQuestionTime(null);
+            setQuestionTimeError("");
+          }
+        }}
+        open={isTimePickerOpen}
+      >
         <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
           <AlertDialogHeader className="relative pr-12">
             <AlertDialogTitle className="text-left text-[22px] text-foreground">
@@ -340,6 +384,11 @@ export default function Us() {
           <Text className="-mt-2 font-serif text-[14px] text-muted-foreground">
             Choose when both of you’d like your daily question.
           </Text>
+          {questionTimeError ? (
+            <Text className="font-serif text-[14px] text-destructive">
+              {questionTimeError}
+            </Text>
+          ) : null}
           <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
             <View className="-mx-1 flex-row flex-wrap">
               {dailyQuestionTimes.map((time) => {
@@ -349,16 +398,21 @@ export default function Us() {
                   <View key={time} className="w-1/2 p-1">
                     <Pressable
                       accessibilityRole="radio"
-                      accessibilityState={{ checked: isSelected }}
+                      accessibilityState={{
+                        checked: isSelected,
+                        disabled: isSavingQuestionTime,
+                      }}
                       className={cn(
                         "h-11 items-center justify-center rounded-xl border active:opacity-75",
                         isSelected
                           ? "border-primary bg-primary"
                           : "border-border-subtle bg-background",
                       )}
+                      disabled={isSavingQuestionTime}
                       onPress={() => {
                         setDailyQuestionTime(time);
-                        setIsTimePickerOpen(false);
+                        setQuestionTimeError("");
+                        saveQuestionTime(time);
                       }}
                     >
                       <Text
@@ -446,6 +500,19 @@ function formatDailyQuestionTime(
       minute: "2-digit",
     }).format(date);
   }
+}
+
+function toDailyQuestionTimeIso(time: string) {
+  const match = /^(\d{2}):(\d{2}) (AM|PM)$/.exec(time);
+  if (!match) {
+    throw new Error("Invalid daily question time");
+  }
+
+  const [, hourValue, minuteValue, period] = match;
+  const hour = Number(hourValue) % 12 + (period === "PM" ? 12 : 0);
+  const date = new Date();
+  date.setHours(hour, Number(minuteValue), 0, 0);
+  return date.toISOString();
 }
 
 function getSubscriptionDisplay(subscription: {
