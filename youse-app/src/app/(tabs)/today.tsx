@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
@@ -7,9 +8,16 @@ import {
   Plane,
   Smile,
   UtensilsCrossed,
+  UserRound,
 } from "lucide-react-native";
 import { useState } from "react";
-import { Image, Pressable, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
@@ -17,16 +25,19 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { TrialBadge } from "@/components/app/trial-badge";
 import { Text } from "@/components/ui/text";
+import {
+  currentSpaceQueryOptions,
+  getPartnerFromSpace,
+  getTrialDaysRemaining,
+} from "@/lib/current-space";
+import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import { getImageUrl } from "@/lib/image-url";
+import { cn } from "@/lib/utils";
 
 const logo = require("../../../assets/images/logo-full-white.png");
 
 const heroImage =
   "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-const meeraImage =
-  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=700&auto=format&fit=crop";
-const arjunImage =
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=700&auto=format&fit=crop";
-
 const moods = ["😔", "😐", "🙂", "😌", "😄"];
 
 const plans = [
@@ -55,12 +66,66 @@ const pokeRows = [
 ];
 
 const todayQuestion = "What’s something you wish we did more often?";
-const partnerName = "Arjun";
 
 export default function Today() {
   const insets = useSafeAreaInsets();
   const [background] = useCSSVariable(["--color-background"]) as [string];
   const [activeMood, setActiveMood] = useState(2);
+  const {
+    data: currentUser,
+    isError: isUserError,
+    isPending: isUserPending,
+    refetch: refetchCurrentUser,
+  } = useQuery({
+    queryKey: currentUserQueryKey,
+    queryFn: getCurrentUser,
+  });
+  const {
+    data: currentSpace,
+    isError: isSpaceError,
+    isPending: isSpacePending,
+    refetch: refetchCurrentSpace,
+  } = useQuery(currentSpaceQueryOptions);
+
+  if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
+    if (isUserError || isSpaceError) {
+      return (
+        <View className="flex-1 items-center justify-center bg-background px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load your shared space. Check your connection and try
+            again.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => {
+              void refetchCurrentUser();
+              void refetchCurrentSpace();
+            }}
+          />
+        </View>
+      );
+    }
+
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator colorClassName="accent-primary" size="large" />
+      </View>
+    );
+  }
+
+  const partner = getPartnerFromSpace(currentSpace, currentUser.id);
+  const partnerName =
+    partner?.name?.trim() || currentUser.partnerName?.trim() || "Your partner";
+  const currentUserImage = getImageUrl(currentUser.profilePicture);
+  const partnerImage = getImageUrl(partner?.profilePicture);
+  const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date());
 
   return (
     <View className="flex-1 bg-background">
@@ -103,7 +168,9 @@ export default function Today() {
             </View>
 
             <View className="flex-row items-center gap-2">
-              <TrialBadge days={14} />
+              {trialDaysRemaining !== null ? (
+                <TrialBadge days={trialDaysRemaining} />
+              ) : null}
               <Pressable
                 accessibilityLabel="Open profile"
                 accessibilityRole="button"
@@ -111,10 +178,10 @@ export default function Today() {
                 hitSlop={8}
                 onPress={() => router.push("/profile")}
               >
-                <Image
-                  source={{ uri: meeraImage }}
-                  resizeMode="cover"
-                  className="h-9 w-9 rounded-full border border-foreground/25"
+                <ProfileAvatar
+                  imageUrl={currentUserImage}
+                  className="h-9 w-9 border border-foreground/25"
+                  iconSize={17}
                 />
               </Pressable>
             </View>
@@ -125,7 +192,7 @@ export default function Today() {
               className="text-[10px] font-medium text-muted-foreground"
               style={{ letterSpacing: 2 }}
             >
-              Wednesday, September 9, 2026
+              {formattedDate}
             </Text>
             <Text className="mt-3 font-serif text-[34px] font-semibold leading-9 text-foreground">
               {todayQuestion}
@@ -155,10 +222,10 @@ export default function Today() {
             <View className="mt-5 flex-row items-center">
               <View className="flex-1 flex-row items-center gap-2.5">
                 <View className="relative h-12 w-12">
-                  <Image
-                    source={{ uri: meeraImage }}
-                    resizeMode="cover"
-                    className="h-12 w-12 rounded-full border-2 border-foreground/10"
+                  <ProfileAvatar
+                    imageUrl={currentUserImage}
+                    className="h-12 w-12 border-2 border-foreground/10"
+                    iconSize={21}
                   />
                   <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-primary">
                     <Check color="#1d1115" size={9} strokeWidth={3} />
@@ -178,16 +245,16 @@ export default function Today() {
 
               <View className="flex-1 flex-row items-center gap-2.5 pl-1">
                 <View className="relative h-12 w-12">
-                  <Image
-                    source={{ uri: arjunImage }}
-                    resizeMode="cover"
-                    className="h-12 w-12 rounded-full border-2 border-foreground/10"
+                  <ProfileAvatar
+                    imageUrl={partnerImage}
+                    className="h-12 w-12 border-2 border-foreground/10"
+                    iconSize={21}
                   />
                   <View className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-background bg-transparent" />
                 </View>
                 <View>
                   <Text className="text-[14px] font-semibold text-foreground">
-                    Arjun
+                    {partnerName}
                   </Text>
                   <Text className="text-[12px] text-muted-foreground">
                     Hasn’t answered yet
@@ -296,19 +363,19 @@ export default function Today() {
 
         <View className="mx-4 my-5 h-px bg-border-subtle" />
 
-        {/* From Arjun */}
+        {/* From partner */}
         <View className="px-4">
           <Text
             className="text-[10px] font-semibold text-muted-foreground"
             style={{ letterSpacing: 2 }}
           >
-            FROM ARJUN
+            FROM {partnerName.toLocaleUpperCase()}
           </Text>
           <Pressable className="mt-2.5 flex-row items-center gap-3 rounded-2xl border border-border-subtle bg-card p-3.5">
-            <Image
-              source={{ uri: arjunImage }}
-              resizeMode="cover"
-              className="h-10 w-10 rounded-full"
+            <ProfileAvatar
+              imageUrl={partnerImage}
+              className="h-10 w-10"
+              iconSize={18}
             />
             <View className="flex-1">
               <Text className="text-[14px] font-semibold text-foreground">
@@ -339,7 +406,7 @@ export default function Today() {
               SEND A POKE
             </Text>
             <Text className="text-[12px] text-muted-foreground">
-              to <Text className="font-medium text-accent">Arjun</Text>
+              to <Text className="font-medium text-accent">{partnerName}</Text>
             </Text>
           </View>
           <Text className="mt-1.5 text-[12px] text-muted-foreground">
@@ -363,6 +430,37 @@ export default function Today() {
           </View>
         </View>
       </ScrollView>
+    </View>
+  );
+}
+
+function ProfileAvatar({
+  className,
+  iconSize,
+  imageUrl,
+}: {
+  className: string;
+  iconSize: number;
+  imageUrl: string | null;
+}) {
+  if (imageUrl) {
+    return (
+      <Image
+        source={{ uri: imageUrl }}
+        resizeMode="cover"
+        className={cn("rounded-full", className)}
+      />
+    );
+  }
+
+  return (
+    <View
+      className={cn(
+        "items-center justify-center rounded-full bg-muted",
+        className,
+      )}
+    >
+      <ThemedIcon icon={UserRound} tone="muted" size={iconSize} />
     </View>
   );
 }
