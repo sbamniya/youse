@@ -17,7 +17,10 @@ import type {
   UpdateProfileInput,
   VerifyOtpInput,
 } from "./auth.schema";
-import { userHasPreviousRelationShipCache } from "../space/space.service";
+import {
+  refreshRelationshipCaches,
+  userHasPreviousRelationShipCache,
+} from "../space/space.service";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -199,7 +202,7 @@ export const verifyOtp = async (input: VerifyOtpInput) => {
     },
     include: profileRelations,
   });
-  await userByIdCacheable.refresh(user.id);
+  await refreshRelationshipCaches(user.id, user.partnerId);
   const tokens = await issueTokens(user);
   return { user: await sanitizeUserWithRelationshipHistory(user), ...tokens };
 };
@@ -280,7 +283,7 @@ export const updateUserProfile = async (
     data,
     include: profileRelations,
   });
-  await userByIdCacheable.refresh(userId);
+  await refreshRelationshipCaches(userId, user.partnerId);
   return sanitizeUserWithRelationshipHistory(user);
 };
 
@@ -299,6 +302,6 @@ export const updateProfilePicture = async (
     await deleteFromR2(file.key).catch(() => undefined);
     throw error;
   }
-  await userByIdCacheable.refresh(userId);
+  await refreshRelationshipCaches(userId, user.partnerId);
   return sanitizeUserWithRelationshipHistory(user);
 };

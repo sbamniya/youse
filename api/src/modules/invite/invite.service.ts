@@ -1,6 +1,9 @@
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
-import { spaceFor } from "../space/space.service";
+import {
+  refreshRelationshipCaches,
+  spaceFor,
+} from "../space/space.service";
 import dayjs from "dayjs";
 
 const getActiveInvitation = async (code: string) => {
@@ -43,7 +46,7 @@ export const acceptInvitation = async (userId: string, code: string) => {
     throw new AppError(400, "You cannot accept your own invite");
   }
 
-  return prisma.$transaction(async (transaction) => {
+  const updated = await prisma.$transaction(async (transaction) => {
     await transaction.user.update({
       where: { id: relationship.userId },
       data: { partnerId: userId },
@@ -52,7 +55,7 @@ export const acceptInvitation = async (userId: string, code: string) => {
       where: { id: userId },
       data: { partnerId: relationship.userId },
     });
-    const updated = await transaction.userPartner.update({
+    const acceptedRelationship = await transaction.userPartner.update({
       where: { id: relationship.id },
       data: { partnerId: userId, status: "accepted", joinedAt: new Date() },
     });
@@ -62,8 +65,10 @@ export const acceptInvitation = async (userId: string, code: string) => {
         trialEndsAt: dayjs().add(14, "day").startOf("day").toDate(),
       },
     });
-    return updated;
+    return acceptedRelationship;
   });
+  await refreshRelationshipCaches(updated.userId, updated.partnerId);
+  return updated;
 };
 
 export const resendInvitation = async (userId: string) => {
@@ -76,5 +81,6 @@ export const resendInvitation = async (userId: string) => {
     where: { id: space.id },
     data: { invitedAt: new Date() },
   });
+  await refreshRelationshipCaches(space.userId, space.partnerId);
   return { inviteCode: updated.invitationCode, invitedAt: updated.invitedAt };
 };

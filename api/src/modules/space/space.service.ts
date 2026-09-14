@@ -87,6 +87,22 @@ export const userHasPreviousRelationShipCache = new Cacheable({
   ttlSeconds: 60, // cache for 60 seconds
 });
 
+export const refreshRelationshipCaches = async (
+  ...userIds: Array<string | null | undefined>
+) => {
+  const uniqueUserIds = [
+    ...new Set(userIds.filter((userId): userId is string => Boolean(userId))),
+  ];
+
+  await Promise.all(
+    uniqueUserIds.flatMap((userId) => [
+      userByIdCacheable.refresh(userId),
+      userSpaceCache.refresh(userId),
+      userHasPreviousRelationShipCache.refresh(userId),
+    ]),
+  );
+};
+
 export const saveRelationship = async (
   userId: string,
   input: SaveRelationshipInput,
@@ -135,10 +151,10 @@ export const saveRelationship = async (
     });
     return { relationship, inviteCode: invitationCode, created: true };
   });
-  await Promise.all([
-    userByIdCacheable.refresh(userId),
-    userHasPreviousRelationShipCache.refresh(userId),
-  ]);
+  await refreshRelationshipCaches(
+    result.relationship.userId,
+    result.relationship.partnerId,
+  );
   return { ...result, user: await getUserProfile(userId) };
 };
 
@@ -281,16 +297,7 @@ export const unlinkRelationship = async (
       data: { deletedAt: new Date(), brokenAt: new Date() },
     });
   });
-  await Promise.all([
-    userByIdCacheable.refresh(userId),
-    userSpaceCache.refresh(userId),
-    ...(partnerId
-      ? [
-          userByIdCacheable.refresh(partnerId),
-          userSpaceCache.refresh(partnerId),
-        ]
-      : []),
-  ]);
+  await refreshRelationshipCaches(userId, partnerId);
   return { mode: input.mode, unlinkedAt: new Date() };
 };
 
@@ -349,10 +356,7 @@ export const reconnectRelationship = async (userId: string) => {
       }),
     ]);
   });
-  await Promise.allSettled([
-    userSpaceCache.refresh(userId),
-    userHasPreviousRelationShipCache.refresh(userId),
-  ]);
+  await refreshRelationshipCaches(space.userId, space.partnerId);
   return {
     statusCode: 200,
     body: { mutual: true, message: "You are reconnected." },
@@ -368,19 +372,6 @@ export const saveQuestionTime = async (
     where: { id: space.id },
     data: { dailyQuestionTime: new Date(input.dailyQuestionTime) },
   });
-  await Promise.allSettled([
-    userSpaceCache.refresh(updatedSpace.userId),
-    updatedSpace.partnerId
-      ? userSpaceCache.refresh(updatedSpace.partnerId)
-      : null,
-    userByIdCacheable.refresh(updatedSpace.userId),
-    updatedSpace.partnerId
-      ? userByIdCacheable.refresh(updatedSpace.partnerId)
-      : null,
-    userHasPreviousRelationShipCache.refresh(updatedSpace.userId),
-    updatedSpace.partnerId
-      ? userHasPreviousRelationShipCache.refresh(updatedSpace.partnerId)
-      : null,
-  ]);
+  await refreshRelationshipCaches(updatedSpace.userId, updatedSpace.partnerId);
   return updatedSpace;
 };

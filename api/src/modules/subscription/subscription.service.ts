@@ -1,6 +1,10 @@
 import { prisma } from "../../lib/prisma";
-import { spaceFor } from "../space/space.service";
+import {
+  refreshRelationshipCaches,
+  spaceFor,
+} from "../space/space.service";
 import type { SubscriptionInput } from "./subscription.schema";
+
 export const getAccess = async (userId: string) => {
   const space = await spaceFor(userId);
   const subscription = space.subscription;
@@ -19,9 +23,11 @@ export const update = async (userId: string, input: SubscriptionInput) => {
   activeUntil.setMonth(
     activeUntil.getMonth() + (input.plan === "yearly" ? 12 : 1),
   );
-  return prisma.subscription.upsert({
+  const subscription = await prisma.subscription.upsert({
     where: { userPartnerId: space.id },
     update: { plan: input.plan, activeUntil },
     create: { userPartnerId: space.id, plan: input.plan, activeUntil },
   });
+  await refreshRelationshipCaches(space.userId, space.partnerId);
+  return subscription;
 };
