@@ -1,4 +1,5 @@
 import { prisma } from "../../lib/prisma";
+import { sendPushNotification } from "../../lib/push-notifications";
 import { AppError } from "../../utils/app-error";
 import { writableSpace } from "../space/space.service";
 import type { PokeInput } from "./poke.schema";
@@ -16,7 +17,13 @@ export const sendPoke = async (userId: string, input: PokeInput) => {
   if (!recipient?.pokesEnabled) {
     throw new AppError(403, "Your partner has disabled pokes");
   }
-  return prisma.poke.create({
+  const poke = await prisma.poke.create({
     data: { userPartnerId: space.id, senderId: userId, recipientId, type: input.type },
   });
+  void sendPushNotification(recipientId, {
+    title: "A poke from your partner",
+    body: input.type,
+    data: { url: "/" },
+  });
+  return poke;
 };

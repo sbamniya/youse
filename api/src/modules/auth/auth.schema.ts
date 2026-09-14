@@ -61,7 +61,20 @@ export const updateProfileSchema = z.object({
   params: z.object({}),
 });
 
+export const registerPushTokenSchema = z.object({
+  body: z.object({
+    token: z
+      .string()
+      .trim()
+      .regex(/^(Expo|Exponent)PushToken\[[^\]]+\]$/, "Use a valid Expo push token"),
+    platform: z.enum(["ios", "android"]).optional(),
+  }),
+  query: z.object({}),
+  params: z.object({}),
+});
+
 export type RequestOtpInput = z.infer<typeof requestOtpSchema>['body'];
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>['body'];
 export type RefreshInput = z.infer<typeof refreshSchema>['body'];
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>['body'];
+export type RegisterPushTokenInput = z.infer<typeof registerPushTokenSchema>['body'];

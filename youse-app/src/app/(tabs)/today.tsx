@@ -12,7 +12,7 @@ import {
   UserRound,
   Eye,
 } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -39,6 +39,8 @@ import { getImageUrl } from "@/lib/image-url";
 import { insightsQueryKey } from "@/lib/insights-api";
 import { saveMood, todayMoodQueryKey, todayMoodQueryOptions } from "@/lib/mood-api";
 import { upcomingPlansQueryOptions } from "@/lib/plans-api";
+import { sendPoke } from "@/lib/poke-api";
+import { registerPushNotifications } from "@/lib/push-notifications";
 import { cn } from "@/lib/utils";
 
 const logo = require("../../../assets/images/logo-full-white.png");
@@ -63,6 +65,7 @@ export default function Today() {
   const queryClient = useQueryClient();
   const [background] = useCSSVariable(["--color-background"]) as [string];
   const [moodError, setMoodError] = useState("");
+  const [pokeMessage, setPokeMessage] = useState("");
   const {
     data: currentUser,
     isError: isUserError,
@@ -101,6 +104,23 @@ export default function Today() {
       setMoodError("We couldn’t save your mood. Please try again.");
     },
   });
+  const sendPokeMutation = useMutation({
+    mutationFn: sendPoke,
+    onSuccess: (_poke, type) => {
+      setPokeMessage(`${type} sent to ${partnerName}.`);
+    },
+    onError: () => {
+      setPokeMessage("We couldn’t send that poke. Please try again.");
+    },
+  });
+
+  useEffect(() => {
+    if (!currentUser?.id) return;
+
+    void registerPushNotifications().catch(() => {
+      // Permission and token failures should never block the Today experience.
+    });
+  }, [currentUser?.id]);
 
   if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
     if (isUserError || isSpaceError) {
@@ -612,7 +632,12 @@ export default function Today() {
                     {row.map((label) => (
                       <Pressable
                         key={label}
-                        className="flex-1 items-center rounded-full border border-border-subtle bg-card px-3.5 py-3"
+                        className="flex-1 items-center rounded-full border border-border-subtle bg-card px-3.5 py-3 active:opacity-70 disabled:opacity-50"
+                        disabled={sendPokeMutation.isPending}
+                        onPress={() => {
+                          setPokeMessage("");
+                          sendPokeMutation.mutate(label);
+                        }}
                       >
                         <Text className="text-[13px] text-foreground">
                           {label}
@@ -622,6 +647,11 @@ export default function Today() {
                   </View>
                 ))}
               </View>
+              {pokeMessage ? (
+                <Text className="mt-3 text-center font-serif text-[13px] text-primary">
+                  {pokeMessage}
+                </Text>
+              ) : null}
             </>
           ) : (
             <View className="rounded-2xl border border-border-subtle bg-card px-4 py-4">

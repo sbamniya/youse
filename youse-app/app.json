@@ -37,6 +37,13 @@
         }
       ],
       [
+        "expo-notifications",
+        {
+          "color": "#160d11",
+          "defaultChannel": "default"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#160d11",

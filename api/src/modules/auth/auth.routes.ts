@@ -3,7 +3,7 @@ import { validate } from '../../middleware/validate';
 import { requireAuth } from '../../middleware/auth.middleware';
 import { uploadProfilePicture } from '../../middleware/image-upload.middleware';
 import { rateLimit } from '../../middleware/rate-limit.middleware';
-import { refreshSchema, requestOtpSchema, updateProfileSchema, verifyOtpSchema } from './auth.schema';
+import { refreshSchema, registerPushTokenSchema, requestOtpSchema, updateProfileSchema, verifyOtpSchema } from './auth.schema';
 import * as authController from './auth.controller';
 
 export const authRouter = Router();
@@ -25,6 +25,7 @@ authRouter.post('/otp/verify', validate(verifyOtpSchema), authController.verifyO
 authRouter.post('/refresh', validate(refreshSchema), authController.refresh);
 authRouter.post('/logout', validate(refreshSchema), authController.logout);
 authRouter.get('/me', requireAuth, authController.me);
+authRouter.put('/push-token', requireAuth, validate(registerPushTokenSchema), authController.registerPushToken);
 authRouter.put(
   '/me',
   requireAuth,

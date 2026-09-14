@@ -13,6 +13,7 @@ import {
 import { comparePassword, hashPassword } from "../../utils/password";
 import type {
   RequestOtpInput,
+  RegisterPushTokenInput,
   UpdateProfileInput,
   VerifyOtpInput,
 } from "./auth.schema";
@@ -224,6 +225,16 @@ export const logoutUser = async (refreshToken: string) => {
     data: { revoked: true },
   });
 };
+
+export const registerPushToken = async (
+  userId: string,
+  input: RegisterPushTokenInput,
+) =>
+  prisma.pushToken.upsert({
+    where: { token: input.token },
+    update: { userId, platform: input.platform },
+    create: { userId, token: input.token, platform: input.platform },
+  });
 
 export const getUserProfile = async (userId: string) => {
   const user = await userByIdCacheable.execute(userId);

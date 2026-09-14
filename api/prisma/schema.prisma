@@ -38,12 +38,27 @@ model User {
     createdSharedLists             SharedList[]
     reconnectRequests              ReconnectRequest[]
     dailyQuestionReminderHistories DailyQuestionReminderHistory[]
+    pushTokens                     PushToken[]
 
     @@index([phone])
     @@index([partnerId])
     @@index([deletedAt])
     @@index([phone, deletedAt])
     @@map("users")
+}
+
+model PushToken {
+    id        String   @id @default(uuid())
+    userId    String
+    token     String   @unique
+    platform  String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@map("push_tokens")
 }
 
 model UserPartner {

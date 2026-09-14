@@ -50,6 +50,14 @@ export const me = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+export const registerPushToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.status(200).json(await authService.registerPushToken(req.user!.id, req.body));
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const updateProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (!req.user) {
