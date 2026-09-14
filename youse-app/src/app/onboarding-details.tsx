@@ -338,7 +338,7 @@ function OnboardingForm({
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex-row items-center pt-2">
+        {/* <View className="flex-row items-center pt-2">
           <View className="flex-1 justify-center">
             <View className="h-1 bg-muted">
               <View
@@ -350,7 +350,7 @@ function OnboardingForm({
           <Text className="ml-4 text-[14px] text-accent">
             {step} / {totalSteps}
           </Text>
-        </View>
+        </View> */}
 
         <PageIntro
           className="mt-8"
