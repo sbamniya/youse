@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
+  CalendarDays,
   Check,
   ChevronRight,
   Pencil,
@@ -36,6 +37,7 @@ import { currentDailyQuestionQueryOptions } from "@/lib/daily-question-api";
 import { getImageUrl } from "@/lib/image-url";
 import { insightsQueryKey } from "@/lib/insights-api";
 import { saveMood, todayMoodQueryKey, todayMoodQueryOptions } from "@/lib/mood-api";
+import { upcomingPlansQueryOptions } from "@/lib/plans-api";
 import { cn } from "@/lib/utils";
 
 const logo = require("../../../assets/images/logo-full-white.png");
@@ -48,26 +50,6 @@ const moods = [
   { emoji: "🙂", title: "Okay & present", detail: "A little brighter than yesterday." },
   { emoji: "😌", title: "Calm & close", detail: "Feeling settled and connected." },
   { emoji: "😄", title: "Bright & energized", detail: "Ready to share some good energy." },
-];
-
-const plans = [
-  {
-    key: "dinner",
-    eyebrow: "TONIGHT",
-    title: "Dinner at Veronica’s",
-    sub: "8:30 PM",
-    icon: UtensilsCrossed,
-    colors: ["#1e3832", "#163028"] as const,
-  },
-  {
-    key: "goa",
-    eyebrow: "COUNTDOWN",
-    title: "12",
-    sub: "days until Goa",
-    icon: Plane,
-    colors: ["#1a3a52", "#1e3558"] as const,
-    isCountdown: true,
-  },
 ];
 
 const pokeRows = [
@@ -100,6 +82,9 @@ export default function Today() {
     isError: isDailyQuestionError,
     isPending: isDailyQuestionPending,
   } = useQuery(currentDailyQuestionQueryOptions);
+  const { data: upcomingPlans, isPending: isUpcomingPlansPending } = useQuery(
+    upcomingPlansQueryOptions,
+  );
   const { data: todayMood, isPending: isTodayMoodPending } = useQuery(
     todayMoodQueryOptions,
   );
@@ -415,41 +400,141 @@ export default function Today() {
           >
             NEXT UP
           </Text>
-          <View className="mt-2.5 flex-row gap-2.5">
-            {plans.map((plan) => (
-              <View
-                key={plan.key}
-                className="flex-1 overflow-hidden rounded-2xl border border-border-subtle bg-card"
-              >
-                <View className="p-3 pb-2">
-                  <Text
-                    className="text-[9px] font-semibold text-muted-foreground"
-                    style={{ letterSpacing: 1.5 }}
-                  >
-                    {plan.eyebrow}
-                  </Text>
-                  <Text
-                    className={
-                      plan.isCountdown
-                        ? "font-serif text-[32px] font-light leading-9 text-foreground"
-                        : "mt-0.5 font-serif text-[16px] font-semibold leading-5 text-foreground"
+          {isUpcomingPlansPending ? (
+            <View className="mt-5 h-32 items-center justify-center rounded-2xl border border-border-subtle bg-card">
+              <ActivityIndicator colorClassName="accent-primary" />
+            </View>
+          ) : upcomingPlans?.length ? (
+            <ScrollView
+              horizontal
+              className="mt-2.5"
+              contentContainerClassName="gap-2.5 pr-4"
+              showsHorizontalScrollIndicator={false}
+            >
+              {upcomingPlans.map((plan) => {
+                const planDate = new Date(plan.dateTime);
+                const today = new Date();
+                const daysAway = Math.floor(
+                  (new Date(
+                    planDate.getFullYear(),
+                    planDate.getMonth(),
+                    planDate.getDate(),
+                  ).getTime() -
+                    new Date(
+                      today.getFullYear(),
+                      today.getMonth(),
+                      today.getDate(),
+                    ).getTime()) /
+                    86_400_000,
+                );
+                const eyebrow =
+                  daysAway === 0
+                    ? "TODAY"
+                    : daysAway === 1
+                      ? "TOMORROW"
+                      : new Intl.DateTimeFormat("en-US", {
+                          weekday: "short",
+                        })
+                          .format(planDate)
+                          .toUpperCase();
+                const planType = plan.type.toLowerCase();
+                const isTrip = planType === "trip";
+                const tripCountdown = Math.max(daysAway, 0);
+                const icon =
+                  isTrip
+                    ? Plane
+                    : planType === "occasion"
+                      ? CalendarDays
+                      : UtensilsCrossed;
+                const colors =
+                  isTrip
+                    ? (["#1a3a52", "#1e3558"] as const)
+                    : planType === "occasion"
+                      ? (["#4b2d45", "#372039"] as const)
+                      : (["#1e3832", "#163028"] as const);
+                const imageUrl = getImageUrl(plan.image);
+
+                return (
+                  <Pressable
+                    key={plan.id}
+                    accessibilityLabel={`View plan: ${plan.title}`}
+                    className="h-44 w-44 overflow-hidden rounded-2xl border border-border-subtle bg-card active:opacity-70"
+                    onPress={() =>
+                      router.push({
+                        pathname: "/create-plan",
+                        params: { id: plan.id },
+                      })
                     }
                   >
-                    {plan.title}
-                  </Text>
-                  <Text className="mt-0.5 text-[11px] text-muted-foreground">
-                    {plan.sub}
-                  </Text>
-                </View>
-                <LinearGradient
-                  colors={plan.colors}
-                  className="h-16 items-center justify-center"
-                >
-                  <ThemedIcon icon={plan.icon} size={26} strokeWidth={1.3} />
-                </LinearGradient>
-              </View>
-            ))}
-          </View>
+                    <View className="h-28 p-3 pb-2">
+                      <Text
+                        className="text-[9px] font-semibold text-muted-foreground"
+                        style={{ letterSpacing: 1.5 }}
+                      >
+                        {eyebrow}
+                      </Text>
+                      <Text
+                        className={cn(
+                          "mt-0.5 font-serif text-foreground",
+                          isTrip
+                            ? "text-[32px] font-light leading-9"
+                            : "text-[16px] font-semibold leading-5",
+                        )}
+                        numberOfLines={2}
+                      >
+                        {isTrip ? tripCountdown : plan.title}
+                      </Text>
+                      <Text
+                        className="mt-0.5 text-[11px] text-muted-foreground"
+                        numberOfLines={2}
+                      >
+                        {isTrip
+                          ? tripCountdown === 0
+                            ? `${plan.title} is today`
+                            : `${tripCountdown} ${
+                                tripCountdown === 1 ? "day" : "days"
+                              } until ${plan.title}`
+                          : `${new Intl.DateTimeFormat("en-US", {
+                              hour: "numeric",
+                              minute: "2-digit",
+                            }).format(planDate)}${
+                              plan.location ? ` · ${plan.location}` : ""
+                            }`}
+                      </Text>
+                    </View>
+                    {imageUrl ? (
+                      <Image
+                        accessibilityLabel={`${plan.title} photo`}
+                        className="flex-1 w-full"
+                        resizeMode="cover"
+                        source={{ uri: imageUrl }}
+                      />
+                    ) : (
+                      <LinearGradient
+                        colors={colors}
+                        className="flex-1 items-center justify-center"
+                      >
+                        <ThemedIcon icon={icon} size={26} strokeWidth={1.3} />
+                      </LinearGradient>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          ) : (
+            <Pressable
+              accessibilityLabel="Add a plan"
+              className="mt-2.5 rounded-2xl border border-dashed border-border-subtle bg-card p-4 active:opacity-70"
+              onPress={() => router.push("/create-plan")}
+            >
+              <Text className="font-serif text-[16px] text-foreground">
+                Nothing planned for the next month.
+              </Text>
+              <Text className="mt-1 text-[12px] text-primary">
+                Add something to look forward to.
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         <View className="mx-4 my-5 h-px bg-border-subtle" />

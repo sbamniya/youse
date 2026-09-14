@@ -32,6 +32,24 @@ export type UpdatePlanInput = Partial<PlanInput>;
 
 export const plansQueryKey = ["plans"] as const;
 
+export const upcomingPlansQueryKey = [...plansQueryKey, "upcoming"] as const;
+
+export async function getUpcomingPlans(): Promise<ApiPlan[]> {
+  const now = new Date();
+  const monthFromNow = new Date(now);
+  monthFromNow.setMonth(monthFromNow.getMonth() + 1);
+
+  return api.get<ApiPlan[]>("/plans", {
+    from: now.toISOString(),
+    to: monthFromNow.toISOString(),
+  });
+}
+
+export const upcomingPlansQueryOptions = queryOptions({
+  queryKey: upcomingPlansQueryKey,
+  queryFn: getUpcomingPlans,
+});
+
 export const plansForMonthQueryKey = (month: Dayjs) =>
   [...plansQueryKey, month.format("YYYY-MM")] as const;
 
