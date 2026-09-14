@@ -10,10 +10,11 @@ import {
   createCheckoutSchema,
   verifyCheckoutSchema,
 } from "./subscription.schema";
+import { IS_PRODUCTION } from "../../config/config";
 
 const createCheckoutRateLimit = rateLimit({
   keyPrefix: "subscription-checkout",
-  points: 10,
+  points: IS_PRODUCTION ? 10 : 100000,
   durationSeconds: 60 * 60,
   keyGenerator: userOrIpRateLimitKey,
 });

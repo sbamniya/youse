@@ -21,6 +21,7 @@ export const createCheckout = async (
   try {
     res.status(201).json(await service.createCheckout(req.user!.id, req.body.plan));
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };

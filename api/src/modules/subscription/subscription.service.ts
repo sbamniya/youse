@@ -29,13 +29,13 @@ const planConfig: Record<
   }
 > = {
   monthly: {
-    amount: 14_900,
+    amount: 149_00,
     period: "monthly",
     planId: env.RAZORPAY_MONTHLY_PLAN_ID,
     totalCount: 1_200,
   },
   yearly: {
-    amount: 99_900,
+    amount: 1299_00,
     period: "yearly",
     planId: env.RAZORPAY_YEARLY_PLAN_ID,
     totalCount: 100,
@@ -145,6 +145,7 @@ export const createCheckout = async (
 
   const config = planConfig[plan];
   const configuredPlan = await razorpay.plans.fetch(config.planId);
+
   const planMatchesBillingScreen =
     Number(configuredPlan.item.amount) === config.amount &&
     configuredPlan.item.currency === "INR" &&
