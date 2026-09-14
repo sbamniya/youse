@@ -75,6 +75,15 @@ export async function updateDailyQuestionTime(
   );
 }
 
+export type UnlinkMode = "archive" | "delete";
+
+export async function unlinkRelationship(mode: UnlinkMode) {
+  return api.post<{ mode: UnlinkMode; unlinkedAt: string }, { mode: UnlinkMode }>(
+    "/space/unlink",
+    { mode },
+  );
+}
+
 export const currentSpaceQueryOptions = queryOptions({
   queryKey: currentSpaceQueryKey,
   queryFn: getCurrentSpace,

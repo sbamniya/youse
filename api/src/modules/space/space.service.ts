@@ -248,6 +248,10 @@ export const unlinkRelationship = async (
         data: { deletedAt: new Date(), brokenAt: new Date() },
       });
   });
+  await Promise.all([
+    userByIdCacheable.refresh(userId),
+    ...(partnerId ? [userByIdCacheable.refresh(partnerId)] : []),
+  ]);
   return { mode: input.mode, unlinkedAt: new Date() };
 };
 
