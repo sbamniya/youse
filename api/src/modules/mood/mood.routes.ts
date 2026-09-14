@@ -8,4 +8,5 @@ export const moodRouter = Router();
 moodRouter.use(requireAuth);
 
 moodRouter.post("/", validate(moodSchema), controller.create);
+moodRouter.get("/today", controller.getToday);
 moodRouter.get("/", controller.list);

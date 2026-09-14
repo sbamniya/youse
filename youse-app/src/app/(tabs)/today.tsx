@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import {
@@ -34,13 +34,21 @@ import {
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
 import { currentDailyQuestionQueryOptions } from "@/lib/daily-question-api";
 import { getImageUrl } from "@/lib/image-url";
+import { insightsQueryKey } from "@/lib/insights-api";
+import { saveMood, todayMoodQueryKey, todayMoodQueryOptions } from "@/lib/mood-api";
 import { cn } from "@/lib/utils";
 
 const logo = require("../../../assets/images/logo-full-white.png");
 
 const heroImage =
   "https://images.unsplash.com/photo-1726387871055-35c2c98357f9?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-const moods = ["😔", "😐", "🙂", "😌", "😄"];
+const moods = [
+  { emoji: "😔", title: "Low & needing care", detail: "Go gently with yourself today." },
+  { emoji: "😐", title: "Quiet & steady", detail: "Taking the day as it comes." },
+  { emoji: "🙂", title: "Okay & present", detail: "A little brighter than yesterday." },
+  { emoji: "😌", title: "Calm & close", detail: "Feeling settled and connected." },
+  { emoji: "😄", title: "Bright & energized", detail: "Ready to share some good energy." },
+];
 
 const plans = [
   {
@@ -69,8 +77,9 @@ const pokeRows = [
 
 export default function Today() {
   const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
   const [background] = useCSSVariable(["--color-background"]) as [string];
-  const [activeMood, setActiveMood] = useState(2);
+  const [moodError, setMoodError] = useState("");
   const {
     data: currentUser,
     isError: isUserError,
@@ -91,6 +100,20 @@ export default function Today() {
     isError: isDailyQuestionError,
     isPending: isDailyQuestionPending,
   } = useQuery(currentDailyQuestionQueryOptions);
+  const { data: todayMood, isPending: isTodayMoodPending } = useQuery(
+    todayMoodQueryOptions,
+  );
+  const saveMoodMutation = useMutation({
+    mutationFn: saveMood,
+    onSuccess: (mood) => {
+      queryClient.setQueryData(todayMoodQueryKey, mood);
+      void queryClient.invalidateQueries({ queryKey: insightsQueryKey });
+      setMoodError("");
+    },
+    onError: () => {
+      setMoodError("We couldn’t save your mood. Please try again.");
+    },
+  });
 
   if (isUserPending || isSpacePending || !currentUser || !currentSpace) {
     if (isUserError || isSpaceError) {
@@ -138,6 +161,7 @@ export default function Today() {
     day: "numeric",
     year: "numeric",
   }).format(new Date());
+  const selectedMood = moods.find((mood) => mood.emoji === todayMood?.mood);
 
   return (
     <View className="flex-1 bg-background">
@@ -327,17 +351,30 @@ export default function Today() {
           </Text>
 
           <View className="mt-2.5 flex-row gap-2">
-            {moods.map((emoji, index) => (
+            {moods.map((mood) => (
               <Pressable
-                key={emoji}
-                onPress={() => setActiveMood(index)}
-                className={`aspect-square flex-1 items-center justify-center rounded-xl border ${
-                  index === activeMood
+                key={mood.emoji}
+                accessibilityLabel={`Feeling ${mood.title}`}
+                accessibilityRole="radio"
+                accessibilityState={{
+                  checked: mood.emoji === selectedMood?.emoji,
+                  disabled: Boolean(todayMood) || saveMoodMutation.isPending,
+                }}
+                className={cn(
+                  "aspect-square flex-1 items-center justify-center rounded-xl border",
+                  mood.emoji === selectedMood?.emoji
                     ? "border-primary/45 bg-primary/15"
-                    : "border-border-subtle bg-card"
-                }`}
+                    : "border-border-subtle bg-card",
+                  (Boolean(todayMood) || saveMoodMutation.isPending) &&
+                    "opacity-70",
+                )}
+                disabled={Boolean(todayMood) || saveMoodMutation.isPending}
+                onPress={() => {
+                  setMoodError("");
+                  saveMoodMutation.mutate(mood.emoji);
+                }}
               >
-                <Text className="text-[20px]">{emoji}</Text>
+                <Text className="text-[20px]">{mood.emoji}</Text>
               </Pressable>
             ))}
           </View>
@@ -348,19 +385,24 @@ export default function Today() {
             </View>
             <View className="flex-1">
               <Text className="font-serif text-[18px] font-semibold leading-5 text-foreground">
-                Calm &amp; Close
+                {isTodayMoodPending ? "Loading your mood..." : selectedMood?.title ?? "How are you today?"}
               </Text>
               <Text
                 className="text-[10px] font-semibold text-muted-foreground"
                 style={{ letterSpacing: 1 }}
               >
-                A little brighter than yesterday
+                {selectedMood?.detail ?? "Choose a feeling to check in with yourself."}
               </Text>
             </View>
             <Text className="max-w-[105px] text-right font-serif text-[12px] italic leading-4 text-muted-foreground">
-              A more connected life is a kinder life.
+              {todayMood ? "Thanks for checking in today." : "A more connected life is a kinder life."}
             </Text>
           </View>
+          {moodError ? (
+            <Text className="mt-3 font-serif text-[14px] text-destructive">
+              {moodError}
+            </Text>
+          ) : null}
         </View>
 
         <View className="mx-4 my-5 h-px bg-border-subtle" />
