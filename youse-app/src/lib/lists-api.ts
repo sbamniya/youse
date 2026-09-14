@@ -37,6 +37,17 @@ export async function createList(name: string): Promise<SharedList> {
   return api.post<SharedList, { name: string }>("/lists", { name });
 }
 
+export async function updateList(listId: string, name: string): Promise<SharedList> {
+  return api.patch<SharedList, { name: string }>(
+    `/lists/${encodeURIComponent(listId)}`,
+    { name },
+  );
+}
+
+export async function deleteList(listId: string): Promise<void> {
+  await api.delete<void>(`/lists/${encodeURIComponent(listId)}`);
+}
+
 export async function createListItem(
   listId: string,
   title: string,

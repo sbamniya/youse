@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Check, Plus } from "lucide-react-native";
+import { ArrowRight, Check, MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react-native";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, ScrollView, View } from "react-native";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
 import {
@@ -11,14 +11,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import {
   createList,
   createListItem,
+  deleteList,
   listsQueryKey,
   listsQueryOptions,
   type SharedList,
+  updateList,
   updateListItem,
 } from "@/lib/lists-api";
 import { cn } from "@/lib/utils";
@@ -29,6 +37,9 @@ function OurLists() {
   const [newItemTitle, setNewItemTitle] = useState("");
   const [newListName, setNewListName] = useState("");
   const [isCreateListOpen, setIsCreateListOpen] = useState(false);
+  const [isEditListOpen, setIsEditListOpen] = useState(false);
+  const [isDeleteListOpen, setIsDeleteListOpen] = useState(false);
+  const [editedListName, setEditedListName] = useState("");
   const { data: lists = [], isError, isPending, refetch } = useQuery(listsQueryOptions);
   const activeList = lists.find((list) => list.id === activeListId) ?? lists[0];
 
@@ -75,6 +86,30 @@ function OurLists() {
         ),
       );
     },
+  });
+  const updateListMutation = useMutation({
+    mutationFn: ({ listId, name }: { listId: string; name: string }) =>
+      updateList(listId, name),
+    onSuccess: (updatedList) => {
+      queryClient.setQueryData<SharedList[]>(listsQueryKey, (current) =>
+        current?.map((list) =>
+          list.id === updatedList.id ? updatedList : list,
+        ),
+      );
+      setIsEditListOpen(false);
+    },
+    onError: () => Alert.alert("Couldn't rename list", "Try a different name or check your connection."),
+  });
+  const deleteListMutation = useMutation({
+    mutationFn: deleteList,
+    onSuccess: (_result, deletedListId) => {
+      queryClient.setQueryData<SharedList[]>(listsQueryKey, (current) =>
+        current?.filter((list) => list.id !== deletedListId) ?? [],
+      );
+      setActiveListId(null);
+      setIsDeleteListOpen(false);
+    },
+    onError: () => Alert.alert("Couldn't delete list", "Check your connection and try again."),
   });
 
   const addItem = () => {
@@ -127,6 +162,33 @@ function OurLists() {
         >
           <ThemedIcon icon={Plus} tone="primary" size={19} strokeWidth={2} />
         </Pressable>
+        {activeList ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Pressable
+                accessibilityLabel={`Manage ${activeList.name}`}
+                className="ml-2 h-9 w-9 items-center justify-center rounded-full border border-border-subtle active:bg-secondary"
+              >
+                <ThemedIcon icon={MoreHorizontal} tone="primary" size={20} strokeWidth={2} />
+              </Pressable>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="bottom">
+              <DropdownMenuItem
+                onPress={() => {
+                  setEditedListName(activeList.name);
+                  setIsEditListOpen(true);
+                }}
+              >
+                <ThemedIcon icon={Pencil} size={16} strokeWidth={1.8} />
+                <Text>Edit name</Text>
+              </DropdownMenuItem>
+              <DropdownMenuItem variant="destructive" onPress={() => setIsDeleteListOpen(true)}>
+                <ThemedIcon icon={Trash2} tone="destructive" size={16} strokeWidth={1.8} />
+                <Text className="text-destructive">Delete list</Text>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
       </View>
 
       {activeList ? (
@@ -209,6 +271,39 @@ function OurLists() {
             <Pressable className="h-12 flex-1 items-center justify-center rounded-2xl bg-primary active:opacity-80 disabled:opacity-50" disabled={!newListName.trim() || createListMutation.isPending} onPress={() => createListMutation.mutate()}>
               <Text className="text-[15px] font-semibold text-primary-foreground">{createListMutation.isPending ? "Creating..." : "Create list"}</Text>
             </Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog onOpenChange={setIsEditListOpen} open={isEditListOpen}>
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">Edit list name</AlertDialogTitle>
+          </AlertDialogHeader>
+          <Input
+            autoFocus
+            className="mt-1 text-[16px]"
+            editable={!updateListMutation.isPending}
+            onChangeText={setEditedListName}
+            onSubmitEditing={() => activeList && editedListName.trim() && updateListMutation.mutate({ listId: activeList.id, name: editedListName.trim() })}
+            placeholder="List name"
+            returnKeyType="done"
+            value={editedListName}
+          />
+          <View className="mt-1 flex-row gap-3">
+            <Pressable className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary" disabled={updateListMutation.isPending} onPress={() => setIsEditListOpen(false)}><Text className="text-[15px] font-semibold text-foreground">Cancel</Text></Pressable>
+            <Pressable className="h-12 flex-1 items-center justify-center rounded-2xl bg-primary active:opacity-80 disabled:opacity-50" disabled={!activeList || !editedListName.trim() || updateListMutation.isPending} onPress={() => activeList && updateListMutation.mutate({ listId: activeList.id, name: editedListName.trim() })}><Text className="text-[15px] font-semibold text-primary-foreground">{updateListMutation.isPending ? "Saving..." : "Save name"}</Text></Pressable>
+          </View>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog onOpenChange={setIsDeleteListOpen} open={isDeleteListOpen}>
+        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">Delete this list?</AlertDialogTitle>
+            <AlertDialogDescription className="text-left text-[15px] leading-6 text-muted-foreground">This permanently removes {activeList?.name ?? "this list"} and all of its items for both of you.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <View className="mt-1 flex-row gap-3">
+            <Pressable className="h-12 flex-1 items-center justify-center rounded-2xl border border-border-subtle active:bg-secondary" disabled={deleteListMutation.isPending} onPress={() => setIsDeleteListOpen(false)}><Text className="text-[15px] font-semibold text-foreground">Keep list</Text></Pressable>
+            <Pressable className="h-12 flex-1 items-center justify-center rounded-2xl bg-destructive active:opacity-80 disabled:opacity-50" disabled={!activeList || deleteListMutation.isPending} onPress={() => activeList && deleteListMutation.mutate(activeList.id)}><Text className="text-[15px] font-semibold text-white">{deleteListMutation.isPending ? "Deleting..." : "Delete list"}</Text></Pressable>
           </View>
         </AlertDialogContent>
       </AlertDialog>
