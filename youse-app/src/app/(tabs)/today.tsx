@@ -29,7 +29,7 @@ import { Text } from "@/components/ui/text";
 import {
   currentSpaceQueryOptions,
   getPartnerFromSpace,
-  getTrialDaysRemaining,
+  getSubscriptionDaysRemaining,
 } from "@/lib/current-space";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
 import { currentDailyQuestionQueryOptions } from "@/lib/daily-question-api";
@@ -131,7 +131,7 @@ export default function Today() {
   const partnerAnswer = dailyQuestion?.dailyQuestionAnswers.find(
     (answer) => answer.userId === partner?.id,
   );
-  const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
+  const trialDaysRemaining = getSubscriptionDaysRemaining(currentSpace);
   const formattedDate = new Intl.DateTimeFormat("en-US", {
     weekday: "long",
     month: "long",

@@ -4,7 +4,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { router, type Href } from "expo-router";
-import { ChevronRight, UserRound, X } from "lucide-react-native";
+import { ChevronRight, UserRound } from "lucide-react-native";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -18,21 +18,15 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TimePickerDialog } from "@/components/app/time-picker-dialog";
 import { TrialBadge } from "@/components/app/trial-badge";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
 import {
   type CurrentSpace,
   currentSpaceQueryKey,
   currentSpaceQueryOptions,
   getPartnerFromSpace,
-  getTrialDaysRemaining,
+  getSubscriptionDaysRemaining,
   updateDailyQuestionTime,
 } from "@/lib/current-space";
 import {
@@ -43,16 +37,6 @@ import {
 } from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 import { cn } from "@/lib/utils";
-
-const dailyQuestionTimes = Array.from({ length: 46 }, (_, index) => {
-  const totalMinutes = 60 + index * 30;
-  const hour = Math.floor(totalMinutes / 60);
-  const minute = totalMinutes % 60;
-  const period = hour < 12 ? "AM" : "PM";
-  const displayHour = hour % 12 || 12;
-
-  return `${String(displayHour).padStart(2, "0")}:${String(minute).padStart(2, "0")} ${period}`;
-});
 
 type SettingsRow = {
   comingSoon?: boolean;
@@ -233,7 +217,7 @@ export default function Us() {
       currentSpace.dailyQuestionTime,
       currentMember.timezone,
     );
-  const trialDaysRemaining = getTrialDaysRemaining(currentSpace);
+  const trialDaysRemaining = getSubscriptionDaysRemaining(currentSpace);
   const subscription = getSubscriptionDisplay(currentSpace.subscription);
 
   return (
@@ -413,7 +397,10 @@ export default function Us() {
           </View>
         </View>
       </ScrollView>
-      <AlertDialog
+      <TimePickerDialog
+        description="Choose when both of you’d like your daily question."
+        disabled={isSavingQuestionTime}
+        error={questionTimeError}
         onOpenChange={(open) => {
           if (isSavingQuestionTime) return;
           setIsTimePickerOpen(open);
@@ -422,70 +409,15 @@ export default function Us() {
             setQuestionTimeError("");
           }
         }}
+        onSelect={(time) => {
+          setDailyQuestionTime(time);
+          setQuestionTimeError("");
+          saveQuestionTime(time);
+        }}
         open={isTimePickerOpen}
-      >
-        <AlertDialogContent className="mx-4 self-stretch rounded-3xl border-border-subtle bg-card p-5 web:mx-0 web:self-center">
-          <AlertDialogHeader className="relative pr-12">
-            <AlertDialogTitle className="text-left text-[22px] text-foreground">
-              Daily question time
-            </AlertDialogTitle>
-            <AlertDialogCancel
-              accessibilityLabel="Close time picker"
-              className="absolute -right-1 -top-1 h-10 w-10 items-center justify-center rounded-full border-0 bg-transparent p-0 active:bg-muted"
-            >
-              <ThemedIcon icon={X} size={19} strokeWidth={2} />
-            </AlertDialogCancel>
-          </AlertDialogHeader>
-          <Text className="-mt-2 font-serif text-[14px] text-muted-foreground">
-            Choose when both of you’d like your daily question.
-          </Text>
-          {questionTimeError ? (
-            <Text className="font-serif text-[14px] text-destructive">
-              {questionTimeError}
-            </Text>
-          ) : null}
-          <ScrollView className="max-h-80" showsVerticalScrollIndicator={false}>
-            <View className="-mx-1 flex-row flex-wrap">
-              {dailyQuestionTimes.map((time) => {
-                const isSelected = time === displayedDailyQuestionTime;
-
-                return (
-                  <View key={time} className="w-1/2 p-1">
-                    <Pressable
-                      accessibilityRole="radio"
-                      accessibilityState={{
-                        checked: isSelected,
-                        disabled: isSavingQuestionTime,
-                      }}
-                      className={cn(
-                        "h-11 items-center justify-center rounded-xl border active:opacity-75",
-                        isSelected
-                          ? "border-primary bg-primary"
-                          : "border-border-subtle bg-background",
-                      )}
-                      disabled={isSavingQuestionTime}
-                      onPress={() => {
-                        setDailyQuestionTime(time);
-                        setQuestionTimeError("");
-                        saveQuestionTime(time);
-                      }}
-                    >
-                      <Text
-                        className={cn(
-                          "text-[14px] font-semibold",
-                          isSelected ? "text-primary-foreground" : "text-foreground",
-                        )}
-                      >
-                        {time}
-                      </Text>
-                    </Pressable>
-                  </View>
-                );
-              })}
-            </View>
-          </ScrollView>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Daily question time"
+        value={displayedDailyQuestionTime}
+      />
     </View>
   );
 }

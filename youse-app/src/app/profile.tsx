@@ -30,7 +30,7 @@ import api from "@/lib/api";
 import { type AuthUser } from "@/lib/auth-user";
 import {
   currentSpaceQueryOptions,
-  getTrialDaysRemaining,
+  getSubscriptionDaysRemaining,
   type CurrentSpace,
 } from "@/lib/current-space";
 import {
@@ -104,7 +104,7 @@ function ProfileForm({
   const insets = useSafeAreaInsets();
   const background = useCSSVariable("--color-background") as string;
   const persistCurrentUser = usePersistCurrentUser();
-  const trialDaysRemaining = getTrialDaysRemaining(initialSpace);
+  const trialDaysRemaining = getSubscriptionDaysRemaining(initialSpace);
   // Timezone always tracks the device's current setting rather than being user-editable.
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

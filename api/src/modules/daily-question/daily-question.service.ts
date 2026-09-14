@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
 import { spaceFor, writableSpace } from "../space/space.service";
@@ -9,10 +10,8 @@ import type {
 
 export const getCurrentDailyQuestion = async (userId: string) => {
   const space = await spaceFor(userId);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+  const today = dayjs().startOf("day").toDate();
+  const tomorrow = dayjs(today).add(1, "day").startOf("day").toDate();
 
   let question = await prisma.dailyQuestion.findFirst({
     where: {

@@ -154,7 +154,7 @@ export default function CreateMemory() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <View className="flex-row items-center gap-1 pt-2">
+        <View className="flex-row items-center gap-2 pt-2">
           <BackButton />
           <Text
             className="mb-0 text-[12px] text-muted-foreground"

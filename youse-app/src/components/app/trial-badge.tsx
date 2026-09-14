@@ -29,7 +29,7 @@ function TrialBadge({ className, days, interactive = true }: TrialBadgeProps) {
 
   return (
     <Pressable
-      accessibilityLabel={`${days} days left in trial. View billing.`}
+      accessibilityLabel={`${days} days left in your subscription. View billing.`}
       accessibilityRole="button"
       className={containerClassName}
       onPress={() => router.push("/billing")}

@@ -14,6 +14,7 @@ import { ImageSourcePicker } from "@/components/app/image-source-picker";
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import { TimePickerDialog } from "@/components/app/time-picker-dialog";
 import { ToggleRow } from "@/components/app/toggle-row";
 import { Text } from "@/components/ui/text";
 import { getImageUrl } from "@/lib/image-url";
@@ -54,6 +55,7 @@ export default function CreatePlan() {
   const [title, setTitle] = useState<string | null>(null);
   const [date, setDate] = useState<Dayjs | null>(null);
   const [time, setTime] = useState<string | null>(null);
+  const [isTimePickerOpen, setIsTimePickerOpen] = useState(false);
   const [location, setLocation] = useState<string | null>(null);
   const [notes, setNotes] = useState<string | null>(null);
   const [category, setCategory] = useState<(typeof CATEGORIES)[number] | null>(null);
@@ -151,13 +153,20 @@ export default function CreatePlan() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <BackButton className="mt-2" />
+        <View className="flex-row items-center gap-2 pt-4">
+          <BackButton />
+          <Text
+            className="mb-0 text-[12px] text-muted-foreground"
+            style={{ letterSpacing: 5 }}
+          >
+            {isEditing ? "EDIT SHARED PLAN" : "NEW SHARED PLAN"}
+          </Text>
+        </View>
 
         <PageIntro
-          className="mt-4"
+          className="mt-2"
           description="Good plans bring us closer."
           displayTitle
-          eyebrow={isEditing ? "EDIT SHARED PLAN" : "NEW SHARED PLAN"}
           title={isEditing ? "Refine the details." : "Something to look forward to."}
         />
 
@@ -168,12 +177,16 @@ export default function CreatePlan() {
           value={displayedTitle}
         />
         <DatePickerField label="Date" onValueChange={setDate} value={displayedDate} />
-        <FormField
-          label="Time"
-          onChangeText={(value) => { setTime(value); setError(""); }}
-          placeholder="7:00 PM"
-          value={displayedTime}
-        />
+        <View className="mt-6">
+          <Text className="mb-2 text-[14px] font-semibold text-foreground">Time</Text>
+          <Pressable
+            accessibilityLabel="Choose plan time"
+            className="h-13 justify-center rounded-xl border border-border-subtle bg-card px-4 active:opacity-70"
+            onPress={() => setIsTimePickerOpen(true)}
+          >
+            <Text className="text-[16px] text-foreground">{displayedTime}</Text>
+          </Pressable>
+        </View>
         <FormField label="Location" onChangeText={setLocation} placeholder="Bandra West" value={displayedLocation} />
         <FormField label="Notes" multiline onChangeText={setNotes} placeholder="Add a note (optional)" value={displayedNotes} />
 
@@ -233,6 +246,18 @@ export default function CreatePlan() {
           onPress={handleSave}
         />
       </View>
+      <TimePickerDialog
+        description="Choose when this plan is happening."
+        onOpenChange={setIsTimePickerOpen}
+        onSelect={(selectedTime) => {
+          setTime(selectedTime);
+          setError("");
+          setIsTimePickerOpen(false);
+        }}
+        open={isTimePickerOpen}
+        title="Plan time"
+        value={displayedTime}
+      />
     </AppScreen>
   );
 }

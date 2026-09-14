@@ -110,11 +110,12 @@ export const saveRelationship = async (
     });
     return { relationship, inviteCode: invitationCode, created: true };
   });
-  await userByIdCacheable.invalidate(`user_by_id:${userId}`);
+  await userByIdCacheable.refresh(userId);
   return { ...result, user: await getUserProfile(userId) };
 };
 
 export const getCurrentRelationship = (userId: string) => spaceFor(userId);
+
 export const exportSpace = async (userId: string) => {
   const space = await spaceFor(userId);
   const [memories, plans, lists, checkIns, questions, moods, pokes] =

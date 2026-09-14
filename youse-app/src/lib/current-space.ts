@@ -84,16 +84,19 @@ export function getPartnerFromSpace(
   return null;
 }
 
-export function getTrialDaysRemaining(space: CurrentSpace): number | null {
-  if (!space.subscription?.trialEndsAt) {
-    return null;
-  }
+export function getSubscriptionDaysRemaining(
+  space: CurrentSpace,
+): number | null {
+  const endTimes = [
+    space.subscription?.trialEndsAt,
+    space.subscription?.activeUntil,
+  ]
+    .filter((date): date is string => Boolean(date))
+    .map((date) => new Date(date).getTime())
+    .filter((time) => Number.isFinite(time) && time > Date.now());
 
-  const trialEnd = new Date(space.subscription.trialEndsAt).getTime();
-  if (!Number.isFinite(trialEnd) || trialEnd <= Date.now()) {
-    return null;
-  }
+  if (!endTimes.length) return null;
 
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  return Math.ceil((trialEnd - Date.now()) / millisecondsPerDay);
+  return Math.ceil((Math.max(...endTimes) - Date.now()) / millisecondsPerDay);
 }

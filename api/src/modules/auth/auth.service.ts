@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { IS_PRODUCTION } from "../../config/config";
 import { env } from "../../config/env";
 import { prisma } from "../../lib/prisma";
@@ -89,7 +90,7 @@ const issueTokens = async (user: { id: string; phone: string }) => {
     data: {
       token: refreshToken,
       userId: user.id,
-      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
+      expiresAt: dayjs().add(REFRESH_TOKEN_TTL_MS, "millisecond").toDate(),
     },
   });
 
@@ -105,7 +106,7 @@ const profileRelations = {
       partnerName: true,
       anniversary: true,
       goal: true,
-      relationshipType: true
+      relationshipType: true,
     },
   },
   userPartnersTwo: {
@@ -142,7 +143,7 @@ export const requestOtp = async (input: RequestOtpInput) => {
     data: {
       phone: input.phone,
       codeHash: await hashPassword(code),
-      expiresAt: new Date(Date.now() + OTP_TTL_MS),
+      expiresAt: dayjs().add(OTP_TTL_MS, "millisecond").toDate(),
     },
   });
 
