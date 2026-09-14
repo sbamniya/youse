@@ -1,3 +1,5 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 import { router } from "expo-router";
 import {
   CalendarDays,
@@ -9,14 +11,23 @@ import {
 import { useState } from "react";
 import { Alert, Pressable, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCSSVariable } from "uniwind";
 
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+import { currentSpaceQueryKey } from "@/lib/current-space";
+import {
+  isRazorpayCancellation,
+  openRazorpaySubscriptionCheckout,
+} from "@/lib/razorpay-checkout";
+import {
+  createSubscriptionCheckout,
+  type SubscriptionPlan,
+  verifySubscriptionPayment,
+} from "@/lib/subscriptions-api";
 import { cn } from "@/lib/utils";
-
-type Plan = "yearly" | "monthly";
 
 const benefits = [
   {
@@ -43,18 +54,89 @@ const benefits = [
 
 export default function Billing() {
   const insets = useSafeAreaInsets();
-  const [plan, setPlan] = useState<Plan>("yearly");
+  const queryClient = useQueryClient();
+  const checkoutColor = useCSSVariable("--color-primary") as string;
+  const [plan, setPlan] = useState<SubscriptionPlan>("yearly");
+  const [checkoutState, setCheckoutState] = useState<
+    "creating" | "idle" | "paying" | "verifying"
+  >("idle");
+  const [paymentError, setPaymentError] = useState("");
   const isYearly = plan === "yearly";
+  const isProcessing = checkoutState !== "idle";
 
-  const continueWithPlan = () => {
-    const label = isYearly ? "₹999/year" : "₹149/month";
+  const continueWithPlan = async () => {
+    if (isProcessing) {
+      return;
+    }
 
-    Alert.alert(
-      "Trial continued",
-      `${label} will start after your 14-day trial.`,
-      [{ text: "OK", onPress: () => router.replace("/(tabs)/today") }],
-    );
+    setPaymentError("");
+    setCheckoutState("creating");
+    let checkoutCompleted = false;
+
+    try {
+      const checkout = await createSubscriptionCheckout(plan);
+      setCheckoutState("paying");
+      const payment = await openRazorpaySubscriptionCheckout({
+        contact: checkout.prefill.contact,
+        description: isYearly ? "Youse yearly plan" : "Youse monthly plan",
+        key: checkout.keyId,
+        name: checkout.prefill.name,
+        subscriptionId: checkout.subscriptionId,
+        themeColor: checkoutColor,
+      });
+      checkoutCompleted = true;
+
+      const razorpaySubscriptionId = payment.razorpay_subscription_id;
+      const razorpaySignature = payment.razorpay_signature;
+      if (!razorpaySubscriptionId || !razorpaySignature) {
+        throw new Error("Razorpay did not return payment verification details.");
+      }
+
+      setCheckoutState("verifying");
+      const subscription = await verifySubscriptionPayment({
+        razorpayPaymentId: payment.razorpay_payment_id,
+        razorpaySignature,
+        razorpaySubscriptionId,
+      });
+      await queryClient.invalidateQueries({ queryKey: currentSpaceQueryKey });
+
+      Alert.alert(
+        "Subscription set up",
+        subscription.razorpayStatus === "active"
+          ? "Your Youse subscription is active for both partners."
+          : "Your plan is confirmed and will begin when your trial ends.",
+        [{ text: "Continue", onPress: () => router.replace("/(tabs)/today") }],
+      );
+    } catch (error) {
+      if (isRazorpayCancellation(error)) {
+        setPaymentError("Checkout was closed. You can try again when you’re ready.");
+      } else if (isAxiosError(error) && error.response?.status === 409) {
+        await queryClient.invalidateQueries({ queryKey: currentSpaceQueryKey });
+        setPaymentError(
+          "This space already has a Razorpay subscription. We refreshed its billing status.",
+        );
+      } else if (error instanceof Error && error.message.includes("only available")) {
+        setPaymentError(error.message);
+      } else {
+        setPaymentError(
+          checkoutCompleted
+            ? "Razorpay completed checkout, but we couldn’t confirm it yet. Your access will update automatically; please check again shortly."
+            : "We couldn’t complete the payment. Please try again.",
+        );
+      }
+    } finally {
+      setCheckoutState("idle");
+    }
   };
+
+  const actionLabel =
+    checkoutState === "creating"
+      ? "Preparing checkout..."
+      : checkoutState === "paying"
+        ? "Complete payment..."
+        : checkoutState === "verifying"
+          ? "Verifying payment..."
+          : `Continue with ${isYearly ? "yearly" : "monthly"}`;
 
   return (
     <View className="flex-1 bg-background">
@@ -105,13 +187,19 @@ export default function Billing() {
               badge="Save 44%"
               caption="JUST ₹83/MONTH"
               isSelected={isYearly}
-              onPress={() => setPlan("yearly")}
+              onPress={() => {
+                setPlan("yearly");
+                setPaymentError("");
+              }}
               price="₹999/year"
             />
             <PlanOption
               caption="BILLED MONTHLY"
               isSelected={!isYearly}
-              onPress={() => setPlan("monthly")}
+              onPress={() => {
+                setPlan("monthly");
+                setPaymentError("");
+              }}
               price="₹149/month"
             />
           </View>
@@ -123,15 +211,23 @@ export default function Billing() {
           <PrimaryAction
             accessibilityLabel={`Continue with ${isYearly ? "yearly" : "monthly"} plan`}
             className="mt-4"
-            label={`Continue with ${isYearly ? "yearly" : "monthly"}`}
-            onPress={continueWithPlan}
+            disabled={isProcessing}
+            label={actionLabel}
+            onPress={() => void continueWithPlan()}
             icon={CreditCard}
             showArrow
           />
 
+          {paymentError ? (
+            <Text className="mt-3 text-center font-serif text-[14px] leading-5 text-destructive">
+              {paymentError}
+            </Text>
+          ) : null}
+
           <Pressable
             accessibilityRole="button"
-            className="mt-4 items-center self-center px-2 py-1 active:opacity-65"
+            className="mt-4 items-center self-center px-2 py-1 active:opacity-65 disabled:opacity-50"
+            disabled={isProcessing}
             onPress={() => router.replace("/(tabs)/today")}
           >
             <Text className="font-serif text-[16px] text-primary">Not now</Text>

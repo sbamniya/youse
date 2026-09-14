@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
 declare global {
   namespace Express {
     interface Request {
+      rawBody?: Buffer;
       user?: AuthenticatedUser;
     }
   }

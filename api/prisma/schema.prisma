@@ -131,13 +131,16 @@ model OtpChallenge {
 }
 
 model Subscription {
-    id            String    @id @default(uuid())
-    userPartnerId String    @unique
-    trialEndsAt   DateTime?
-    plan          String?
-    activeUntil   DateTime?
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
+    id                     String    @id @default(uuid())
+    userPartnerId          String    @unique
+    trialEndsAt            DateTime?
+    plan                   String?
+    activeUntil            DateTime?
+    razorpaySubscriptionId String?   @unique
+    razorpayPaymentId      String?
+    razorpayStatus         String?
+    createdAt              DateTime  @default(now())
+    updatedAt              DateTime  @updatedAt
 
     userPartner UserPartner @relation(fields: [userPartnerId], references: [id], onDelete: Cascade)
 

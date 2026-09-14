@@ -1,5 +1,5 @@
 import cors from 'cors';
-import express from 'express';
+import express, { type Request } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { authRouter } from './modules/auth/auth.routes';
@@ -32,7 +32,16 @@ export const createApp = () => {
   app.use(helmet());
   app.use(cors());
   app.use(globalRateLimit);
-  app.use(express.json());
+  app.use(
+    express.json({
+      verify: (req, _res, buffer) => {
+        const request = req as Request;
+        if (request.originalUrl === '/v1/subscriptions/webhook') {
+          request.rawBody = Buffer.from(buffer);
+        }
+      },
+    }),
+  );
   app.use(morgan('dev'));
 
   app.get('/health', (_req, res) => res.json({ status: 'ok' }));
