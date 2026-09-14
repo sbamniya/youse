@@ -48,8 +48,8 @@ export function getUserDestination(
 
   if (user.hasPreviousRelationship) {
     return {
-      pathname: "/invite-code",
-      params: { flow: "authenticated" },
+      pathname: "/onboarding-details",
+      params: { mode: "returning", userId: user.id },
     };
   }
 
