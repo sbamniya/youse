@@ -340,8 +340,6 @@ function OnboardingForm({
     saveRelationship();
   };
 
-  const totalSteps = isAcceptFlow ? 1 : 3;
-
   return (
     <AppScreen>
       <ScrollView
