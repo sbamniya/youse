@@ -521,12 +521,12 @@ function OnboardingForm({
                     }}
                   >
                     <View
-                      className={`h-10 w-10 items-center justify-center rounded-full border-2 ${selected ? "border-accent" : "border-placeholder"}`}
+                      className={`h-8 w-8 items-center justify-center rounded-full border-2 ${selected ? "border-accent" : "border-placeholder"}`}
                     >
-                      {selected ? <ThemedIcon icon={Check} size={24} /> : null}
+                      {selected ? <ThemedIcon icon={Check} size={20} /> : null}
                     </View>
                     <View className="ml-6 flex-1">
-                      <Text className="font-serif text-[18px] text-foreground">
+                      <Text className="font-serif text-[16px] text-foreground">
                         {reason.title}
                       </Text>
                       <Text
