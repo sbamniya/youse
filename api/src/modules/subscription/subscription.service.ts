@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import dayjs from "dayjs";
 import Razorpay from "razorpay";
 
 import { env } from "../../config/env";
@@ -80,10 +81,8 @@ export const getAccess = async (userId: string) => {
   const subscription = space.subscription;
   const writable =
     !subscription ||
-    Boolean(
-      (subscription.trialEndsAt && subscription.trialEndsAt > new Date()) ||
-      (subscription.activeUntil && subscription.activeUntil > new Date()),
-    );
+    dayjs(subscription.trialEndsAt).isAfter() ||
+    dayjs(subscription.activeUntil).isAfter();
   return { writable, subscription };
 };
 
@@ -93,13 +92,11 @@ export const createCheckout = async (
 ) => {
   const space = await spaceFor(userId);
   const existingSubscription = space.subscription;
-  const now = Date.now();
-  const trialStartsLater =
-    existingSubscription?.trialEndsAt &&
-    existingSubscription.trialEndsAt.getTime() > now + 10 * 60 * 1_000;
-  const startsAt = trialStartsLater
-    ? existingSubscription.trialEndsAt
-    : null;
+  const trialEndsAt = dayjs(existingSubscription?.trialEndsAt);
+  const startsAt =
+    trialEndsAt.isValid() && trialEndsAt.isAfter(dayjs().add(10, "minutes"))
+      ? trialEndsAt.toDate()
+      : null;
   const payer = space.userId === userId ? space.user : space.partner;
 
   if (existingSubscription?.razorpaySubscriptionId) {
@@ -128,12 +125,13 @@ export const createCheckout = async (
         remoteSubscription.status,
       )
     ) {
+      const cachedActiveUntil = dayjs(existingSubscription.activeUntil);
       await prisma.subscription.update({
         where: { id: existingSubscription.id },
         data: {
           activeUntil:
             dateFromUnixSeconds(remoteSubscription.current_end) ??
-            existingSubscription.activeUntil,
+            (cachedActiveUntil.isValid() ? cachedActiveUntil.toDate() : null),
           razorpayStatus: remoteSubscription.status,
         },
       });

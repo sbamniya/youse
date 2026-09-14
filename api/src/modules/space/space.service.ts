@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 import { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
@@ -32,8 +34,8 @@ export async function writableSpace(userId: string) {
   const subscription = space.subscription;
   const active =
     !subscription ||
-    (subscription.trialEndsAt && subscription.trialEndsAt > new Date()) ||
-    (subscription.activeUntil && subscription.activeUntil > new Date());
+    dayjs(subscription.trialEndsAt).isAfter() ||
+    dayjs(subscription.activeUntil).isAfter();
   if (!active)
     throw new AppError(
       402,
