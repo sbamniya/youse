@@ -1,4 +1,3 @@
-import { PortalHost } from "@rn-primitives/portal";
 import dayjs, { type Dayjs } from "dayjs";
 import { X } from "lucide-react-native";
 import { type ReactElement, useState } from "react";
@@ -15,8 +14,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
-
-const DATE_PICKER_SELECT_PORTAL_HOST = "date-picker-select";
 
 type DatePickerTriggerProps = {
   displayValue: string;
@@ -69,10 +66,8 @@ function DatePicker({
             onValueChange(date);
             setOpen(false);
           }}
-          portalHost={DATE_PICKER_SELECT_PORTAL_HOST}
           value={value ?? dayjs()}
         />
-        <PortalHost name={DATE_PICKER_SELECT_PORTAL_HOST} />
       </AlertDialogContent>
     </AlertDialog>
   );
@@ -105,4 +100,3 @@ function DatePickerField({ label, ...props }: DatePickerFieldProps) {
 
 export { DatePicker, DatePickerField };
 export type { DatePickerProps, DatePickerTriggerProps };
-

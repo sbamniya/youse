@@ -1,17 +1,10 @@
 import dayjs, { type Dayjs } from "dayjs";
-import { ChevronLeft, ChevronRight } from "lucide-react-native";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useMemo, useState } from "react";
 import { Pressable, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 import { ThemedIcon } from "@/components/app/themed-icon";
-import {
-  NativeSelectScrollView,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Text } from "@/components/ui/text";
 import { cn } from "@/lib/utils";
 
@@ -38,8 +31,6 @@ type CalendarProps = {
   onMonthChange?: (month: Dayjs) => void;
   getMarkerCount?: (date: Dayjs) => number;
   className?: string;
-  // needed so the month/year dropdowns render above a parent AlertDialog/Dialog
-  portalHost?: string;
 };
 
 function getCalendarWeeks(month: Dayjs) {
@@ -54,8 +45,9 @@ function getCalendarWeeks(month: Dayjs) {
   return Array.from({ length: cells.length / 7 }, (_, index) => cells.slice(index * 7, index * 7 + 7));
 }
 
-function Calendar({ value, onValueChange, month: controlledMonth, onMonthChange, getMarkerCount, className, portalHost }: CalendarProps) {
+function Calendar({ value, onValueChange, month: controlledMonth, onMonthChange, getMarkerCount, className }: CalendarProps) {
   const [uncontrolledMonth, setUncontrolledMonth] = useState(() => value.startOf("month"));
+  const [openPicker, setOpenPicker] = useState<"month" | "year" | null>(null);
   const month = controlledMonth ?? uncontrolledMonth;
   const setMonth = (update: (current: Dayjs) => Dayjs) => {
     const nextMonth = update(month).startOf("month");
@@ -69,43 +61,75 @@ function Calendar({ value, onValueChange, month: controlledMonth, onMonthChange,
   );
 
   return (
-    <View className={className}>
+    <View className={cn("relative", className)}>
       <View className="flex-row items-center justify-between">
         <View className="flex-row items-center gap-2">
-          <Select
-            onValueChange={(option) => {
-              if (option) setMonth((current) => current.month(Number(option.value)));
-            }}
-            value={{ label: MONTHS[month.month()], value: String(month.month()) }}
-          >
-            <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
-              <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Month" />
-            </SelectTrigger>
-            <SelectContent className="max-h-72" portalHost={portalHost} position="popper">
-              <NativeSelectScrollView>
-                {MONTHS.map((monthName, index) => (
-                  <SelectItem key={monthName} label={monthName} value={String(index)} />
-                ))}
-              </NativeSelectScrollView>
-            </SelectContent>
-          </Select>
-          <Select
-            onValueChange={(option) => {
-              if (option) setMonth((current) => current.year(Number(option.value)));
-            }}
-            value={{ label: String(month.year()), value: String(month.year()) }}
-          >
-            <SelectTrigger className="h-auto border-0 bg-transparent px-2 py-1 shadow-none">
-              <SelectValue className="font-serif text-[26px] text-foreground" placeholder="Year" />
-            </SelectTrigger>
-            <SelectContent className="max-h-72" portalHost={portalHost} position="popper">
-              <NativeSelectScrollView>
-                {years.map((year) => (
-                  <SelectItem key={year} label={String(year)} value={String(year)} />
-                ))}
-              </NativeSelectScrollView>
-            </SelectContent>
-          </Select>
+          <View className="relative z-50">
+            <Pressable
+              accessibilityHint="Shows the available months"
+              accessibilityRole="button"
+              accessibilityState={{ expanded: openPicker === "month" }}
+              className="flex-row items-center gap-1 px-2 py-1"
+              onPress={() => setOpenPicker((current) => current === "month" ? null : "month")}
+            >
+              <Text className="font-serif text-[26px] text-foreground">{MONTHS[month.month()]}</Text>
+              <ThemedIcon icon={ChevronDown} size={16} strokeWidth={2} tone="muted" />
+            </Pressable>
+            {openPicker === "month" ? (
+              <View className="absolute left-0 top-full z-50 max-h-60 min-w-40 overflow-hidden rounded-xl border border-border-subtle bg-card p-1 shadow-lg shadow-black/30">
+                <ScrollView nestedScrollEnabled showsVerticalScrollIndicator>
+                  {MONTHS.map((monthName, index) => (
+                    <Pressable
+                      key={monthName}
+                      accessibilityRole="button"
+                      className={cn("rounded-lg px-3 py-2", index === month.month() && "bg-primary")}
+                      onPress={() => {
+                        setMonth((current) => current.month(index));
+                        setOpenPicker(null);
+                      }}
+                    >
+                      <Text className={cn("text-base text-foreground", index === month.month() && "font-semibold text-primary-foreground")}>
+                        {monthName}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+            ) : null}
+          </View>
+          <View className="relative z-50">
+            <Pressable
+              accessibilityHint="Shows the available years"
+              accessibilityRole="button"
+              accessibilityState={{ expanded: openPicker === "year" }}
+              className="flex-row items-center gap-1 px-2 py-1"
+              onPress={() => setOpenPicker((current) => current === "year" ? null : "year")}
+            >
+              <Text className="font-serif text-[26px] text-foreground">{month.year()}</Text>
+              <ThemedIcon icon={ChevronDown} size={16} strokeWidth={2} tone="muted" />
+            </Pressable>
+            {openPicker === "year" ? (
+              <View className="absolute left-0 top-full z-50 max-h-60 min-w-40 overflow-hidden rounded-xl border border-border-subtle bg-card p-1 shadow-lg shadow-black/30">
+                <ScrollView nestedScrollEnabled showsVerticalScrollIndicator>
+                  {years.map((year) => (
+                    <Pressable
+                      key={year}
+                      accessibilityRole="button"
+                      className={cn("rounded-lg px-3 py-2", year === month.year() && "bg-primary")}
+                      onPress={() => {
+                        setMonth((current) => current.year(year));
+                        setOpenPicker(null);
+                      }}
+                    >
+                      <Text className={cn("text-base text-foreground", year === month.year() && "font-semibold text-primary-foreground")}>
+                        {year}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
+            ) : null}
+          </View>
         </View>
         <View className="flex-row items-center gap-5">
           <Pressable accessibilityLabel="Previous month" onPress={() => setMonth((current) => current.subtract(1, "month"))}>

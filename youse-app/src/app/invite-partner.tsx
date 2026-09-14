@@ -1,4 +1,5 @@
 import * as Clipboard from "expo-clipboard";
+import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import {
   Check,
@@ -7,7 +8,7 @@ import {
   Share2
 } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, Share, View } from "react-native";
+import { ActivityIndicator, Pressable, Share, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useCSSVariable } from "uniwind";
 
@@ -18,7 +19,8 @@ import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
-import { DEMO_INVITE, DEMO_INVITE_URL } from "@/lib/invite";
+import { currentSpaceQueryOptions } from "@/lib/current-space";
+import { getInviteUrl } from "@/lib/invite";
 
 export default function InvitePartner() {
   const [copied, setCopied] = useState(false);
@@ -26,16 +28,54 @@ export default function InvitePartner() {
     "--color-foreground",
     "--color-primary-foreground",
   ]) as [string, string];
+  const {
+    data: currentSpace,
+    isError,
+    isPending,
+    refetch,
+  } = useQuery(currentSpaceQueryOptions);
+
+  if (isPending) {
+    return (
+      <AppScrollScreen>
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator colorClassName="accent-primary" size="large" />
+        </View>
+      </AppScrollScreen>
+    );
+  }
+
+  const invitationCode = currentSpace?.invitationCode?.trim();
+  if (isError || !currentSpace || !invitationCode) {
+    return (
+      <AppScrollScreen>
+        <BrandMark className="items-start" />
+        <View className="flex-1 items-center justify-center px-6">
+          <Text className="text-center font-serif text-[18px] text-muted-foreground">
+            We couldn&apos;t load your invitation. Please try again.
+          </Text>
+          <PrimaryAction
+            className="mt-7 w-full"
+            label="Try again"
+            onPress={() => void refetch()}
+          />
+        </View>
+      </AppScrollScreen>
+    );
+  }
+
+  const partnerName = currentSpace.partnerName?.trim() || "your partner";
+  const inviteUrl = getInviteUrl(invitationCode);
 
   const copyCode = async () => {
-    await Clipboard.setStringAsync(DEMO_INVITE.code);
+    await Clipboard.setStringAsync(invitationCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
   };
 
   const shareInvite = async () => {
     await Share.share({
-      message: `Join my Youse space with invite code ${DEMO_INVITE.code}: ${DEMO_INVITE_URL}`,
+      message: `Join my Youse space with invite code ${invitationCode}: ${inviteUrl}`,
     });
   };
 
@@ -46,12 +86,12 @@ export default function InvitePartner() {
         className="mt-4"
         description={"Your space will become shared\nonly after he accepts your invite."}
         eyebrow="CONNECT YOUR SPACE"
-        title={`Invite ${DEMO_INVITE.inviteeName}`}
+        title={`Invite ${partnerName}`}
       />
 
       <View className="mt-10 self-center rounded-2xl bg-foreground p-5">
         <QRCode
-          value={DEMO_INVITE_URL}
+          value={inviteUrl}
           size={120}
           color={primaryForeground}
           backgroundColor={foreground}
@@ -62,7 +102,7 @@ export default function InvitePartner() {
         INVITATION CODE
       </Text>
       <Text className="mt-2 text-center text-[24px] font-bold tracking-[6px] text-foreground">
-        {DEMO_INVITE.displayCode}
+        {formatInvitationCode(invitationCode)}
       </Text>
       <Pressable className="mt-3 flex-row items-center justify-center" onPress={copyCode}>
         <ThemedIcon icon={copied ? Check : ClipboardIcon} size={18} />
@@ -93,4 +133,11 @@ export default function InvitePartner() {
       </View>
     </AppScrollScreen>
   );
+}
+
+function formatInvitationCode(code: string) {
+  const normalizedCode = code.toUpperCase();
+  return normalizedCode.length > 2
+    ? `${normalizedCode.slice(0, 2)} · ${normalizedCode.slice(2)}`
+    : normalizedCode;
 }

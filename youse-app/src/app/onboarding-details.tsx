@@ -159,7 +159,15 @@ function OnboardingForm({
   const [anniversary, setAnniversary] = useState<Dayjs | null>(
     initialAnniversary?.isValid() ? initialAnniversary : null,
   );
-  const [step, setStep] = useState(1);
+  const hasCompletedProfile = Boolean(
+    initialUser.name?.trim() &&
+      initialUser.profilePicture &&
+      initialBirthday?.isValid() &&
+      initialUser.gender,
+  );
+  const [step, setStep] = useState(
+    isAcceptFlow || !hasCompletedProfile ? 1 : 2,
+  );
   const [errors, setErrors] = useState<FormErrors>({});
 
   const clearError = (field: FormField) => {

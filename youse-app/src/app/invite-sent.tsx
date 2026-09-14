@@ -7,6 +7,7 @@ import { ThemedIcon } from "@/components/app/themed-icon";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
+import { currentSpaceQueryOptions } from "@/lib/current-space";
 import { getInviteUrl } from "@/lib/invite";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -56,6 +57,7 @@ export default function InviteSent() {
     queryFn: getCurrentUser,
     retry: false,
   });
+  const { data: currentSpace } = useQuery(currentSpaceQueryOptions);
 
   if (isPending) {
     return (
@@ -85,8 +87,10 @@ export default function InviteSent() {
     );
   }
 
-  const partnerName = user.partnerName?.trim() || "your partner";
-  const invitationCode = user.invitationCode?.trim();
+  const partnerName =
+    currentSpace?.partnerName?.trim() || user.partnerName?.trim() || "your partner";
+  const invitationCode =
+    currentSpace?.invitationCode?.trim() || user.invitationCode?.trim();
   const displayCode = invitationCode
     ? formatInvitationCode(invitationCode)
     : "Unavailable";

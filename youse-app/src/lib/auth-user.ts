@@ -45,5 +45,11 @@ export function getUserDestination(
     return mode === "login" ? "/invite-code" : "/invite-sent";
   }
 
-  return "/invite-partner";
+  // Relationship setup is completed in onboarding steps 2 and 3. A user who
+  // has finished their profile but has not created a shared space must resume
+  // that flow instead of being sent to the old invite-only screen.
+  return {
+    pathname: "/onboarding-details",
+    params: { mode, userId: user.id },
+  };
 }
