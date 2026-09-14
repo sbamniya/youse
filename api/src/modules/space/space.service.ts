@@ -1,18 +1,28 @@
 import { Prisma } from "../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { AppError } from "../../utils/app-error";
+import Cacheable from "../../utils/cacheable";
 import { getUserProfile, userByIdCacheable } from "../auth/auth.service";
 import type {
   SaveRelationshipInput,
   UnlinkRelationshipInput,
 } from "./space.schema";
 
+export const userSpaceCache = new Cacheable({
+  generateKey: (userId: string) => `user_space:${userId}`,
+  fetchData: async (userId: string) => {
+    const space = await prisma.userPartner.findFirst({
+      where: { deletedAt: null, OR: [{ userId }, { partnerId: userId }] },
+      include: { subscription: true, user: true, partner: true },
+      orderBy: { joinedAt: "desc" },
+    });
+    return space;
+  },
+  ttlSeconds: 60, // cache for 60 seconds
+});
+
 export async function spaceFor(userId: string) {
-  const space = await prisma.userPartner.findFirst({
-    where: { deletedAt: null, OR: [{ userId }, { partnerId: userId }] },
-    include: { subscription: true, user: true, partner: true },
-    orderBy: { joinedAt: "desc" },
-  });
+  const space = await userSpaceCache.execute(userId);
   if (!space) throw new AppError(404, "No shared space found");
   return space;
 }
@@ -62,6 +72,21 @@ const isInviteCodeUsed = async (
   return Boolean(partner);
 };
 
+export const userHasPreviousRelationShipCache = new Cacheable({
+  generateKey: (userId: string) => `user_has_previous_relationship:${userId}`,
+  fetchData: async (userId: string) => {
+    const count = await prisma.userPartner.count({
+      where: {
+        status: "accepted",
+        deletedAt: { not: null },
+        OR: [{ userId }, { partnerId: userId }],
+      },
+    });
+    return count > 0;
+  },
+  ttlSeconds: 60, // cache for 60 seconds
+});
+
 export const saveRelationship = async (
   userId: string,
   input: SaveRelationshipInput,
@@ -110,7 +135,10 @@ export const saveRelationship = async (
     });
     return { relationship, inviteCode: invitationCode, created: true };
   });
-  await userByIdCacheable.refresh(userId);
+  await Promise.all([
+    userByIdCacheable.refresh(userId),
+    userHasPreviousRelationShipCache.refresh(userId),
+  ]);
   return { ...result, user: await getUserProfile(userId) };
 };
 
@@ -182,9 +210,15 @@ export const getLatestPartnerActivity = async (userId: string) => {
       createdAt: listItem.createdAt,
       title: `Added ${listItem.title} to ${listItem.list.name}`,
     },
-  ].filter((activity): activity is NonNullable<typeof activity> => Boolean(activity));
+  ].filter((activity): activity is NonNullable<typeof activity> =>
+    Boolean(activity),
+  );
 
-  return activities.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
+  return (
+    activities.sort(
+      (a, b) => b.createdAt.getTime() - a.createdAt.getTime(),
+    )[0] ?? null
+  );
 };
 
 export const exportSpace = async (userId: string) => {
@@ -249,7 +283,13 @@ export const unlinkRelationship = async (
   });
   await Promise.all([
     userByIdCacheable.refresh(userId),
-    ...(partnerId ? [userByIdCacheable.refresh(partnerId)] : []),
+    userSpaceCache.refresh(userId),
+    ...(partnerId
+      ? [
+          userByIdCacheable.refresh(partnerId),
+          userSpaceCache.refresh(partnerId),
+        ]
+      : []),
   ]);
   return { mode: input.mode, unlinkedAt: new Date() };
 };
@@ -289,23 +329,30 @@ export const reconnectRelationship = async (userId: string) => {
       },
     };
   await prisma.$transaction(async (transaction) => {
-    await transaction.userPartner.update({
-      where: { id: space.id },
-      data: { deletedAt: null, brokenAt: null, restoredAt: new Date() },
-    });
-    await transaction.user.update({
-      where: { id: space.userId },
-      data: { partnerId: space.partnerId },
-    });
-    if (space.partnerId)
-      await transaction.user.update({
-        where: { id: space.partnerId },
-        data: { partnerId: space.userId },
-      });
-    await transaction.reconnectRequest.deleteMany({
-      where: { userPartnerId: space.id },
-    });
+    await Promise.all([
+      transaction.userPartner.update({
+        where: { id: space.id },
+        data: { deletedAt: null, brokenAt: null, restoredAt: new Date() },
+      }),
+      transaction.user.update({
+        where: { id: space.userId },
+        data: { partnerId: space.partnerId },
+      }),
+      space.partnerId
+        ? transaction.user.update({
+            where: { id: space.partnerId },
+            data: { partnerId: space.userId },
+          })
+        : null,
+      transaction.reconnectRequest.deleteMany({
+        where: { userPartnerId: space.id },
+      }),
+    ]);
   });
+  await Promise.allSettled([
+    userSpaceCache.refresh(userId),
+    userHasPreviousRelationShipCache.refresh(userId),
+  ]);
   return {
     statusCode: 200,
     body: { mutual: true, message: "You are reconnected." },
@@ -321,5 +368,19 @@ export const saveQuestionTime = async (
     where: { id: space.id },
     data: { dailyQuestionTime: new Date(input.dailyQuestionTime) },
   });
+  await Promise.allSettled([
+    userSpaceCache.refresh(updatedSpace.userId),
+    updatedSpace.partnerId
+      ? userSpaceCache.refresh(updatedSpace.partnerId)
+      : null,
+    userByIdCacheable.refresh(updatedSpace.userId),
+    updatedSpace.partnerId
+      ? userByIdCacheable.refresh(updatedSpace.partnerId)
+      : null,
+    userHasPreviousRelationShipCache.refresh(updatedSpace.userId),
+    updatedSpace.partnerId
+      ? userHasPreviousRelationShipCache.refresh(updatedSpace.partnerId)
+      : null,
+  ]);
   return updatedSpace;
 };

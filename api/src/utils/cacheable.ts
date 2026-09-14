@@ -65,6 +65,14 @@ class Cacheable<T, U extends any[]> {
     return freshData;
   }
 
+  async executeOrThrow(...args: U): Promise<T> {
+    const result = await this.execute(...args);
+    if (result === null) {
+      throw new Error("Cacheable: Data not found");
+    }
+    return result;
+  }
+
   async refresh(...args: U): Promise<T | null> {
     const freshData = await this.options.fetchData(...args);
     await this.cacheValue(await this.options.generateKey(...args), freshData);

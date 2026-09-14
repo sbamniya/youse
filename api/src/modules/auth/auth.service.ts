@@ -17,6 +17,7 @@ import type {
   UpdateProfileInput,
   VerifyOtpInput,
 } from "./auth.schema";
+import { userHasPreviousRelationShipCache } from "../space/space.service";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -31,33 +32,36 @@ function parseExpiryToMs(expiry: string): number {
   return value * unitMs;
 }
 
-const sanitizeUser = (user: {
-  id: string;
-  phone: string;
-  name: string | null;
-  profilePicture: string | null;
-  timezone: string | null;
-  partnerId: string | null;
-  gender: string | null;
-  birthday: Date | null;
-  pokesEnabled: boolean;
-  userPartnersOne: {
+const sanitizeUser = (
+  user: {
     id: string;
-    invitationCode: string | null;
-    partnerName: string | null;
-    anniversary: Date | null;
-    goal: string | null;
-    relationshipType: string | null;
-  }[];
-  userPartnersTwo: {
-    id: string;
-    invitationCode: string | null;
-    partnerName: string | null;
-    anniversary: Date | null;
-    goal: string | null;
-    relationshipType: string | null;
-  }[];
-}, hasPreviousRelationship = false) => {
+    phone: string;
+    name: string | null;
+    profilePicture: string | null;
+    timezone: string | null;
+    partnerId: string | null;
+    gender: string | null;
+    birthday: Date | null;
+    pokesEnabled: boolean;
+    userPartnersOne: {
+      id: string;
+      invitationCode: string | null;
+      partnerName: string | null;
+      anniversary: Date | null;
+      goal: string | null;
+      relationshipType: string | null;
+    }[];
+    userPartnersTwo: {
+      id: string;
+      invitationCode: string | null;
+      partnerName: string | null;
+      anniversary: Date | null;
+      goal: string | null;
+      relationshipType: string | null;
+    }[];
+  },
+  hasPreviousRelationship = false,
+) => {
   const space =
     user.userPartnersOne.length > 0
       ? user.userPartnersOne[0]
@@ -87,13 +91,8 @@ const sanitizeUser = (user: {
 const sanitizeUserWithRelationshipHistory = async (
   user: Parameters<typeof sanitizeUser>[0],
 ) => {
-  const hasPreviousRelationship = await prisma.userPartner.count({
-    where: {
-      status: "accepted",
-      deletedAt: { not: null },
-      OR: [{ userId: user.id }, { partnerId: user.id }],
-    },
-  }) > 0;
+  const hasPreviousRelationship =
+    await userHasPreviousRelationShipCache.executeOrThrow(user.id);
 
   return sanitizeUser(user, hasPreviousRelationship);
 };
@@ -151,7 +150,7 @@ export const userByIdCacheable = new Cacheable({
 
 export const requestOtp = async (input: RequestOtpInput) => {
   // const code = IS_PRODUCTION ? String(Math.floor(100_000 + Math.random() * 900_000)): '123456';
-  const code = '123456';
+  const code = "123456";
   await prisma.otpChallenge.updateMany({
     where: { phone: input.phone, consumedAt: null },
     data: { consumedAt: new Date() },
