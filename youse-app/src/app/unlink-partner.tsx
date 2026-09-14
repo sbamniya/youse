@@ -34,14 +34,14 @@ const options = [
     value: "export",
   },
   {
-    comingSoon: true,
-    description: "Keep everything, but move it out of your shared space. Only you can see it.",
+    comingSoon: false,
+    description: "Remove this space from both accounts while preserving a private record of it.",
     icon: Archive,
-    title: "Archive privately",
+    title: "Archive shared space",
     value: "archive",
   },
   {
-    comingSoon: false,
+    comingSoon: true,
     description: "Permanently delete all shared photos, plans and memories from both of our accounts.",
     icon: Trash2,
     title: "Delete shared data",
@@ -53,7 +53,7 @@ export default function UnlinkPartner() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const persistCurrentUser = usePersistCurrentUser();
-  const [selection, setSelection] = useState<DataOption>("delete");
+  const [selection, setSelection] = useState<DataOption>("archive");
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [error, setError] = useState("");
   const { data: currentSpace } = useQuery(currentSpaceQueryOptions);
@@ -65,7 +65,7 @@ export default function UnlinkPartner() {
     || currentSpace?.partnerName?.trim()
     || currentUser?.partnerName?.trim()
     || "your partner";
-  const mode = selection === "archive" ? "archive" : "delete";
+  const mode = selection === "delete" ? "delete" : "archive";
   const unlinkMutation = useMutation({
     mutationFn: () => unlinkRelationship(mode),
     onSuccess: async ({ mode }) => {
@@ -118,7 +118,7 @@ export default function UnlinkPartner() {
               <ThemedIcon icon={ShieldAlert} tone="destructive" size={21} strokeWidth={1.7} />
             </View>
             <View className="ml-4 flex-1 border-l border-destructive/35 pl-4">
-              <Text className="text-[16px] font-bold text-destructive">Unlinking is permanent.</Text>
+              <Text className="text-[16px] font-bold text-destructive">Unlinking removes this shared space.</Text>
               <Text className="mt-1 font-serif text-[14px] text-primary">{partnerName} will be notified.</Text>
             </View>
           </View>
@@ -149,7 +149,7 @@ export default function UnlinkPartner() {
               Unlink {partnerName}?
             </AlertDialogTitle>
             <AlertDialogDescription className="mt-2 text-left text-[16px] leading-6 text-muted-foreground">
-              This permanently deletes your shared photos, plans, lists, and memories for both of you.
+              This removes your shared space from both accounts. Your relationship record is kept safely archived.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="mt-2 gap-3">
@@ -164,7 +164,7 @@ export default function UnlinkPartner() {
                 unlinkMutation.mutate();
               }}
             >
-              <Text>{unlinkMutation.isPending ? "Unlinking…" : "Unlink permanently"}</Text>
+              <Text>{unlinkMutation.isPending ? "Unlinking…" : "Unlink shared space"}</Text>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

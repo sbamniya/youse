@@ -240,13 +240,12 @@ export const unlinkRelationship = async (
         where: { id: partnerId },
         data: { partnerId: null },
       });
-    if (input.mode === "delete")
-      await transaction.userPartner.delete({ where: { id: space.id } });
-    else
-      await transaction.userPartner.update({
-        where: { id: space.id },
-        data: { deletedAt: new Date(), brokenAt: new Date() },
-      });
+    // Keep the relationship and its shared records for history, reconnects,
+    // and auditability. All normal space queries exclude soft-deleted spaces.
+    await transaction.userPartner.update({
+      where: { id: space.id },
+      data: { deletedAt: new Date(), brokenAt: new Date() },
+    });
   });
   await Promise.all([
     userByIdCacheable.refresh(userId),

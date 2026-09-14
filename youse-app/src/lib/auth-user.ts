@@ -16,6 +16,7 @@ export type AuthUser = {
   anniversary: string | null;
   relationshipType: string | null;
   relationshipGoal: string | null;
+  hasPreviousRelationship: boolean;
 };
 
 export type AuthenticationResponse = {
@@ -43,6 +44,10 @@ export function getUserDestination(
 
   if (user.partnerSpace) {
     return mode === "login" ? "/invite-code" : "/invite-sent";
+  }
+
+  if (user.hasPreviousRelationship) {
+    return "/invite-code";
   }
 
   // Relationship setup is completed in onboarding steps 2 and 3. A user who

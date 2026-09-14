@@ -57,7 +57,7 @@ const sanitizeUser = (user: {
     goal: string | null;
     relationshipType: string | null;
   }[];
-}) => {
+}, hasPreviousRelationship = false) => {
   const space =
     user.userPartnersOne.length > 0
       ? user.userPartnersOne[0]
@@ -80,7 +80,22 @@ const sanitizeUser = (user: {
     anniversary: space?.anniversary ?? null,
     relationshipGoal: space?.goal ?? null,
     relationshipType: space?.relationshipType ?? null,
+    hasPreviousRelationship,
   };
+};
+
+const sanitizeUserWithRelationshipHistory = async (
+  user: Parameters<typeof sanitizeUser>[0],
+) => {
+  const hasPreviousRelationship = await prisma.userPartner.count({
+    where: {
+      status: "accepted",
+      deletedAt: { not: null },
+      OR: [{ userId: user.id }, { partnerId: user.id }],
+    },
+  }) > 0;
+
+  return sanitizeUser(user, hasPreviousRelationship);
 };
 
 const issueTokens = async (user: { id: string; phone: string }) => {
@@ -187,7 +202,7 @@ export const verifyOtp = async (input: VerifyOtpInput) => {
   });
   await userByIdCacheable.refresh(user.id);
   const tokens = await issueTokens(user);
-  return { user: sanitizeUser(user), ...tokens };
+  return { user: await sanitizeUserWithRelationshipHistory(user), ...tokens };
 };
 
 export const refreshTokens = async (refreshToken: string) => {
@@ -217,7 +232,7 @@ export const refreshTokens = async (refreshToken: string) => {
   });
   const tokens = await issueTokens(user);
 
-  return { user: sanitizeUser(user), ...tokens };
+  return { user: await sanitizeUserWithRelationshipHistory(user), ...tokens };
 };
 
 export const logoutUser = async (refreshToken: string) => {
@@ -242,7 +257,7 @@ export const getUserProfile = async (userId: string) => {
   if (!user) {
     throw new AppError(404, "User not found");
   }
-  return sanitizeUser(user);
+  return sanitizeUserWithRelationshipHistory(user);
 };
 
 export const updateUserProfile = async (
@@ -267,7 +282,7 @@ export const updateUserProfile = async (
     include: profileRelations,
   });
   await userByIdCacheable.refresh(userId);
-  return sanitizeUser(user);
+  return sanitizeUserWithRelationshipHistory(user);
 };
 
 export const updateProfilePicture = async (
@@ -286,5 +301,5 @@ export const updateProfilePicture = async (
     throw error;
   }
   await userByIdCacheable.refresh(userId);
-  return sanitizeUser(user);
+  return sanitizeUserWithRelationshipHistory(user);
 };
