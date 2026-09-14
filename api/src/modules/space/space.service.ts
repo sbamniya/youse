@@ -116,6 +116,77 @@ export const saveRelationship = async (
 
 export const getCurrentRelationship = (userId: string) => spaceFor(userId);
 
+export const getLatestPartnerActivity = async (userId: string) => {
+  const space = await spaceFor(userId);
+  const partnerId = space.userId === userId ? space.partnerId : space.userId;
+  if (!partnerId) return null;
+
+  const [memory, photo, plan, listItem] = await Promise.all([
+    prisma.partnerMemories.findFirst({
+      where: { userPartnerId: space.id, createdBy: partnerId, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, createdAt: true },
+    }),
+    prisma.partnerMemoryItem.findFirst({
+      where: {
+        uploadedBy: partnerId,
+        deletedAt: null,
+        partnerMemory: { userPartnerId: space.id, deletedAt: null },
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        createdAt: true,
+        partnerMemory: { select: { id: true, title: true } },
+      },
+    }),
+    prisma.userPartnerPlans.findFirst({
+      where: { userPartnerId: space.id, createdBy: partnerId },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, createdAt: true },
+    }),
+    prisma.sharedListItem.findFirst({
+      where: { createdBy: partnerId, list: { userPartnerId: space.id } },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        list: { select: { name: true } },
+      },
+    }),
+  ]);
+
+  const activities = [
+    memory && {
+      entityId: memory.id,
+      entityType: "memory" as const,
+      createdAt: memory.createdAt,
+      title: `Created a memory: ${memory.title}`,
+    },
+    photo && {
+      entityId: photo.partnerMemory.id,
+      entityType: "memory" as const,
+      createdAt: photo.createdAt,
+      title: `Shared a photo in ${photo.partnerMemory.title}`,
+    },
+    plan && {
+      entityId: plan.id,
+      entityType: "plan" as const,
+      createdAt: plan.createdAt,
+      title: `Created a plan: ${plan.title}`,
+    },
+    listItem && {
+      entityId: listItem.id,
+      entityType: "list" as const,
+      createdAt: listItem.createdAt,
+      title: `Added ${listItem.title} to ${listItem.list.name}`,
+    },
+  ].filter((activity): activity is NonNullable<typeof activity> => Boolean(activity));
+
+  return activities.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
+};
+
 export const exportSpace = async (userId: string) => {
   const space = await spaceFor(userId);
   const [memories, plans, lists, checkIns, questions, moods, pokes] =

@@ -382,6 +382,7 @@ model SharedList {
 model SharedListItem {
     id        String   @id @default(uuid())
     listId    String
+    createdBy String?
     title     String
     note      String?
     completed Boolean  @default(false)

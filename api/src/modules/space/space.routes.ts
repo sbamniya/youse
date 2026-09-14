@@ -17,6 +17,7 @@ spaceRouter.put(
   controller.saveRelationship,
 );
 spaceRouter.get("/current", controller.getCurrentRelationship);
+spaceRouter.get("/partner-activity/latest", controller.getLatestPartnerActivity);
 spaceRouter.post(
   "/unlink",
   validate(unlinkRelationshipSchema),

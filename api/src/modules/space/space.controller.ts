@@ -32,6 +32,18 @@ export const getCurrentRelationship = async (
   }
 };
 
+export const getLatestPartnerActivity = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    res.json(await service.getLatestPartnerActivity(req.user!.id));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const exportSpace = async (
   req: Request,
   res: Response,

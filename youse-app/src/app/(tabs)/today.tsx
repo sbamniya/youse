@@ -31,6 +31,7 @@ import {
   currentSpaceQueryOptions,
   getPartnerFromSpace,
   getSubscriptionDaysRemaining,
+  latestPartnerActivityQueryOptions,
 } from "@/lib/current-space";
 import { currentUserQueryKey, getCurrentUser } from "@/lib/current-user";
 import { currentDailyQuestionQueryOptions } from "@/lib/daily-question-api";
@@ -85,6 +86,7 @@ export default function Today() {
   const { data: upcomingPlans, isPending: isUpcomingPlansPending } = useQuery(
     upcomingPlansQueryOptions,
   );
+  const { data: partnerActivity } = useQuery(latestPartnerActivityQueryOptions);
   const { data: todayMood, isPending: isTodayMoodPending } = useQuery(
     todayMoodQueryOptions,
   );
@@ -540,37 +542,50 @@ export default function Today() {
         <View className="mx-4 my-5 h-px bg-border-subtle" />
 
         {/* From partner */}
-        <View className="px-4">
-          <Text
-            className="text-[10px] font-semibold text-muted-foreground"
-            style={{ letterSpacing: 2 }}
-          >
-            FROM {partnerName.toLocaleUpperCase()}
-          </Text>
-          <Pressable className="mt-2.5 flex-row items-center gap-3 rounded-2xl border border-border-subtle bg-card p-3.5">
-            <ProfileAvatar
-              imageUrl={partnerImage}
-              className="h-10 w-10"
-              iconSize={18}
-            />
-            <View className="flex-1">
-              <Text className="text-[14px] font-semibold text-foreground">
-                Shared a photo
+        {partnerActivity ? (
+          <>
+            <View className="px-4">
+              <Text
+                className="text-[10px] font-semibold text-muted-foreground"
+                style={{ letterSpacing: 2 }}
+              >
+                FROM {partnerName.toLocaleUpperCase()}
               </Text>
-              <Text className="text-[12px] text-muted-foreground">
-                22 minutes ago
-              </Text>
+              <Pressable
+                accessibilityLabel={partnerActivity.title}
+                className="mt-2.5 flex-row items-center gap-3 rounded-2xl border border-border-subtle bg-card p-3.5 active:opacity-70"
+                onPress={() =>
+                  router.push(
+                    partnerActivity.entityType === "memory"
+                      ? "/memories"
+                      : "/plans",
+                  )
+                }
+              >
+                <ProfileAvatar
+                  imageUrl={partnerImage}
+                  className="h-10 w-10"
+                  iconSize={18}
+                />
+                <View className="flex-1">
+                  <Text className="text-[14px] font-semibold text-foreground">
+                    {partnerActivity.title}
+                  </Text>
+                  <Text className="text-[12px] text-muted-foreground">
+                    {formatRelativeTime(partnerActivity.createdAt)}
+                  </Text>
+                </View>
+                <ThemedIcon
+                  icon={ChevronRight}
+                  tone="muted"
+                  size={18}
+                  strokeWidth={2}
+                />
+              </Pressable>
             </View>
-            <ThemedIcon
-              icon={ChevronRight}
-              tone="muted"
-              size={18}
-              strokeWidth={2}
-            />
-          </Pressable>
-        </View>
-
-        <View className="mx-4 my-5 h-px bg-border-subtle" />
+            <View className="mx-4 my-5 h-px bg-border-subtle" />
+          </>
+        ) : null}
 
         {/* Send a poke */}
         <View className="px-4">
@@ -656,4 +671,21 @@ function ProfileAvatar({
       <ThemedIcon icon={UserRound} tone="muted" size={iconSize} />
     </View>
   );
+}
+
+function formatRelativeTime(value: string) {
+  const elapsedMilliseconds = Date.now() - new Date(value).getTime();
+  if (!Number.isFinite(elapsedMilliseconds) || elapsedMilliseconds < 0) {
+    return "Just now";
+  }
+
+  const minutes = Math.floor(elapsedMilliseconds / 60_000);
+  if (minutes < 1) return "Just now";
+  if (minutes < 60) return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
+
+  const days = Math.floor(hours / 24);
+  return `${days} ${days === 1 ? "day" : "days"} ago`;
 }

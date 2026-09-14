@@ -49,6 +49,18 @@ export type CurrentSpace = {
 };
 
 export const currentSpaceQueryKey = ["spaces", "current"] as const;
+export const latestPartnerActivityQueryKey = [
+  "spaces",
+  "partner-activity",
+  "latest",
+] as const;
+
+export type PartnerActivity = {
+  entityId: string;
+  entityType: "memory" | "plan" | "list";
+  createdAt: string;
+  title: string;
+};
 
 export async function getCurrentSpace(): Promise<CurrentSpace> {
   return api.get<CurrentSpace>("/space/current");
@@ -67,6 +79,15 @@ export const currentSpaceQueryOptions = queryOptions({
   queryKey: currentSpaceQueryKey,
   queryFn: getCurrentSpace,
   staleTime: 5 * 60 * 1000,
+});
+
+export async function getLatestPartnerActivity(): Promise<PartnerActivity | null> {
+  return api.get<PartnerActivity | null>("/space/partner-activity/latest");
+}
+
+export const latestPartnerActivityQueryOptions = queryOptions({
+  queryKey: latestPartnerActivityQueryKey,
+  queryFn: getLatestPartnerActivity,
 });
 
 export function getPartnerFromSpace(
