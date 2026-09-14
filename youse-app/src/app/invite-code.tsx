@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { KeyRound } from "lucide-react-native";
 import { useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -21,6 +21,7 @@ import {
 
 export default function InviteCode() {
   const queryClient = useQueryClient();
+  const { flow } = useLocalSearchParams<{ flow?: "authenticated" }>();
   const [inviteCode, setInviteCode] = useState("");
   const [error, setError] = useState("");
 
@@ -31,7 +32,13 @@ export default function InviteCode() {
     mutationFn: verifyInvitationCode,
     onSuccess: (response, code) => {
       queryClient.setQueryData(invitationQueryKey(code), response);
-      router.push({ pathname: "/invite-welcome", params: { code } });
+      router.push({
+        pathname: "/invite-welcome",
+        params: {
+          code,
+          ...(flow === "authenticated" ? { flow } : {}),
+        },
+      });
     },
     onError: () => {
       setError("We couldn't find that invite. Check the code and try again.");

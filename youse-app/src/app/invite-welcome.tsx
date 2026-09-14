@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import { router, useLocalSearchParams } from "expo-router";
 import { Heart, UserRound } from "lucide-react-native";
@@ -10,17 +10,28 @@ import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Text } from "@/components/ui/text";
+import { getUserDestination } from "@/lib/auth-user";
+import {
+  refreshCurrentUser,
+  usePersistCurrentUser,
+} from "@/lib/current-user";
 import { getImageUrl } from "@/lib/image-url";
 import {
   VERIFIED_INVITATION_STALE_TIME_MS,
+  acceptInvitationCode,
   invitationQueryKey,
   normalizeInvitationCode,
   verifyInvitationCode,
 } from "@/lib/invite";
 
 export default function InviteWelcome() {
-  const { code } = useLocalSearchParams<{ code?: string }>();
+  const persistCurrentUser = usePersistCurrentUser();
+  const { code, flow } = useLocalSearchParams<{
+    code?: string;
+    flow?: "authenticated";
+  }>();
   const normalizedCode = normalizeInvitationCode(code ?? "");
+  const isAuthenticatedFlow = flow === "authenticated";
   const {
     data,
     isError,
@@ -34,6 +45,20 @@ export default function InviteWelcome() {
     enabled: Boolean(normalizedCode),
     retry: false,
     staleTime: VERIFIED_INVITATION_STALE_TIME_MS,
+  });
+  const {
+    error: acceptError,
+    isPending: isAccepting,
+    mutate: acceptInvitation,
+  } = useMutation({
+    mutationFn: async () => {
+      await acceptInvitationCode(normalizedCode);
+      return refreshCurrentUser();
+    },
+    onSuccess: async (updatedUser) => {
+      await persistCurrentUser(updatedUser);
+      router.replace(getUserDestination(updatedUser, "login"));
+    },
   });
 
   if (!normalizedCode || isError) {
@@ -129,8 +154,14 @@ export default function InviteWelcome() {
 
       <PrimaryAction
         className="mt-8"
-        label="Continue"
-        onPress={() =>
+        disabled={isAccepting}
+        label={isAccepting ? "Accepting invite..." : "Continue"}
+        onPress={() => {
+          if (isAuthenticatedFlow) {
+            acceptInvitation();
+            return;
+          }
+
           router.push({
             pathname: "/email-otp",
             params: {
@@ -138,10 +169,15 @@ export default function InviteWelcome() {
               invitationCode: normalizedCode,
               name: invitation.partnerName,
             },
-          })
-        }
+          });
+        }}
         showArrow
       />
+      {acceptError ? (
+        <Text className="mt-3 font-serif text-[15px] text-destructive">
+          We couldn&apos;t accept this invitation. Please try again.
+        </Text>
+      ) : null}
     </AppScrollScreen>
   );
 }

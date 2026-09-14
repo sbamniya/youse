@@ -38,7 +38,12 @@ export default function UnlinkSuccess() {
       <PrimaryAction
         className="mt-8"
         label="Enter an invite code"
-        onPress={() => router.replace("/invite-code")}
+        onPress={() =>
+          router.replace({
+            pathname: "/invite-code",
+            params: { flow: "authenticated" },
+          })
+        }
       />
       <Pressable
         accessibilityRole="button"

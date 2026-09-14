@@ -47,7 +47,10 @@ export function getUserDestination(
   }
 
   if (user.hasPreviousRelationship) {
-    return "/invite-code";
+    return {
+      pathname: "/invite-code",
+      params: { flow: "authenticated" },
+    };
   }
 
   // Relationship setup is completed in onboarding steps 2 and 3. A user who

@@ -75,10 +75,15 @@ type SaveRelationshipResponse = {
 };
 
 type OnboardingFlow = "accept";
+type OnboardingMode = "login" | "returning";
 
 export default function OnboardingDetails() {
-  const { flow } = useLocalSearchParams<{ flow?: OnboardingFlow }>();
+  const { flow, mode } = useLocalSearchParams<{
+    flow?: OnboardingFlow;
+    mode?: OnboardingMode;
+  }>();
   const isAcceptFlow = flow === "accept";
+  const isReturningUser = mode === "returning";
   const {
     data: user,
     isError,
@@ -118,15 +123,23 @@ export default function OnboardingDetails() {
     );
   }
 
-  return <OnboardingForm initialUser={user} isAcceptFlow={isAcceptFlow} />;
+  return (
+    <OnboardingForm
+      initialUser={user}
+      isAcceptFlow={isAcceptFlow}
+      isReturningUser={isReturningUser}
+    />
+  );
 }
 
 function OnboardingForm({
   initialUser,
   isAcceptFlow,
+  isReturningUser,
 }: {
   initialUser: AuthUser;
   isAcceptFlow: boolean;
+  isReturningUser: boolean;
 }) {
   const persistCurrentUser = usePersistCurrentUser();
   const initialBirthday = initialUser.birthday
@@ -358,14 +371,18 @@ function OnboardingForm({
             step === 1
               ? "A few details help us make\nyour experience more meaningful."
               : step === 2
-                ? "Choose what you want to make\nmore meaningful together."
+                ? isReturningUser
+                  ? "Start a new chapter together,\nor join your partner’s space."
+                  : "Choose what you want to make\nmore meaningful together."
                 : "A few details help us celebrate\nyour relationship."
           }
           title={
             step === 1
               ? "Tell us about you"
               : step === 2
-                ? "What brings you here?"
+                ? isReturningUser
+                  ? `Welcome back, ${initialUser.name?.trim() || "friend"}`
+                  : "What brings you here?"
                 : "Tell us about your partner"
           }
         />
@@ -629,6 +646,22 @@ function OnboardingForm({
           }
           onPress={handleContinue}
         />
+        {step === 2 && isReturningUser ? (
+          <Pressable
+            accessibilityRole="button"
+            className="mt-5 items-center self-center px-3 py-2 active:opacity-65"
+            onPress={() =>
+              router.push({
+                pathname: "/invite-code",
+                params: { flow: "authenticated" },
+              })
+            }
+          >
+            <Text className="font-serif text-[16px] text-primary underline">
+              I have an invite code
+            </Text>
+          </Pressable>
+        ) : null}
       </ScrollView>
     </AppScreen>
   );
