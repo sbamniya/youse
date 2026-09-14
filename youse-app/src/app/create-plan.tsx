@@ -49,7 +49,10 @@ function toPlanDateTime(date: Dayjs, time: string): string | null {
 }
 
 export default function CreatePlan() {
-  const { id } = useLocalSearchParams<{ id?: string }>();
+  const { id, date: initialDate } = useLocalSearchParams<{
+    id?: string;
+    date?: string;
+  }>();
   const isEditing = Boolean(id);
   const queryClient = useQueryClient();
   const [title, setTitle] = useState<string | null>(null);
@@ -74,7 +77,10 @@ export default function CreatePlan() {
   });
 
   const displayedTitle = title ?? existingPlan?.title ?? "";
-  const displayedDate = date ?? (existingPlan ? dayjs(existingPlan.dateTime) : dayjs());
+  const initialPlanDate = initialDate && dayjs(initialDate).isValid()
+    ? dayjs(initialDate)
+    : dayjs();
+  const displayedDate = date ?? (existingPlan ? dayjs(existingPlan.dateTime) : initialPlanDate);
   const displayedTime = time ?? (existingPlan ? dayjs(existingPlan.dateTime).format("h:mm A") : "7:00 PM");
   const displayedLocation = location ?? existingPlan?.location ?? "";
   const displayedNotes = notes ?? existingPlan?.note ?? "";

@@ -4,9 +4,10 @@ import {
   Ellipsis,
   MapPin,
   Plane,
+  Plus,
   UtensilsCrossed,
 } from "lucide-react-native";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Image, Pressable, View } from "react-native";
 
 import { Calendar } from "@/components/app/calendar";
@@ -28,6 +29,9 @@ type PlansCalendarProps = {
   onDeletePlan: (plan: ApiPlan) => void;
   visibleMonth: Dayjs;
   onMonthChange: (month: Dayjs) => void;
+  onSelectedDayChange: (day: Dayjs) => void;
+  onAddPlan: (day: Dayjs) => void;
+  selectedDay: Dayjs;
   deletingPlanId?: string;
 };
 
@@ -122,8 +126,7 @@ function PlanRow({
   );
 }
 
-function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId, visibleMonth, onMonthChange }: PlansCalendarProps) {
-  const [selectedDay, setSelectedDay] = useState(() => dayjs());
+function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId, visibleMonth, onMonthChange, selectedDay, onSelectedDayChange, onAddPlan }: PlansCalendarProps) {
   const selectedPlans = useMemo(
     () => plans.filter((plan) => dayjs(plan.dateTime).isSame(selectedDay, "day")),
     [plans, selectedDay],
@@ -137,9 +140,9 @@ function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId, visibl
         month={visibleMonth}
         onMonthChange={(month) => {
           onMonthChange(month);
-          if (!selectedDay.isSame(month, "month")) setSelectedDay(month);
+          if (!selectedDay.isSame(month, "month")) onSelectedDayChange(month);
         }}
-        onValueChange={setSelectedDay}
+        onValueChange={onSelectedDayChange}
         value={selectedDay}
       />
 
@@ -168,6 +171,14 @@ function PlansCalendar({ plans, onEditPlan, onDeletePlan, deletingPlanId, visibl
           <Text className="mt-1.5 text-center text-[14px] leading-5 text-muted-foreground">
             Choose another day or add something to look forward to.
           </Text>
+          <Pressable
+            accessibilityLabel={`Add a plan on ${selectedDay.format("D MMMM")}`}
+            className="mt-5 flex-row items-center gap-2 rounded-full bg-primary px-5 py-3 active:opacity-80"
+            onPress={() => onAddPlan(selectedDay)}
+          >
+            <ThemedIcon icon={Plus} tone="primaryForeground" size={17} strokeWidth={2} />
+            <Text className="text-[14px] font-semibold text-primary-foreground">Add a plan</Text>
+          </Pressable>
         </View>
       )}
     </>

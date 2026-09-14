@@ -37,6 +37,7 @@ export default function Plans() {
   const [visibleMonth, setVisibleMonth] = useState(() =>
     dayjs().startOf("month"),
   );
+  const [selectedDay, setSelectedDay] = useState(() => dayjs());
   const [planToDelete, setPlanToDelete] = useState<ApiPlan | null>(null);
   const queryClient = useQueryClient();
   const {
@@ -63,6 +64,11 @@ export default function Plans() {
   const isCalendar = view === "calendar";
   const openPlanEditor = (plan: ApiPlan) =>
     router.push({ pathname: "/create-plan", params: { id: plan.id } });
+  const openPlanCreator = (date = selectedDay) =>
+    router.push({
+      pathname: "/create-plan",
+      params: { date: date.startOf("day").toISOString() },
+    });
 
   return (
     <AppScreen>
@@ -96,7 +102,7 @@ export default function Plans() {
             <Pressable
               accessibilityLabel="Add a plan"
               className="h-9 w-9 items-center justify-center"
-              onPress={() => router.push("/create-plan")}
+              onPress={() => openPlanCreator()}
             >
               <ThemedIcon icon={Plus} size={26} strokeWidth={1.8} />
             </Pressable>
@@ -157,8 +163,11 @@ export default function Plans() {
               deletingPlanId={deletePlanMutation.variables}
               onDeletePlan={setPlanToDelete}
               onEditPlan={openPlanEditor}
+              onAddPlan={openPlanCreator}
               onMonthChange={setVisibleMonth}
+              onSelectedDayChange={setSelectedDay}
               plans={plans}
+              selectedDay={selectedDay}
               visibleMonth={visibleMonth}
             />
           )
