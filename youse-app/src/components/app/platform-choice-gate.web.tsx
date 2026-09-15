@@ -52,7 +52,10 @@ function PlatformChoiceGate({ children }: PlatformChoiceGateProps) {
         className="absolute inset-0"
       />
 
-      <SafeAreaView className="flex-1 px-6 py-6 sm:px-8 sm:py-8">
+      <SafeAreaView
+        className="flex-1"
+        style={{ paddingHorizontal: 24 }}
+      >
         <BrandMark
           className="items-start"
           logoClassName="h-20 w-28"
