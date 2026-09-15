@@ -39,7 +39,7 @@ function PlatformChoiceGate({ children }: PlatformChoiceGateProps) {
   };
 
   return (
-    <View className="flex-1 overflow-hidden bg-background px-2">
+    <View className="flex-1 overflow-hidden bg-background">
       <Image
         source={heroImage}
         resizeMode="cover"
