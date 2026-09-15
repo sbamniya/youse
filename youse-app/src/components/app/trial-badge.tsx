@@ -11,9 +11,10 @@ type TrialBadgeProps = {
 };
 
 function TrialBadge({ className, days, interactive = true }: TrialBadgeProps) {
+  const isExpired = days <= 0;
   const content = (
     <Text className="text-[11px] font-medium text-accent">
-      {days} days left
+      {isExpired ? "Trial expired" : `${days} days left`}
     </Text>
   );
 
@@ -29,7 +30,11 @@ function TrialBadge({ className, days, interactive = true }: TrialBadgeProps) {
 
   return (
     <Pressable
-      accessibilityLabel={`${days} days left in your subscription. View billing.`}
+      accessibilityLabel={
+        isExpired
+          ? "Trial expired. View billing."
+          : `${days} days left in your trial. View billing.`
+      }
       accessibilityRole="button"
       className={containerClassName}
       onPress={() => router.push("/billing")}

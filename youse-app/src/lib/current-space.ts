@@ -120,16 +120,29 @@ export function getPartnerFromSpace(
 export function getSubscriptionDaysRemaining(
   space: CurrentSpace,
 ): number | null {
-  const endTimes = [
-    space.subscription?.trialEndsAt,
-    space.subscription?.activeUntil,
-  ]
-    .filter((date): date is string => Boolean(date))
-    .map((date) => new Date(date).getTime())
-    .filter((time) => Number.isFinite(time) && time > Date.now());
+  const subscription = space.subscription;
+  if (!subscription) return null;
 
-  if (!endTimes.length) return null;
+  const activeUntil = subscription.activeUntil
+    ? new Date(subscription.activeUntil).getTime()
+    : null;
+  const hasActivePaidPlan =
+    Boolean(subscription.plan) &&
+    (activeUntil !== null && Number.isFinite(activeUntil)
+      ? activeUntil > Date.now()
+      : ["active", "authenticated"].includes(
+          subscription.razorpayStatus ?? "",
+        ));
+
+  if (hasActivePaidPlan) return null;
+
+  const trialEnd = subscription.trialEndsAt
+    ? new Date(subscription.trialEndsAt).getTime()
+    : null;
+  if (trialEnd === null || !Number.isFinite(trialEnd)) {
+    return subscription.plan ? 0 : null;
+  }
 
   const millisecondsPerDay = 24 * 60 * 60 * 1000;
-  return Math.ceil((Math.max(...endTimes) - Date.now()) / millisecondsPerDay);
+  return Math.max(0, Math.ceil((trialEnd - Date.now()) / millisecondsPerDay));
 }
