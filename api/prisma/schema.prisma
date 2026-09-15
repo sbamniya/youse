@@ -135,7 +135,9 @@ model Subscription {
     userPartnerId          String    @unique
     trialEndsAt            DateTime?
     plan                   String?
+    pendingPlan            String?
     activeUntil            DateTime?
+    cancelAtCycleEnd       Boolean   @default(false)
     razorpaySubscriptionId String?   @unique
     razorpayPaymentId      String?
     razorpayStatus         String?

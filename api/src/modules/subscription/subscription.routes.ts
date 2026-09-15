@@ -7,6 +7,8 @@ import {
 import { validate } from "../../middleware/validate";
 import * as controller from "./subscription.controller";
 import {
+  cancelSubscriptionSchema,
+  changeSubscriptionPlanSchema,
   createCheckoutSchema,
   verifyCheckoutSchema,
 } from "./subscription.schema";
@@ -34,4 +36,16 @@ subscriptionRouter.post(
   "/verify",
   validate(verifyCheckoutSchema),
   controller.verifyCheckout,
+);
+subscriptionRouter.patch(
+  "/plan",
+  createCheckoutRateLimit,
+  validate(changeSubscriptionPlanSchema),
+  controller.changePlan,
+);
+subscriptionRouter.post(
+  "/cancel",
+  createCheckoutRateLimit,
+  validate(cancelSubscriptionSchema),
+  controller.cancelSubscription,
 );

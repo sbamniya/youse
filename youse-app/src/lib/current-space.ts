@@ -21,7 +21,10 @@ export type SpaceSubscription = {
   id: string;
   trialEndsAt: string | null;
   plan: string | null;
+  pendingPlan: string | null;
   activeUntil: string | null;
+  cancelAtCycleEnd: boolean;
+  razorpayStatus: string | null;
   createdAt: string;
   updatedAt: string;
 };

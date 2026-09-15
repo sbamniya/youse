@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { router } from "expo-router";
 import {
@@ -9,20 +9,41 @@ import {
   UsersRound,
 } from "lucide-react-native";
 import { useState } from "react";
-import { Alert, Pressable, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  View,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCSSVariable } from "uniwind";
 
 import { PageIntro } from "@/components/app/page-intro";
 import { PrimaryAction } from "@/components/app/primary-action";
 import { ThemedIcon } from "@/components/app/themed-icon";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Text } from "@/components/ui/text";
-import { currentSpaceQueryKey } from "@/lib/current-space";
+import {
+  currentSpaceQueryKey,
+  currentSpaceQueryOptions,
+} from "@/lib/current-space";
 import {
   isRazorpayCancellation,
   openRazorpaySubscriptionCheckout,
 } from "@/lib/razorpay-checkout";
 import {
+  cancelSubscription,
+  changeSubscriptionPlan,
   createSubscriptionCheckout,
   type SubscriptionPlan,
   verifySubscriptionPayment,
@@ -52,17 +73,112 @@ const benefits = [
   },
 ];
 
+const paidSubscriptionStatuses = new Set([
+  "active",
+  "authenticated",
+  "halted",
+  "pending",
+]);
+
+const isSubscriptionPlan = (plan: string | null | undefined): plan is SubscriptionPlan =>
+  plan === "monthly" || plan === "yearly";
+
+const planLabel = (plan: SubscriptionPlan) =>
+  plan === "yearly" ? "Yearly" : "Monthly";
+
+const formatBillingDate = (date: string | null | undefined) => {
+  if (!date) return null;
+  const value = new Date(date);
+  if (!Number.isFinite(value.getTime())) return null;
+
+  return new Intl.DateTimeFormat("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(value);
+};
+
+const apiErrorMessage = (error: unknown, fallback: string) => {
+  if (isAxiosError<{ message?: string }>(error)) {
+    return error.response?.data?.message || fallback;
+  }
+  return fallback;
+};
+
 export default function Billing() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const checkoutColor = useCSSVariable("--color-primary") as string;
-  const [plan, setPlan] = useState<SubscriptionPlan>("yearly");
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>(
+    null,
+  );
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
   const [checkoutState, setCheckoutState] = useState<
     "creating" | "idle" | "paying" | "verifying"
   >("idle");
   const [paymentError, setPaymentError] = useState("");
+  const {
+    data: currentSpace,
+    isError: isSpaceError,
+    isPending: isSpacePending,
+    refetch: refetchCurrentSpace,
+  } = useQuery(currentSpaceQueryOptions);
+  const subscription = currentSpace?.subscription;
+  const currentPlan =
+    isSubscriptionPlan(subscription?.plan) &&
+    paidSubscriptionStatuses.has(subscription.razorpayStatus ?? "")
+      ? subscription.plan
+      : null;
+  const pendingPlan = isSubscriptionPlan(subscription?.pendingPlan)
+    ? subscription.pendingPlan
+    : null;
+  const plan = selectedPlan ?? pendingPlan ?? currentPlan ?? "yearly";
+  const billingDate = formatBillingDate(subscription?.activeUntil);
   const isYearly = plan === "yearly";
-  const isProcessing = checkoutState !== "idle";
+  const changePlanMutation = useMutation({
+    mutationFn: changeSubscriptionPlan,
+    onSuccess: async (updatedSubscription, requestedPlan) => {
+      await queryClient.invalidateQueries({ queryKey: currentSpaceQueryKey });
+      setPaymentError("");
+      const changeDate = formatBillingDate(updatedSubscription.activeUntil);
+      Alert.alert(
+        requestedPlan === currentPlan
+          ? "Plan change removed"
+          : "Plan change scheduled",
+        requestedPlan === currentPlan
+          ? `Your ${planLabel(currentPlan).toLowerCase()} plan will continue.`
+          : `Your plan will change to ${planLabel(requestedPlan).toLowerCase()}${changeDate ? ` on ${changeDate}` : " at the end of this billing cycle"}.`,
+      );
+    },
+    onError: (error) => {
+      setPaymentError(
+        apiErrorMessage(error, "We couldn’t change your plan. Please try again."),
+      );
+    },
+  });
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: cancelSubscription,
+    onSuccess: async (updatedSubscription) => {
+      await queryClient.invalidateQueries({ queryKey: currentSpaceQueryKey });
+      setIsCancelDialogOpen(false);
+      setPaymentError("");
+      const endDate = formatBillingDate(updatedSubscription.activeUntil);
+      Alert.alert(
+        "Cancellation scheduled",
+        `Your plan will remain active${endDate ? ` until ${endDate}` : " until the end of this billing cycle"}.`,
+      );
+    },
+    onError: (error) => {
+      setIsCancelDialogOpen(false);
+      setPaymentError(
+        apiErrorMessage(error, "We couldn’t cancel your plan. Please try again."),
+      );
+    },
+  });
+  const isProcessing =
+    checkoutState !== "idle" ||
+    changePlanMutation.isPending ||
+    cancelSubscriptionMutation.isPending;
 
   const continueWithPlan = async () => {
     if (isProcessing) {
@@ -70,6 +186,12 @@ export default function Billing() {
     }
 
     setPaymentError("");
+
+    if (currentPlan) {
+      changePlanMutation.mutate(plan);
+      return;
+    }
+
     setCheckoutState("creating");
     let checkoutCompleted = false;
 
@@ -104,7 +226,7 @@ export default function Billing() {
         "Subscription set up",
         subscription.razorpayStatus === "active"
           ? "Your Youse subscription is active for both partners."
-          : "Your plan is confirmed and will begin when your trial ends.",
+          : "Your Youse subscription is confirmed for both partners.",
         [{ text: "Continue", onPress: () => router.replace("/(tabs)/today") }],
       );
     } catch (error) {
@@ -130,13 +252,54 @@ export default function Billing() {
   };
 
   const actionLabel =
-    checkoutState === "creating"
+    changePlanMutation.isPending
+      ? "Updating plan..."
+      : checkoutState === "creating"
       ? "Preparing checkout..."
       : checkoutState === "paying"
         ? "Complete payment..."
         : checkoutState === "verifying"
           ? "Verifying payment..."
-          : `Continue with ${isYearly ? "yearly" : "monthly"}`;
+          : currentPlan
+            ? pendingPlan === plan
+              ? `Change to ${planLabel(plan).toLowerCase()} scheduled`
+              : plan === currentPlan
+                ? pendingPlan
+                  ? `Keep ${planLabel(currentPlan).toLowerCase()} plan`
+                  : "Current plan"
+                : `Change to ${planLabel(plan).toLowerCase()}`
+            : `Continue with ${isYearly ? "yearly" : "monthly"}`;
+  const isPlanActionDisabled =
+    isProcessing ||
+    Boolean(
+      currentPlan &&
+        ((plan === currentPlan && !pendingPlan) || plan === pendingPlan),
+    ) ||
+    subscription?.cancelAtCycleEnd === true;
+
+  if (isSpacePending) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator colorClassName="accent-primary" size="large" />
+      </View>
+    );
+  }
+
+  if (isSpaceError || !currentSpace) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <Text className="text-center font-serif text-[18px] text-muted-foreground">
+          We couldn&apos;t load your billing details. Check your connection and
+          try again.
+        </Text>
+        <PrimaryAction
+          className="mt-7 w-full"
+          label="Try again"
+          onPress={() => void refetchCurrentSpace()}
+        />
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 bg-background">
@@ -148,9 +311,13 @@ export default function Billing() {
         <View style={{ paddingTop: Math.max(insets.top + 18, 42) }}>
           <PageIntro
             className="mt-2"
-            eyebrow="YOUR 14-DAY TRIAL"
-            description={`Keep your space going.\nYour shared history stays\nviewable, always.`}
-            title="Welcome back"
+            eyebrow={currentPlan ? "BILLING" : "YOUR 14-DAY TRIAL"}
+            description={
+              currentPlan
+                ? "Manage the plan that covers your shared space."
+                : `Keep your space going.\nYour shared history stays\nviewable, always.`
+            }
+            title={currentPlan ? "Manage your plan" : "Welcome back"}
             backArrow={{
               onPress: () =>
                 router.canGoBack()
@@ -158,6 +325,41 @@ export default function Billing() {
                   : router.replace("/(tabs)/today"),
             }}
           />
+
+          {currentPlan ? (
+            <View className="mt-5 rounded-[18px] border border-primary bg-secondary/20 p-5">
+              <Text className="text-[10px] font-semibold tracking-[3px] text-primary">
+                CURRENT PLAN
+              </Text>
+              <Text className="mt-2 text-[22px] font-bold text-foreground">
+                {planLabel(currentPlan)} · {currentPlan === "yearly" ? "₹1,299/year" : "₹149/month"}
+              </Text>
+              <Text className="mt-2 font-serif text-[14px] leading-5 text-muted-foreground">
+                {subscription?.cancelAtCycleEnd
+                  ? `Cancellation scheduled${billingDate ? ` for ${billingDate}` : " for the end of this billing cycle"}.`
+                  : pendingPlan
+                    ? `Changes to ${planLabel(pendingPlan).toLowerCase()}${billingDate ? ` on ${billingDate}` : " at the end of this billing cycle"}.`
+                    : billingDate
+                      ? `Current billing period ends ${billingDate}.`
+                      : "Active for both partners."}
+              </Text>
+              {!subscription?.cancelAtCycleEnd ? (
+                <Pressable
+                  accessibilityRole="button"
+                  className="mt-4 w-full border-t border-border-subtle pt-4 active:opacity-65 disabled:opacity-50"
+                  disabled={isProcessing}
+                  onPress={() => {
+                    setPaymentError("");
+                    setIsCancelDialogOpen(true);
+                  }}
+                >
+                  <Text className="font-serif text-[16px] text-destructive">
+                    Cancel plan
+                  </Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
 
           <View className="mt-2">
             {benefits.map(({ description, icon, title }, index) => (
@@ -184,20 +386,35 @@ export default function Billing() {
 
           <View className="mt-4 gap-3">
             <PlanOption
-              badge="Save 44%"
-              caption="JUST ₹83/MONTH"
+              badge={
+                currentPlan === "yearly"
+                  ? "Current plan"
+                  : pendingPlan === "yearly"
+                    ? "Scheduled"
+                    : "Save 27%"
+              }
+              caption="JUST ₹108.25/MONTH"
+              disabled={subscription?.cancelAtCycleEnd === true}
               isSelected={isYearly}
               onPress={() => {
-                setPlan("yearly");
+                setSelectedPlan("yearly");
                 setPaymentError("");
               }}
-              price="₹999/year"
+              price="₹1,299/year"
             />
             <PlanOption
+              badge={
+                currentPlan === "monthly"
+                  ? "Current plan"
+                  : pendingPlan === "monthly"
+                    ? "Scheduled"
+                    : undefined
+              }
               caption="BILLED MONTHLY"
+              disabled={subscription?.cancelAtCycleEnd === true}
               isSelected={!isYearly}
               onPress={() => {
-                setPlan("monthly");
+                setSelectedPlan("monthly");
                 setPaymentError("");
               }}
               price="₹149/month"
@@ -211,7 +428,7 @@ export default function Billing() {
           <PrimaryAction
             accessibilityLabel={`Continue with ${isYearly ? "yearly" : "monthly"} plan`}
             className="mt-4"
-            disabled={isProcessing}
+            disabled={isPlanActionDisabled}
             label={actionLabel}
             onPress={() => void continueWithPlan()}
             icon={CreditCard}
@@ -234,6 +451,46 @@ export default function Billing() {
           </Pressable>
         </View>
       </ScrollView>
+
+      <AlertDialog
+        onOpenChange={setIsCancelDialogOpen}
+        open={isCancelDialogOpen}
+      >
+        <AlertDialogContent className="mx-5 rounded-3xl border-border-subtle bg-card p-6 web:mx-0">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-left text-[22px] text-foreground">
+              Cancel your {currentPlan ? planLabel(currentPlan).toLowerCase() : ""} plan?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="mt-2 text-left text-[16px] leading-6 text-muted-foreground">
+              Your subscription will stay active for both partners
+              {billingDate ? ` until ${billingDate}` : " until the end of the current billing cycle"}.
+              After that, you can still view your shared history.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-2 gap-3">
+            <AlertDialogCancel
+              className="h-12 rounded-full"
+              disabled={cancelSubscriptionMutation.isPending}
+            >
+              <Text>Keep plan</Text>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              className="h-12 rounded-full bg-destructive active:bg-destructive/90"
+              disabled={cancelSubscriptionMutation.isPending}
+              onPress={(event) => {
+                event.preventDefault();
+                cancelSubscriptionMutation.mutate();
+              }}
+            >
+              <Text>
+                {cancelSubscriptionMutation.isPending
+                  ? "Cancelling…"
+                  : "Cancel at period end"}
+              </Text>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </View>
   );
 }
@@ -241,6 +498,7 @@ export default function Billing() {
 type PlanOptionProps = {
   badge?: string;
   caption: string;
+  disabled?: boolean;
   isSelected: boolean;
   onPress: () => void;
   price: string;
@@ -249,6 +507,7 @@ type PlanOptionProps = {
 function PlanOption({
   badge,
   caption,
+  disabled = false,
   isSelected,
   onPress,
   price,
@@ -256,11 +515,12 @@ function PlanOption({
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityState={{ checked: isSelected }}
+      accessibilityState={{ checked: isSelected, disabled }}
       className={cn(
         "min-h-20 flex-row items-center rounded-[18px] border px-4 active:opacity-80",
         isSelected ? "border-primary bg-secondary/20" : "border-border-subtle",
       )}
+      disabled={disabled}
       onPress={onPress}
     >
       <View

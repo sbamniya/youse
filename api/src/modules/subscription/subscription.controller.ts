@@ -38,6 +38,30 @@ export const verifyCheckout = async (
   }
 };
 
+export const changePlan = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    res.json(await service.changePlan(req.user!.id, req.body.plan));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const cancelSubscription = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    res.json(await service.cancelSubscription(req.user!.id));
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const webhook = async (
   req: Request,
   res: Response,

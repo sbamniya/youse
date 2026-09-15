@@ -67,6 +67,25 @@ const getPlanForRazorpayId = (planId?: string) =>
     [SubscriptionPlan, (typeof planConfig)[SubscriptionPlan]]
   >).find(([, config]) => config.planId === planId)?.[0];
 
+const validateConfiguredPlan = async (plan: SubscriptionPlan) => {
+  const config = planConfig[plan];
+  const configuredPlan = await razorpay.plans.fetch(config.planId);
+  const matchesBillingScreen =
+    Number(configuredPlan.item.amount) === config.amount &&
+    configuredPlan.item.currency === "INR" &&
+    configuredPlan.interval === 1 &&
+    configuredPlan.period === config.period;
+
+  if (!matchesBillingScreen) {
+    throw new AppError(
+      503,
+      "The configured Razorpay plan does not match the advertised price",
+    );
+  }
+
+  return config;
+};
+
 const signaturesMatch = (received: string, expected: string) => {
   const receivedBuffer = Buffer.from(received, "utf8");
   const expectedBuffer = Buffer.from(expected, "utf8");
@@ -92,11 +111,6 @@ export const createCheckout = async (
 ) => {
   const space = await spaceFor(userId);
   const existingSubscription = space.subscription;
-  const trialEndsAt = dayjs(existingSubscription?.trialEndsAt);
-  const startsAt =
-    trialEndsAt.isValid() && trialEndsAt.isAfter(dayjs().add(10, "minutes"))
-      ? trialEndsAt.toDate()
-      : null;
   const payer = space.userId === userId ? space.user : space.partner;
 
   if (existingSubscription?.razorpaySubscriptionId) {
@@ -104,24 +118,42 @@ export const createCheckout = async (
       existingSubscription.razorpaySubscriptionId,
     );
 
-    if (
-      remoteSubscription.status === "created" &&
-      existingSubscription.plan === plan
-    ) {
-      return {
-        keyId: env.RAZORPAY_KEY_ID,
-        plan,
-        startsAt,
-        subscriptionId: remoteSubscription.id,
-        prefill: {
-          contact: payer?.phone ?? undefined,
-          name: payer?.name ?? undefined,
+    if (remoteSubscription.status === "created") {
+      const startsImmediately =
+        remoteSubscription.start_at <=
+        Math.floor(dayjs().add(10, "minutes").valueOf() / 1_000);
+
+      if (existingSubscription.plan === plan && startsImmediately) {
+        return {
+          keyId: env.RAZORPAY_KEY_ID,
+          plan,
+          startsAt: null,
+          subscriptionId: remoteSubscription.id,
+          prefill: {
+            contact: payer?.phone ?? undefined,
+            name: payer?.name ?? undefined,
+          },
+        };
+      }
+
+      // A created subscription has not been authenticated or paid yet. Replace
+      // abandoned checkouts when the plan changes or when an older checkout
+      // deferred billing until the app-managed trial ended.
+      await razorpay.subscriptions.cancel(remoteSubscription.id, false);
+      await prisma.subscription.update({
+        where: { id: existingSubscription.id },
+        data: {
+          plan: null,
+          razorpayPaymentId: null,
+          razorpayStatus: "cancelled",
+          razorpaySubscriptionId: null,
         },
-      };
+      });
+      await refreshRelationshipCaches(space.userId, space.partnerId);
     }
 
     if (
-      ["created", "authenticated", "active", "pending", "halted"].includes(
+      ["authenticated", "active", "pending", "halted"].includes(
         remoteSubscription.status,
       )
     ) {
@@ -143,29 +175,13 @@ export const createCheckout = async (
     }
   }
 
-  const config = planConfig[plan];
-  const configuredPlan = await razorpay.plans.fetch(config.planId);
-
-  const planMatchesBillingScreen =
-    Number(configuredPlan.item.amount) === config.amount &&
-    configuredPlan.item.currency === "INR" &&
-    configuredPlan.interval === 1 &&
-    configuredPlan.period === config.period;
-  if (!planMatchesBillingScreen) {
-    throw new AppError(
-      503,
-      "The configured Razorpay plan does not match the advertised price",
-    );
-  }
+  const config = await validateConfiguredPlan(plan);
 
   const remoteSubscription = await razorpay.subscriptions.create({
     plan_id: config.planId,
     total_count: config.totalCount,
     quantity: 1,
     customer_notify: true,
-    ...(startsAt
-      ? { start_at: Math.floor(startsAt.getTime() / 1_000) }
-      : {}),
     notes: {
       plan,
       space_id: space.id,
@@ -193,7 +209,7 @@ export const createCheckout = async (
   return {
     keyId: env.RAZORPAY_KEY_ID,
     plan,
-    startsAt,
+    startsAt: null,
     subscriptionId: remoteSubscription.id,
     prefill: {
       contact: payer?.phone ?? undefined,
@@ -250,6 +266,125 @@ export const verifyCheckout = async (
   return subscription;
 };
 
+export const changePlan = async (
+  userId: string,
+  plan: SubscriptionPlan,
+) => {
+  const space = await spaceFor(userId);
+  const subscription = await prisma.subscription.findUnique({
+    where: { userPartnerId: space.id },
+  });
+
+  if (!subscription?.razorpaySubscriptionId || !subscription.plan) {
+    throw new AppError(404, "No paid subscription found for this space");
+  }
+  if (subscription.cancelAtCycleEnd) {
+    throw new AppError(409, "This subscription is already scheduled to cancel");
+  }
+
+  const remoteSubscription = await razorpay.subscriptions.fetch(
+    subscription.razorpaySubscriptionId,
+  );
+  if (!["authenticated", "active"].includes(remoteSubscription.status)) {
+    throw new AppError(
+      409,
+      "This subscription cannot change plans in its current state",
+    );
+  }
+
+  if (subscription.plan === plan) {
+    if (subscription.pendingPlan && remoteSubscription.has_scheduled_changes) {
+      await razorpay.subscriptions.cancelScheduledChanges(
+        subscription.razorpaySubscriptionId,
+      );
+      const unchangedSubscription = await prisma.subscription.update({
+        where: { id: subscription.id },
+        data: { pendingPlan: null },
+      });
+      await refreshRelationshipCaches(space.userId, space.partnerId);
+      return unchangedSubscription;
+    }
+
+    return subscription;
+  }
+
+  const config = await validateConfiguredPlan(plan);
+  if (remoteSubscription.has_scheduled_changes) {
+    await razorpay.subscriptions.cancelScheduledChanges(
+      subscription.razorpaySubscriptionId,
+    );
+  }
+
+  const updatedRemoteSubscription = await razorpay.subscriptions.update(
+    subscription.razorpaySubscriptionId,
+    {
+      plan_id: config.planId,
+      remaining_count: config.totalCount,
+      schedule_change_at: "cycle_end",
+      customer_notify: true,
+    },
+  );
+  const updatedSubscription = await prisma.subscription.update({
+    where: { id: subscription.id },
+    data: {
+      activeUntil:
+        dateFromUnixSeconds(updatedRemoteSubscription.current_end) ??
+        subscription.activeUntil,
+      pendingPlan: plan,
+      razorpayStatus: updatedRemoteSubscription.status,
+    },
+  });
+  await refreshRelationshipCaches(space.userId, space.partnerId);
+  return updatedSubscription;
+};
+
+export const cancelSubscription = async (userId: string) => {
+  const space = await spaceFor(userId);
+  const subscription = await prisma.subscription.findUnique({
+    where: { userPartnerId: space.id },
+  });
+
+  if (!subscription?.razorpaySubscriptionId || !subscription.plan) {
+    throw new AppError(404, "No paid subscription found for this space");
+  }
+  if (subscription.cancelAtCycleEnd) {
+    return subscription;
+  }
+
+  const remoteSubscription = await razorpay.subscriptions.fetch(
+    subscription.razorpaySubscriptionId,
+  );
+  if (remoteSubscription.status !== "active") {
+    throw new AppError(
+      409,
+      "This subscription cannot be cancelled at cycle end in its current state",
+    );
+  }
+
+  if (remoteSubscription.has_scheduled_changes) {
+    await razorpay.subscriptions.cancelScheduledChanges(
+      subscription.razorpaySubscriptionId,
+    );
+  }
+  const cancelledRemoteSubscription = await razorpay.subscriptions.cancel(
+    subscription.razorpaySubscriptionId,
+    true,
+  );
+  const cancelledSubscription = await prisma.subscription.update({
+    where: { id: subscription.id },
+    data: {
+      activeUntil:
+        dateFromUnixSeconds(cancelledRemoteSubscription.current_end) ??
+        subscription.activeUntil,
+      cancelAtCycleEnd: true,
+      pendingPlan: null,
+      razorpayStatus: cancelledRemoteSubscription.status,
+    },
+  });
+  await refreshRelationshipCaches(space.userId, space.partnerId);
+  return cancelledSubscription;
+};
+
 export const handleWebhook = async (
   rawBody: Buffer | undefined,
   signature: string | undefined,
@@ -292,6 +427,10 @@ export const handleWebhook = async (
     data: {
       ...(activeUntil ? { activeUntil } : {}),
       ...(plan ? { plan } : {}),
+      ...(plan && plan === existing.pendingPlan ? { pendingPlan: null } : {}),
+      ...(["cancelled", "completed", "expired"].includes(entity.status ?? "")
+        ? { cancelAtCycleEnd: false, pendingPlan: null }
+        : {}),
       ...(body.payload?.payment?.entity?.id
         ? { razorpayPaymentId: body.payload.payment.entity.id }
         : {}),

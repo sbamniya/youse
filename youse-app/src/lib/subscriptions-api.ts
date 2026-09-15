@@ -19,15 +19,24 @@ export type VerifySubscriptionPaymentInput = {
   razorpaySubscriptionId: string;
 };
 
-export type VerifiedSubscription = {
+export type ManagedSubscription = {
   activeUntil: string | null;
+  cancelAtCycleEnd: boolean;
   id: string;
+  pendingPlan: SubscriptionPlan | null;
+  plan: SubscriptionPlan | null;
+  razorpayPaymentId: string | null;
+  razorpayStatus: string | null;
+  razorpaySubscriptionId: string | null;
+  trialEndsAt: string | null;
+  userPartnerId: string;
+};
+
+export type VerifiedSubscription = ManagedSubscription & {
   plan: SubscriptionPlan;
   razorpayPaymentId: string;
   razorpayStatus: string;
   razorpaySubscriptionId: string;
-  trialEndsAt: string | null;
-  userPartnerId: string;
 };
 
 export const createSubscriptionCheckout = (plan: SubscriptionPlan) =>
@@ -42,4 +51,16 @@ export const verifySubscriptionPayment = (
   api.post<VerifiedSubscription, VerifySubscriptionPaymentInput>(
     "/subscriptions/verify",
     input,
+  );
+
+export const changeSubscriptionPlan = (plan: SubscriptionPlan) =>
+  api.patch<ManagedSubscription, { plan: SubscriptionPlan }>(
+    "/subscriptions/plan",
+    { plan },
+  );
+
+export const cancelSubscription = () =>
+  api.post<ManagedSubscription, Record<string, never>>(
+    "/subscriptions/cancel",
+    {},
   );

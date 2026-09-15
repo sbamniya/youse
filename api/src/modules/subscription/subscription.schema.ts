@@ -17,5 +17,15 @@ export const verifyCheckoutSchema = requestSchema(
   emptyRequestObject,
 );
 
+export const changeSubscriptionPlanSchema = requestSchema(
+  z.object({ plan: subscriptionPlanSchema }),
+  emptyRequestObject,
+);
+
+export const cancelSubscriptionSchema = requestSchema(
+  emptyRequestObject,
+  emptyRequestObject,
+);
+
 export type SubscriptionPlan = z.infer<typeof subscriptionPlanSchema>;
 export type VerifyCheckoutInput = z.infer<typeof verifyCheckoutSchema>["body"];
