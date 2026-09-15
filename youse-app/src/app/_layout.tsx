@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { PlatformChoiceGate } from "@/components/app/platform-choice-gate";
 import QueryProvider from "@/components/query-provider";
 import "../global.css";
 
@@ -26,21 +27,23 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryProvider>
-          <ThemeProvider value={navigationTheme}>
-            <MemoryProvider>
-              <Stack
-                screenOptions={{
-                  animation: "slide_from_right",
-                  contentStyle: { backgroundColor: "#160d11" },
-                  headerShown: false,
-                }}
-              />
-            </MemoryProvider>
-            <PortalHost />
-            <Toast position="bottom" />
-          </ThemeProvider>
-        </QueryProvider>
+        <PlatformChoiceGate>
+          <QueryProvider>
+            <ThemeProvider value={navigationTheme}>
+              <MemoryProvider>
+                <Stack
+                  screenOptions={{
+                    animation: "slide_from_right",
+                    contentStyle: { backgroundColor: "#160d11" },
+                    headerShown: false,
+                  }}
+                />
+              </MemoryProvider>
+              <PortalHost />
+              <Toast position="bottom" />
+            </ThemeProvider>
+          </QueryProvider>
+        </PlatformChoiceGate>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
