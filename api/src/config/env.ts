@@ -19,6 +19,7 @@ const envSchema = z.object({
   RAZORPAY_WEBHOOK_SECRET: z.string().min(1, 'RAZORPAY_WEBHOOK_SECRET is required'),
   RAZORPAY_MONTHLY_PLAN_ID: z.string().min(1, 'RAZORPAY_MONTHLY_PLAN_ID is required'),
   RAZORPAY_YEARLY_PLAN_ID: z.string().min(1, 'RAZORPAY_YEARLY_PLAN_ID is required'),
+  FAST2SMS_API_KEY: z.string().min(1, 'FAST2SMS_API_KEY is required'),
 });
 
 const parsed = envSchema.safeParse(process.env);

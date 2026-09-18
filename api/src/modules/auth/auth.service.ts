@@ -21,6 +21,7 @@ import {
   refreshRelationshipCaches,
   userHasPreviousRelationShipCache,
 } from "../space/space.service";
+import sendSMS from "../../utils/sms";
 
 const REFRESH_TOKEN_TTL_MS = parseExpiryToMs(env.JWT_REFRESH_EXPIRES_IN);
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -157,6 +158,10 @@ export const requestOtp = async (input: RequestOtpInput) => {
   await prisma.otpChallenge.updateMany({
     where: { phone: input.phone, consumedAt: null },
     data: { consumedAt: new Date() },
+  });
+  await sendSMS({
+    to: input.phone,
+    message: `Your Youse verification code is ${code}`,
   });
   await prisma.otpChallenge.create({
     data: {
