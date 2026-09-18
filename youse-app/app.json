@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Youse",
-    "slug": "youse",
+    "name": "Youse - Brighter, Together",
+    "slug": "youse-brighter-together",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "com.youse.app"
+      "bundleIdentifier": "com.getyouse.app"
     },
     "android": {
       "predictiveBackGestureEnabled": false,
