@@ -1,4 +1,4 @@
-const APP_STORE_URL =
+const APP_STORE_URL = 
   process.env.EXPO_PUBLIC_APP_STORE_URL ??
   "https://apps.apple.com/us/search?term=Youse";
 
@@ -9,4 +9,5 @@ const PLAY_STORE_URL =
 const getAppInviteUrl = (code: string) =>
   `youse://invite/${encodeURIComponent(code.trim())}`;
 
-export { APP_STORE_URL, PLAY_STORE_URL, getAppInviteUrl };
+export { APP_STORE_URL, getAppInviteUrl, PLAY_STORE_URL };
+
