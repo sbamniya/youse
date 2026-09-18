@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { usePathname } from "expo-router";
 import { Download, Smartphone } from "lucide-react-native";
 import { type ReactNode, useState } from "react";
 import { Image, Linking, Pressable, View } from "react-native";
@@ -8,14 +9,9 @@ import { BrandMark } from "@/components/app/brand-mark";
 import { ThemedIcon } from "@/components/app/themed-icon";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { APP_STORE_URL, PLAY_STORE_URL } from "@/lib/app-download";
 
 const CONTINUE_ON_WEB_KEY = "youse:continue-on-web";
-const APP_STORE_URL =
-  process.env.EXPO_PUBLIC_APP_STORE_URL ??
-  "https://apps.apple.com/us/search?term=Youse";
-const PLAY_STORE_URL =
-  process.env.EXPO_PUBLIC_PLAY_STORE_URL ??
-  "https://play.google.com/store/apps/details?id=com.youse.app";
 const heroImage = require("../../../assets/images/memory-ladakh-hero.png");
 
 type PlatformChoiceGateProps = {
@@ -23,13 +19,14 @@ type PlatformChoiceGateProps = {
 };
 
 function PlatformChoiceGate({ children }: PlatformChoiceGateProps) {
+  const pathname = usePathname();
   const [continueOnWeb, setContinueOnWeb] = useState(
     () =>
       typeof window !== "undefined" &&
       window.sessionStorage.getItem(CONTINUE_ON_WEB_KEY) === "true",
   );
 
-  if (continueOnWeb) {
+  if (continueOnWeb || pathname.startsWith("/invite/")) {
     return children;
   }
 
