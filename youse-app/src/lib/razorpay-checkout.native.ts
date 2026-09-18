@@ -1,14 +1,14 @@
 import type {
   RazorpaySubscriptionCheckoutOptions,
   RazorpaySubscriptionPayment,
-} from "./razorpay-checkout";
+} from "./razorpay-checkout.shared";
 
-export { isRazorpayCancellation } from "./razorpay-checkout";
+export { isRazorpayCancellation } from "./razorpay-checkout.shared";
 export type {
   RazorpayCheckoutError,
   RazorpaySubscriptionCheckoutOptions,
   RazorpaySubscriptionPayment,
-} from "./razorpay-checkout";
+} from "./razorpay-checkout.shared";
 
 export const openRazorpaySubscriptionCheckout = async ({
   contact,
